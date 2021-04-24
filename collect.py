@@ -1,78 +1,100 @@
-#!/usr/bin/python3
-# -*- coding: utf-8 -*-
-from joystick import JoyStick
-from cart import Cart
+import os
 import time
-import cv2
+from datetime import datetime
 import threading
 import json
+
+import cv2
+
 import config
-cart = Cart()
+from cart import Cart
+from joystick import JoyStick
+from camera import Camera
+
 
 class Logger:
     def __init__(self):
-        self.camera = cv2.VideoCapture(config.front_cam)
+        self.camera = Camera(config.front_cam)
+        self.camera.start()
         self.started = False
         self.stopped_ = False
         self.counter = 0
         self.map = {}
-        self.result_dir = "train"
+        self.result_dir = 'data/' + datetime.now().strftime('%Y%m%d%H%M%S')
+        if not os.path.exists(self.result_dir):
+            os.makedirs(self.result_dir)
+        self.cart = Cart()
+        self.cart.velocity = 35
 
     def start(self):
         self.started = True
-        cart.steer(0)
-        pass
+        self.cart.steer(0)
 
     def stop(self):
-        if self.stopped_:
+        if self.stopped():
             return
         self.stopped_ = True
-        cart.stop()
+        self.cart.stop()
+        self.camera.stop()
         path = "{}/result.json".format(self.result_dir)
         with open(path, 'w') as fp:
             json.dump(self.map.copy(), fp)
-        pass
 
     def log(self, axis):
-        if self.started :
+        if self.started:
             print("axis:".format(axis))
-            cart.steer(axis)
-            return_value, image = self.camera.read()
+            self.cart.steer(axis)
+            image = self.camera.read()
             path = "{}/{}.jpg".format(self.result_dir, self.counter)
             self.map[self.counter] = axis
             cv2.imwrite(path, image)
             self.counter = self.counter + 1
-            
+
     def stopped(self):
         return self.stopped_
-js = JoyStick()
-logger = Logger()
-def joystick_thread():
-    js.open()
-    while not logger.stopped():
-        time, value, type_, number = js.read()
-        if js.type(type_) == "button":
-            print("button:{} state: {}".format(number, value))
-            if number == 6 and value == 1:
-                logger.start()
-            if number == 7 and value == 1:
-                logger.stop()
-        if js.type(type_) == "axis":
-            print("axis:{} state: {}".format(number, value))
-            if number == 2:
-                # handle_axis(time, value)
-                js.x_axis = value * 1.0 / 32767
-def main():
-    t = threading.Thread(target=joystick_thread, args=())
-    t.start()
-    cart.velocity=30
-    # logger.start()
-    while not logger.stopped():
-        # time.sleep(0.01)
-        logger.log(js.x_axis)
 
-    t.join()
-    cart.stop()
+
+class Collector:
+    def __init__(self):
+        self.js = JoyStick()
+        self.js.open()
+        self.logger = Logger()
+        self.x_axis = 0
+        self.is_restart = True
+        self.cond = threading.Condition()
+
+
+    def _controller(self):
+        while self.is_restart:
+            _, value, type_, number = self.js.read()
+            if self.js.type(type_) == 'button':
+                print('button:{} state: {}'.format(number, value))
+                if number == 6 and value == 1:
+                    self.logger.start()
+                if number == 7 and value == 1:
+                    self.is_restart = False
+                    self.logger.stop()
+                if number == 1 and value == 1:
+                    self.is_restart = True
+                    self.logger.stop()
+                    del self.logger
+                    self.logger = Logger()
+            if self.js.type(type_) == 'axis':
+                print('axis:{} state: {}'.format(number, value))
+                if number == 2:
+                    self.x_axis = value * 1.0 / 32767
+
+
+    def run(self):
+        t = threading.Thread(target=self._controller)
+        t.start()
+        while self.is_restart:
+            if not hasattr(self, 'logger'):
+                continue
+            self.logger.log(self.x_axis)
+        t.join()
+
 
 if __name__ == "__main__":
-    main()
+    collector = Collector()
+    collector.run()

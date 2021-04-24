@@ -10,7 +10,8 @@ class JoyStick:
                 print('/dev/input/%s' % fn)
 
         self.fn = '/dev/input/js0'
-        self.x_axis = 0
+        self.jsdev = None
+        self.evbuf = None
     
     def open(self):
         self.jsdev = open(self.fn, 'rb')
@@ -19,17 +20,22 @@ class JoyStick:
         self.evbuf = self.jsdev.read(8)
         return struct.unpack('IhBB', self.evbuf)
 
-    def type(self,type_):
+    @staticmethod
+    def type(type_):
         if type_ & 0x01:
-            return "button"
+            return 'button'
         if type_ & 0x02:
-            return "axis"
-
-    def button_state(self):
-        return 1
+            return 'axis'
 
     def get_x_axis(self):
-        time, value, type_, number = struct.unpack('IhBB', self.evbuf)
+        _, value, type_, number = struct.unpack('IhBB', self.evbuf)
         if number == 1:
             fvalue = value / 32767
             return fvalue
+
+
+if __name__ == '__main__':
+    j = JoyStick()
+    j.open()
+    while True:
+        print(j.read())

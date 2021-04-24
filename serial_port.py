@@ -8,7 +8,11 @@ class Serial:
         portx = "/dev/ttyUSB0"
         bps = 115200
         self.res = None
-        self.serial = serial.Serial(portx, int(bps), timeout=1, parity=serial.PARITY_NONE, stopbits=1)
+        self.serial = serial.Serial(portx,
+                                    bps,
+                                    timeout=1,
+                                    parity=serial.PARITY_NONE,
+                                    stopbits=1)
         time.sleep(1)
 
     def write(self, data):
