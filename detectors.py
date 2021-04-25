@@ -233,8 +233,8 @@ if __name__ == "__main__":
     # test_front_detector()
     task_detector = TaskDetector()
     sign_detector=SignDetector()
-    front_camera = Camera(config.front_cam, [640, 480])
-    side_camera = Camera(config.side_cam, [640, 480])
+    front_camera = Camera(config.front_cam)
+    side_camera = Camera(config.side_cam)
     num=0
     imgnum=0
     from driver import Driver

@@ -114,7 +114,7 @@ class MotorRotate:
         self.port_str = '{:02x}'.format(port)
 
     def motor_rotate(self, speed):
-        cmd_servo_data = bytes.fromhex('77 68 06 00 02 0C 01') \
+        cmd_servo_data = bytes.fromhex('77 68 06 00 02 0C 02') \
                          + bytes.fromhex(self.port_str) \
                          + speed.to_bytes(1, byteorder='big', signed=True) \
                          + bytes.fromhex('0A')
@@ -210,7 +210,7 @@ if __name__ == '__main__':
     # m3 = MotorRotate(3)
     # m4 = MotorRotate(4)
     # m.motor_rotate(30)
-    m2.motor_rotate(-30)
+    m2.motor_rotate(-40)
     # m3.motor_rotate(30)
     # m4.motor_rotate(-30)
     time.sleep(30)

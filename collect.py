@@ -61,7 +61,6 @@ class Collector:
         self.logger = Logger()
         self.x_axis = 0
         self.is_restart = True
-        self.cond = threading.Condition()
 
 
     def _controller(self):
@@ -74,11 +73,6 @@ class Collector:
                 if number == 7 and value == 1:
                     self.is_restart = False
                     self.logger.stop()
-                if number == 1 and value == 1:
-                    self.is_restart = True
-                    self.logger.stop()
-                    del self.logger
-                    self.logger = Logger()
             if self.js.type(type_) == 'axis':
                 print('axis:{} state: {}'.format(number, value))
                 if number == 2:
@@ -89,8 +83,6 @@ class Collector:
         t = threading.Thread(target=self._controller)
         t.start()
         while self.is_restart:
-            if not hasattr(self, 'logger'):
-                continue
             self.logger.log(self.x_axis)
         t.join()
 

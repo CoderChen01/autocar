@@ -107,9 +107,3 @@ class Cart:
     def reverse(self):
         speed = self.velocity 
         self.move([-speed,-speed,-speed,-speed])
-
-
-if __name__ == '__main__':
-    c = Cart()
-    c.steer(0)
-    time.sleep(200)
