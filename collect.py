@@ -9,13 +9,11 @@ import cv2
 import config
 from cart import Cart
 from joystick import JoyStick
-from camera import Camera
 
 
 class Logger:
     def __init__(self):
-        self.camera = Camera(config.front_cam)
-        self.camera.start()
+        self.camera = cv2.VideoCapture(config.front_cam)
         self.started = False
         self.stopped_ = False
         self.counter = 0
@@ -35,7 +33,6 @@ class Logger:
             return
         self.stopped_ = True
         self.cart.stop()
-        self.camera.stop()
         path = "{}/result.json".format(self.result_dir)
         with open(path, 'w') as fp:
             json.dump(self.map.copy(), fp)
@@ -44,7 +41,7 @@ class Logger:
         if self.started:
             print("axis:".format(axis))
             self.cart.steer(axis)
-            image = self.camera.read()
+            _, image = self.camera.read()
             path = "{}/{}.jpg".format(self.result_dir, self.counter)
             self.map[self.counter] = axis
             cv2.imwrite(path, image)

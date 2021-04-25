@@ -36,9 +36,9 @@ class Cart:
         angle = angle * self.Kx
         delta = angle - 0
 
-        leftwheel = speed+1
-        rightwheel = speed-2
-        
+        leftwheel = speed
+        rightwheel = speed + 2
+
         scale = 1
         if delta < 0:
             leftwheel = int((1 + delta * scale) * speed)
