@@ -63,7 +63,7 @@ class Collector:
 
 
     def _controller(self):
-        while self.logger.stopped():
+        while not self.logger.stopped():
             _, value, type_, number = self.js.read()
             if self.js.type(type_) == 'button':
                 print('button:{} state: {}'.format(number, value))
@@ -80,7 +80,7 @@ class Collector:
     def run(self):
         t = threading.Thread(target=self._controller)
         t.start()
-        while self.logger.stopped():
+        while not self.logger.stopped():
             self.logger.log(self.x_axis)
         t.join()
 
