@@ -60,18 +60,16 @@ class Collector:
         self.js.open()
         self.logger = Logger()
         self.x_axis = 0
-        self.is_restart = True
 
 
     def _controller(self):
-        while self.is_restart:
+        while self.logger.stopped():
             _, value, type_, number = self.js.read()
             if self.js.type(type_) == 'button':
                 print('button:{} state: {}'.format(number, value))
                 if number == 6 and value == 1:
                     self.logger.start()
                 if number == 7 and value == 1:
-                    self.is_restart = False
                     self.logger.stop()
             if self.js.type(type_) == 'axis':
                 print('axis:{} state: {}'.format(number, value))
@@ -82,7 +80,7 @@ class Collector:
     def run(self):
         t = threading.Thread(target=self._controller)
         t.start()
-        while self.is_restart:
+        while self.logger.stopped():
             self.logger.log(self.x_axis)
         t.join()
 
