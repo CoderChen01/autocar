@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
-front_cam = 0
-side_cam = 1
-full_speed = 20
+front_cam = 1
+side_cam = 0
+full_speed = 35
 turn_speed = full_speed * 0.8
 EMLARGE_RATIO = 1.2
 model_prefix="/home/root/workspace/autocar/"

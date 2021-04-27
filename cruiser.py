@@ -49,7 +49,7 @@ class Cruiser:
         self.predictor.load(cruise_model)
 
     def cruise(self, frame):
-        res = infer_cnn(self.predictor,self.buf, frame)
+        res = infer_cnn(self.predictor, self.buf, frame)
         # print(res)
         return res
 

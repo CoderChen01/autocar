@@ -1,7 +1,8 @@
 import cv2
 import numpy as np
-import predictor_wrapper
+
 import config
+import predictor_wrapper
 
 
 # CNN网络的图片预处理
@@ -12,6 +13,7 @@ def process_image(frame, size, ms):
     img = img * ms[1]
     img = np.expand_dims(img, axis=0)
     return img
+
 
 # CNN网络预处理
 def cnn_preprocess(args, img, buf):
@@ -26,6 +28,7 @@ def cnn_preprocess(args, img, buf):
     data = data.reshape(shape)
     return data
 
+
 # CNN网络预测
 def infer_cnn(predictor, args, buf, image):
     data = cnn_preprocess(args, image, buf)
@@ -34,6 +37,7 @@ def infer_cnn(predictor, args, buf, image):
     out = predictor.get_output(0)
     # print(out)
     return np.array(out)[0]
+
 
 class Classifier:
     def __init__(self, args):
@@ -44,8 +48,6 @@ class Classifier:
         hwc_shape = list(args["shape"])
         hwc_shape[3], hwc_shape[1] = hwc_shape[1], hwc_shape[3]
         self.buf = np.zeros(hwc_shape).astype('float32')
-
-
 
     def classify(self, frame):
         res = infer_cnn(self.predictor, self.args, self.buf, frame)

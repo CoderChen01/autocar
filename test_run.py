@@ -13,9 +13,9 @@ from driver import Driver, SLOW_DOWN_RATE
 #是否进行标志和目标物检测
 enable_detection = False
 #前置摄像头
-front_camera = Camera(config.front_cam, [640, 480])
+front_camera = Camera(config.front_cam)
 #侧边摄像头
-side_camera = Camera(config.side_cam, [640, 480])
+side_camera = Camera(config.side_cam)
 driver = Driver()
 #程序开启运行开关
 start_button = Button(1, "UP")
@@ -77,7 +77,7 @@ def main():
     Lightwork(4, "off")
     current_state = STATE_IDLE
     arg = None
-    while (True):
+    while True:
         print(current_state)
         new_state, arg = state_map[current_state](arg)
         current_state = new_state

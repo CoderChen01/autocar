@@ -1,35 +1,40 @@
-#!/usr/bin/python3
-# -*- coding: utf-8 -*-
 import sys
 import datetime
 import time
+
 import cv2
+
 import config
 from widgets import Button
 from camera import Camera
 from cruiser import Cruiser
+from driver import Driver
 from cart import Cart
-front_camera = Camera(front_cam, [640, 480])
-side_camera = Camera(side_cam, [640, 480])
+
+front_camera = Camera(config.front_cam)
+side_camera = Camera(config.side_cam)
 driver = Driver()
 cruiser = Cruiser()
-#程序开启运行开关
+# 程序开启运行开关
 start_button = Button(1, "UP")
-#程序关闭开关
+# 程序关闭开关
 stop_button = Button(1, "DOWN")
 
-#确认"DOWN"按键是否按下，程序是否处于等待直行状态
+
+# 确认"DOWN"按键是否按下，程序是否处于等待直行状态
 def check_stop():
     if stop_button.clicked():
         return True
     return False
-if __name__=='__main__':
+
+
+if __name__ == '__main__':
     front_camera.start()
-    #基准速度
+    # 基准速度
     driver.set_speed(25)
-    #转弯系数
-    driver.cart.Kx=0.9
-    #延时
+    # 转弯系数
+    driver.cart.Kx = 0.9
+    # 延时
     time.sleep(0.5)
     while True:
         if start_button.clicked():

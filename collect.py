@@ -22,7 +22,7 @@ class Logger:
         if not os.path.exists(self.result_dir):
             os.makedirs(self.result_dir)
         self.cart = Cart()
-        self.cart.velocity = 35
+        self.cart.velocity = 30
 
     def start(self):
         self.started = True

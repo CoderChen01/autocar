@@ -204,13 +204,17 @@ class InfraredValue:
         return infrared_sensor
 
 
-if __name__ == '__main__':
+# if __name__ == '__main__':
     # m = MotorRotate(1)
-    m2 = MotorRotate(2)
+    # m2 = MotorRotate(2)
     # m3 = MotorRotate(3)
     # m4 = MotorRotate(4)
     # m.motor_rotate(30)
-    m2.motor_rotate(-40)
+    # m2.motor_rotate(-40)
     # m3.motor_rotate(30)
     # m4.motor_rotate(-30)
-    time.sleep(30)
+    # time.sleep(30)
+    # b = Button(1, 'DOWN')
+    # while not b.clicked():
+    #     pass
+    # print('up')
