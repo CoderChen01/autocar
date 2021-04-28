@@ -54,6 +54,9 @@ class Cruiser:
         return res
 
 if __name__ == "__main__":
+    from camera import Camera
     c = Cruiser()
-    img = cv2.imread('test/cruise/7.png')
-    print(c.cruise(img))
+    cam = Camera(config.front_cam)
+    cam.start()
+    while True:
+        print(c.cruise(cam.read()))

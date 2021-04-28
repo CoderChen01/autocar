@@ -13,8 +13,8 @@ from cart import Cart
 class Logger:
     def __init__(self, velocity=20):
         self.camera = cv2.VideoCapture(config.front_cam)
-        self.camera.set(cv2.CAP_PROP_FRAME_WIDTH, 128)
-        self.camera.set(cv2.CAP_PROP_FRAME_HEIGHT, 128)
+        self.camera.set(cv2.CAP_PROP_FRAME_WIDTH, 160)
+        self.camera.set(cv2.CAP_PROP_FRAME_HEIGHT, 120)
         self.started = False
         self.stopped_ = False
         self.counter = 0

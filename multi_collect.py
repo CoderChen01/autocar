@@ -46,7 +46,7 @@ class Collector:
         t = multiprocessing.Process(target=self._controller)
         t.start()
         counter = 0
-        _logger = Logger(35)
+        _logger = Logger(20)
         while self.is_restart.value:
             while not self.is_start.value:
                 pass
@@ -55,7 +55,7 @@ class Collector:
                 _logger.log(self.x_axis.value)
             _logger.stop()
             counter = _logger.counter
-            _logger = Logger(35)
+            _logger = Logger(20)
             _logger.counter = counter
         t.join()
 

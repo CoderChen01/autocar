@@ -31,7 +31,7 @@ def check_stop():
 if __name__ == '__main__':
     front_camera.start()
     # 基准速度
-    driver.set_speed(25)
+    driver.set_speed(35)
     # 转弯系数
     driver.cart.Kx = 0.9
     # 延时

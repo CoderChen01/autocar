@@ -92,42 +92,37 @@ def test_front_video():
     cv2.destroyAllWindows()
 #对前向摄像头拍摄图片进行动态识别，包括车道值，不同的车道值代表了不同的转弯强度
 def test_cruise():
-    front_camera = Camera(config.front_cam, [640, 480])
+    front_camera = Camera(config.front_cam)
     front_camera.start()
     time.sleep(1)
     cruiser = Cruiser()
     time.sleep(1)
-    while True:
+    for index in range(100):
         front_image = front_camera.read()
         cruise_result = cruiser.cruise(front_image )
         frame = draw_cruise_result(front_image , cruise_result)
-        cv2.imshow("Output", frame)
-        if cv2.waitKey(1) & 0xFF == ord('q'):
-            break
-    front_camera.stop()
-    cv2.destroyAllWindows()
+        cv2.imwrite('test/cruise_res/' + str(index) + '.jpg', frame)
+        time.sleep(1)
 #前向车道地面标志动态识别
 def test_sign():
-    front_camera = Camera(config.front_cam, [640, 480])
+    front_camera = Camera(config.front_cam)
     front_camera.start()
     time.sleep(1)
     cruiser = Cruiser()
     sd = SignDetector()
     time.sleep(1)
-    while True:
+    for index in range(100):
         front_image = front_camera.read()
         cruise_result = cruiser.cruise(front_image )
         frame = draw_cruise_result(front_image , cruise_result)
         signs, index = sd.detect(frame)
-        draw_res(frame, signs)
-        cv2.imshow("Output", frame)
-        if cv2.waitKey(1) & 0xFF == ord('q'):
-            break
-    front_camera.stop()
-    cv2.destroyAllWindows()
+        frame = draw_res(frame, signs)
+        cv2.imwrite('test/front_res/' + str(index) + '.jpg', frame)
+        time.sleep(1)
+
 #侧向任务动态识别
 def test_task():
-    side_camera = Camera(config.side_cam, [640, 480])
+    side_camera = Camera(config.side_cam)
     side_camera.start()
     time.sleep(1)
     td = TaskDetector()
@@ -183,7 +178,8 @@ def test_sign_detector():
 
 
 if __name__ == "__main__":
-    os.system("startx")
+    test_sign()
+    # os.system("startx")
     # time.sleep(1.5)
     # test_front()
     # test_sign_detector()
