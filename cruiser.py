@@ -1,16 +1,19 @@
 import cv2
 import numpy as np
+
 import predictor_wrapper
 import config
+
 
 cnn_args = {
     "shape": [1, 3, 128, 128],
     "ms": [125.5, 0.00392157]
 }
 
+
 cruise_model = config.cruise["model"]
 
-# CNN网络的图片预处理
+
 def process_image(frame, size, ms):
     frame = cv2.resize(frame, (size, size))
     img = frame.astype(np.float32)
@@ -19,7 +22,7 @@ def process_image(frame, size, ms):
     img = np.expand_dims(img, axis=0)
     return img
 
-# CNN网络预处理
+
 def cnn_preprocess(args, img, buf):
     shape = args["shape"]
     img = process_image(img, shape[2], args["ms"])
@@ -32,13 +35,14 @@ def cnn_preprocess(args, img, buf):
     data = data.reshape(shape)
     return data
 
-# CNN网络预测
+
 def infer_cnn(predictor, buf, image):
     data = cnn_preprocess(cnn_args, image, buf)
     predictor.set_input(data, 0)
     predictor.run()
     out = predictor.get_output(0)
     return np.array(out)[0][0]
+
 
 class Cruiser:
     def __init__(self):
@@ -50,7 +54,6 @@ class Cruiser:
 
     def cruise(self, frame):
         res = infer_cnn(self.predictor, self.buf, frame)
-        # print(res)
         return res
 
 if __name__ == "__main__":

@@ -1,15 +1,19 @@
-# -*- coding: utf-8 -*-
+import time
+
 import cv2
 import numpy as np
+
 import predictor_wrapper
 import config
 from camera import Camera
-import time
+
 
 ssd_args = {
     "shape": [1, 3, 480, 480],
     "ms": [127.5, 0.007843]
 }
+
+
 def name_to_index(name, label_list):
     for k, v in label_list.items():
         if v == name:
@@ -196,6 +200,7 @@ class TaskDetector:
                 results.append(res_to_detection(item, self.label_list, frame))
         return results
 
+
 def test_task_detector():
     td = TaskDetector()
     print("********************************")
@@ -204,6 +209,7 @@ def test_task_detector():
         tasks = td.detect(frame)
         print("image/{}.png: ".format(i),tasks)
     print("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@")
+
 
 def test_sign_detector():
     sd = SignDetector()
@@ -214,6 +220,7 @@ def test_sign_detector():
         print("image/{}.png: ".format(i),signs)
         print(index)
     print("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@")
+
 
 def test_front_detector():
     sd = SignDetector()
@@ -226,6 +233,7 @@ def test_front_detector():
         if signs!=[]:
             print("signs=",signs[0].name,"signs_scroe=",signs[0].score)
     print("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@")
+
 
 if __name__ == "__main__":
     # test_task_detector()
@@ -259,6 +267,3 @@ if __name__ == "__main__":
         # print("*****************sidecam=", res,"num=",num)
         res,index = sign_detector.detect(front_image)
         print("*****************sidecam=", res,"num=",num)
-        # time.sleep(0.05)
-    front_camera.stop()
-    side_camera.stop()

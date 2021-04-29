@@ -101,13 +101,12 @@ class PaddleLitePredictor(Predictor):
         self.predictor = CreatePaddlePredictor(config)
 
     def set_input(self, data, index):
-        input = self.predictor.get_input(index)
-        input.resize(data.shape)
-        input.set_data(data)
+        _input = self.predictor.get_input(index)
+        _input.resize(data.shape)
+        _input.set_data(data)
 
     def run(self):
         self.predictor.run()
 
     def get_output(self, index):
         return self.predictor.get_output(index)
-
