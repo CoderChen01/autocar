@@ -1,17 +1,20 @@
 import os
 import sys
 import time
+
 from cruiser import Cruiser
 from cart import Cart
 
 
-class Driver:
+SLOW_DOWN_RATE = 0.6
 
+
+class Driver:
     def __init__(self):
-        self.max_speed=25
+        self.max_speed = 25
         self.full_speed = 25
         self.cart = Cart()
-        self.cart.velocity=self.full_speed
+        self.cart.velocity = self.full_speed
         self.cruiser = Cruiser()
 
     def stop(self):
@@ -26,10 +29,10 @@ class Driver:
 
     def set_speed(self, speed):
         # self.full_speed=speed
-        self.cart.velocity=speed
+        self.cart.velocity = speed
 
     def set_Kx(self, Kx):
-        self.cart.Kx=Kx
+        self.cart.Kx = Kx
 
     def get_min_speed(self):
         return self.cart.min_speed
@@ -66,16 +69,9 @@ class Driver:
         l_speed = basespeed * speed_ratio
         r_speed = basespeed
         self.cart.move([l_speed, r_speed, l_speed, r_speed])
-        time.sleep(drivetime-0.5)
+        time.sleep(drivetime - 0.5)
         self.cart.stop()
 
-    def driver_run(self,left,right):
-        self.cart.move([left,right,left,right])
+    def driver_run(self, left, right):
+        self.cart.move([left, right, left, right])
 
-# d = Driver();
-SLOW_DOWN_RATE = 0.6
-if __name__ == '__main__':
-    d = Driver()
-    print("hoinonogei")
-    # d.change_posture(20)
-    d.change_posture_cm(5)

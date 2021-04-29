@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 front_cam = 1
 side_cam = 0
 full_speed = 35
