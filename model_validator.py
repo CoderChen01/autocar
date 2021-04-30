@@ -6,9 +6,9 @@ import datetime
 
 import cv2
 import numpy as np
-import datetime
 
 import predictor_wrapper
+
 
 engine = "PaddleLite"
 THRESHOLD = 0.5
@@ -21,18 +21,19 @@ yolo_args = {
     "shape": [1, 3, 300, 300]
 }
 
+
 def draw_boxes(img, valid_results):
     """ draw SSD boxes on image"""
     res = list(img.shape)
     # for item in valid_results:
     #     if item[2] > 1 or item[3] > 1 or item[4] > 1 or item[5] > 1:
-    #         # YOLO network don't need to multiply original dimenstion;
+    #         # YOLO network don't need to multiply original dimenstion
     #         res[0] = 1
     #         res[1] = 1
     #         break
     for _, item in enumerate(valid_results):
         if item[1] < THRESHOLD:
-            continue;
+            continue
         print(item[1])
         left = item[2] * res[1]
         top = item[3] * res[0]
@@ -58,13 +59,13 @@ def dataset(frame, size):
     img = img / 255.0
     img = np.expand_dims(img, axis=0)
     print("image_shape:", img.shape)
-    return img;
+    return img
 
 def preprocess(args, img):
     """ preprocess image using formula y = (x - mean) x scale """
     shape = args["shape"]
     print(shape)
-    img = dataset(img, shape[2]);
+    img = dataset(img, shape[2])
 
     shape = args["shape"]
     hwc_shape = list(shape)
@@ -73,7 +74,7 @@ def preprocess(args, img):
     img = img.reshape(hwc_shape)
     data[0:, 0:hwc_shape[1], 0:hwc_shape[2], 0:hwc_shape[3]] = img
     if engine == "PaddlePaddle":
-        data = data.transpose(0, 3, 1, 2)  # PaddlePaddle CHW;
+        data = data.transpose(0, 3, 1, 2)  # PaddlePaddle CHW
     data = data.reshape(shape)
     return data
 
@@ -87,8 +88,8 @@ def yolo_preprocess(args, src):
 
     z = np.zeros((1, shape[2], shape[3], 3)).astype(np.float32)
     z[0, 0:img.shape[0], 0:img.shape[1] + 0, 0:img.shape[2]] = img
-    z = z.reshape(1, 3, shape[3], shape[2]);
-    return z;
+    z = z.reshape(1, 3, shape[3], shape[2])
+    return z
 
 def infer_cnn(predictor, image):
     data = preprocess(cnn_args, image)
@@ -124,7 +125,7 @@ def infer_tiny_yolo(predictor, image):
     
     b = datetime.datetime.now()
     c = b - a
-    mill = c.microseconds / 1000.0;
+    mill = c.microseconds / 1000.0
     print("detection used:{} ms".format(mill / times))
 
     out = predictor.get_output(0)

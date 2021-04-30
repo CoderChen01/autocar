@@ -1,9 +1,12 @@
+model_prefix="/home/root/workspace/autocar/"
+
 front_cam = 1
 side_cam = 0
+
 full_speed = 35
 turn_speed = full_speed * 0.8
 EMLARGE_RATIO = 1.2
-model_prefix="/home/root/workspace/autocar/"
+
 # mession config
 # one more for background
 MISSION_NUM = 8
@@ -19,6 +22,13 @@ mission_label_list = {
 	5: "trophies"
 }
 
+# task model
+task = {
+	"model":model_prefix + "models/task",
+	"threshold":0.6,
+	"label_list":mission_label_list
+}
+
 # sign config
 MAX_SIGN_PER_FRAME = 2
 sign_list = {
@@ -29,10 +39,7 @@ sign_list = {
 	4: "soldier",
 	5: "target"
 }
-# cruise model
-cruise = {
-	"model":model_prefix + "models/cruise"
-}
+
 # sign models
 sign = {
 	"model": model_prefix + "models/sign",
@@ -41,13 +48,11 @@ sign = {
 	# label = 0 is background
 	"class_num": 10
 }
-# task model
-task = {
-	"model":model_prefix + "models/task",
-	"threshold":0.6,
-	"label_list":mission_label_list
-}
 
+# cruise model
+cruise = {
+	"model":model_prefix + "models/cruise"
+}
 
 JOYSTICK_ADDR = '/dev/input/js0'
 # sign_threshold = 0.3

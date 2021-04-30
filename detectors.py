@@ -46,7 +46,6 @@ def ssd_preprocess(args, src):
     z = np.zeros((1, shape[2], shape[3], 3)).astype(np.float32)
     z[0, 0:img.shape[0], 0:img.shape[1] + 0, 0:img.shape[2]] = img
     z = z.reshape(1, 3, shape[3], shape[2])
-    # np.savetxt('z.txt', z.flatten(), delimiter=',')
     return z
 
 
@@ -60,9 +59,8 @@ def infer_ssd(predictor, image):
     return np.array(out)
 
 
-# score较高
 def is_sign_valid(o):
-    valid = False;
+    valid = False
     if o[1] > config.sign["threshold"]:
         valid = True
     return valid
@@ -85,7 +83,7 @@ class DetectionResult:
         self.relative_center_y = -1
 
     def __repr__(self):
-        return "name:{} scroe:{}".format(self.name, self.score);
+        return "name:{} scroe:{}".format(self.name, self.score)
 
 
 def clip_box(box):
@@ -108,7 +106,7 @@ def in_centered_in_image(res):
         relative_box = clip_box(relative_box)
         relative_center_x = (relative_box[0] + relative_box[2]) / 2
         print(">>>>>>>>>>>>>>>>>>>>>relative_center_x=",relative_center_x)
-        if relative_center_x < config.mission_high and relative_center_x > config.mission_low:
+        if config.mission_high > relative_center_x > config.mission_low:
             return True
     return False
 
@@ -204,11 +202,12 @@ class TaskDetector:
 def test_task_detector():
     td = TaskDetector()
     print("********************************")
-    for i in range(1,30):
-        frame = cv2.imread("image/{}.png".format(i))
+    # for i in range(1,30):
+    for name in [7, 12, 18, 20, 22, 165, 168]:
+        frame = cv2.imread("test/task/{}.png".format(name))
         tasks = td.detect(frame)
-        print("image/{}.png: ".format(i),tasks)
-    print("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@")
+        print("test/task/{}.png: ".format(name),tasks)
+        print("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@")
 
 
 def test_sign_detector():
@@ -236,26 +235,26 @@ def test_front_detector():
 
 
 if __name__ == "__main__":
-    # test_task_detector()
+    test_task_detector()
     # test_sign_detector()
     # test_front_detector()
-    task_detector = TaskDetector()
-    sign_detector=SignDetector()
-    front_camera = Camera(config.front_cam)
-    side_camera = Camera(config.side_cam)
-    num=0
-    imgnum=0
-    from driver import Driver
-    driver=Driver()
-    driver.set_speed(driver.full_speed * 0.6)
-    front_camera.start()
-    side_camera.start()
-    while True:
-        num+=1
-        # side_camera.update()
-        front_image = front_camera.read()
-        driver.go(front_image)
-        side_image = side_camera.read()
+    # task_detector = TaskDetector()
+    # sign_detector=SignDetector()
+    # front_camera = Camera(config.front_cam)
+    # side_camera = Camera(config.side_cam)
+    # num=0
+    # imgnum=0
+    # from driver import Driver
+    # driver=Driver()
+    # driver.set_speed(driver.full_speed * 0.6)
+    # front_camera.start()
+    # side_camera.start()
+    # while True:
+    #     num+=1
+    #     # side_camera.update()
+    #     front_image = front_camera.read()
+    #     driver.go(front_image)
+    #     side_image = side_camera.read()
         #视觉数据采集
         # imgnum+=1
         # print("image%d"%imgnum)
@@ -265,5 +264,5 @@ if __name__ == "__main__":
         # print("*****************sidecam=", res,"num=",num)
         # res = task_detector.detect(side_image)
         # print("*****************sidecam=", res,"num=",num)
-        res,index = sign_detector.detect(front_image)
-        print("*****************sidecam=", res,"num=",num)
+        # res,index = sign_detector.detect(front_image)
+        # print("*****************sidecam=", res,"num=",num)

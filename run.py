@@ -11,6 +11,7 @@ from cruiser import Cruiser
 from driver import Driver
 from cart import Cart
 
+
 front_camera = Camera(config.front_cam)
 side_camera = Camera(config.side_cam)
 driver = Driver()

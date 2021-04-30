@@ -204,7 +204,9 @@ class InfraredValue:
         return infrared_sensor
 
 
-# if __name__ == '__main__':
+if __name__ == '__main__':
+    ser = ServoPWM(3)
+    ser.servocontrol(200, 10)
     # m = MotorRotate(1)
     # m2 = MotorRotate(2)
     # m3 = MotorRotate(3)
