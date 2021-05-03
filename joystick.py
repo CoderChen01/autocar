@@ -35,7 +35,6 @@ class JoyStick:
 
 
 if __name__ == '__main__':
-    j = JoyStick()
-    j.open()
+    js = open('/dev/input/js0', 'rb')
     while True:
-        print(j.read())
+        print(js.read())

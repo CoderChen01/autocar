@@ -1,10 +1,14 @@
 import sys
 import datetime
 import time
+import multiprocessing as mp
 
 import cv2
 
 import config
+from tasks import *
+from detectors import SignDetector
+from detectors import TaskDetector
 from widgets import Button
 from camera import Camera
 from cruiser import Cruiser
@@ -16,17 +20,17 @@ front_camera = Camera(config.front_cam)
 side_camera = Camera(config.side_cam)
 driver = Driver()
 cruiser = Cruiser()
-# 程序开启运行开关
-start_button = Button(1, "UP")
-# 程序关闭开关
-stop_button = Button(1, "DOWN")
+sign_detector = SignDetector()
+task_detector = TaskDetector()
+start_button = Button(1, 'UP')
+stop_button = Button(1, 'DOWN')
 
 
-# 确认"DOWN"按键是否按下，程序是否处于等待直行状态
 def check_stop():
-    if stop_button.clicked():
-        return True
-    return False
+    return stop_button.clicked()
+
+def check_start():
+    return start_button.clicked()
 
 
 if __name__ == '__main__':

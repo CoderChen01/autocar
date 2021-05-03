@@ -83,7 +83,7 @@ class DetectionResult:
         self.relative_center_y = -1
 
     def __repr__(self):
-        return "name:{} scroe:{}".format(self.name, self.score)
+        return "name:{} scroe:{} relative_box: {}".format(self.name, self.score, self.relative_box)
 
 
 def clip_box(box):
@@ -118,7 +118,7 @@ def res_to_detection(item, label_list, frame):
     detection_object.score = item[1]
     detection_object.name = label_list[item[0]]
     detection_object.relative_box = item[2:6]
-    detection_object.relative_center_y = (item[1] + item[3]) / 2
+    detection_object.relative_center_y = (detection_object.relative_box[1] + detection_object.relative_box[3]) / 2
     # print("res_to_detection:{}  {}".format(detection_object.name, detection_object.score))
     return detection_object
 
@@ -235,7 +235,7 @@ def test_front_detector():
 
 
 if __name__ == "__main__":
-    test_task_detector()
+    test_sign_detector()
     # test_sign_detector()
     # test_front_detector()
     # task_detector = TaskDetector()

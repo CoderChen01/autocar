@@ -28,25 +28,16 @@ def light_work(light_port, color):
     light.lightcontrol(0, light_color[0], light_color[1], light_color[2])
 
 
-def raise_flag(motor_prot, magneto_port):
-    motor = MotorRotate(motor_prot)
-    magneto = MagnetoSensor(magneto_port)
-    motor.motor_rotate(-12)
-    while True:
-        data = magneto.read()
-        if data is None:
-            continue
-        if data > 80:
-            motor.motor_rotate(0)
-            break
+def raise_flag(servo1):
+    servo = ServoPWM(servo_port)
+    servo.servocontrol(0, 10)
     light_work(2, 'green')
     light_work(2, 'off')
     light_work(2, 'green')
     light_work(2, 'off')
     light_work(2, 'green')
     light_work(2, 'off')
-    motor.motor_rotate(-10)
-    motor.motor_rotate(0)
+    servo.servocontrol(270, 10)
 
 
 def shot_target(motor_port):
@@ -120,5 +111,9 @@ def take_barracks():
     driver.stop()
 
 
-if __name__ == '__main__':
-    raise_flag(3, 3)
+def change_camera_direction(servo_485_port, direction):
+    servo = Servo(servo_485_port)
+    if direction == 'right':
+        servo.servocontrol(-125, 100)
+    elif direction == 'left':
+        servo.servocontrol(40, 100)

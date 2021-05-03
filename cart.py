@@ -37,7 +37,7 @@ class Cart:
         delta = angle - 0
 
         leftwheel = speed
-        rightwheel = speed + 1
+        rightwheel = speed
 
         scale = 1
         if delta < 0:

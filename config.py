@@ -1,7 +1,7 @@
 model_prefix="/home/root/workspace/autocar/"
 
-front_cam = 1
-side_cam = 0
+front_cam = 0
+side_cam = 1
 
 full_speed = 35
 turn_speed = full_speed * 0.8

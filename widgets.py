@@ -92,20 +92,20 @@ class Button:
     def clicked(self):
         serial.write(self.cmd_data)
         response = serial.read()
-        buttonclick="no"
-        if len(response) == 9 and  response[5] == 0xE1 and response[6] == self.port:
-            button_byte=response[3:5]+bytes.fromhex('00 00')
-            button_value=struct.unpack('<i', struct.pack('4B', *button_byte))[0]
+        buttonclick = "no"
+        if len(response) == 9 and response[5] == 0xE1 and response[6] == self.port:
+            button_byte = response[3:5] + bytes.fromhex('00 00')
+            button_value = struct.unpack('<i', struct.pack('4B', *button_byte))[0]
             # print("%x"%button_value)
             if 0x1f1 <= button_value <= 0x20f:
-                buttonclick="UP"
+                buttonclick = "UP"
             elif 0x330 <= button_value <= 0x33f:
                 buttonclick = "LEFT"
             elif 0x2ff <= button_value <= 0x30f:
                 buttonclick = "DOWN"
             elif 0x2a0 <= button_value <= 0x2af:
                 buttonclick = "RIGHT"
-        return self.buttonstr==buttonclick
+        return self.buttonstr == buttonclick
 
 
 class MotorRotate:
