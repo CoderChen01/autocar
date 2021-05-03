@@ -38,7 +38,7 @@ if __name__ == '__main__':
     # 基准速度
     driver.set_speed(35)
     # 转弯系数
-    driver.cart.Kx = 0.9
+    driver.cart.Kx = 0.8
     # 延时
     time.sleep(0.5)
     while True:
@@ -48,8 +48,13 @@ if __name__ == '__main__':
         print("Wait for start!")
     while True:
         front_image = front_camera.read()
+        results, low_index = sign_detector.detect(front_image)
+        if results:
+            pass
         driver.go(front_image)
         if check_stop():
-            driver.stop()
             print("End of program!")
             break
+    driver.stop()
+    side_camera.stop()
+    front_camera.stop()

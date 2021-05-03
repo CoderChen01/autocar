@@ -32,9 +32,3 @@ class JoyStick:
         if number == 1:
             fvalue = value / 32767
             return fvalue
-
-
-if __name__ == '__main__':
-    js = open('/dev/input/js0', 'rb')
-    while True:
-        print(js.read())
