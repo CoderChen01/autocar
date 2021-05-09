@@ -60,6 +60,7 @@ def infer_ssd(predictor, image):
 
 
 def is_sign_valid(o):
+    # TODO Calculating area
     valid = False
     if o[1] > config.sign['threshold']:
         valid = True
@@ -81,6 +82,7 @@ class DetectionResult:
         self.name = ''
         self.relative_box = [0, 0, 0, 0]
         self.relative_center_y = -1
+        self.relative_center_x = -1
 
     def __str__(self):
         return "name:{} scroe:{} relative_box: {}".format(self.name, self.score, self.relative_box)
@@ -117,6 +119,7 @@ def res_to_detection(item, label_list, frame):
     detection_object.score = item[1]
     detection_object.name = label_list[item[0]]
     detection_object.relative_box = item[2:6]
+    detection_object.relative_center_x = (detection_object.relative_box[0]+ detection_object.relative_box[2]) / 2
     detection_object.relative_center_y = (detection_object.relative_box[1] + detection_object.relative_box[3]) / 2
     return detection_object
 
@@ -161,8 +164,8 @@ class SignDetector:
 class TaskDetector:
     def __init__(self):
         self.predictor = predictor_wrapper.PaddleLitePredictor()
-        self.predictor.load(config.task["model"])
-        self.label_list = config.task["label_list"]
+        self.predictor.load(config.task['model'])
+        self.label_list = config.task['label_list']
 
     # only one gt for one label
     def detect(self, frame):
@@ -175,87 +178,19 @@ class TaskDetector:
         predict_score = nmsed_out[:, 1].tolist()
         count = 0
         for label, score in zip(predict_label, predict_score):
-            if score > max_scores[int(label)] and score > config.task["threshold"]:
+            if score > max_scores[int(label)] and score > config.task['threshold']:
                 max_indexes[int(label)] = count
                 max_scores[int(label)] = score
             count += 1
 
         selected_indexes = [i for i in max_indexes if i != -1]
         task_index = [i for i in selected_indexes if
-                      config.mission_label_list[predict_label[i]] != "redball" or config.mission_label_list[
-                          predict_label[i]] != "blueball"]
+                      config.mission_label_list[predict_label[i]] != 'redball' or config.mission_label_list[
+                          predict_label[i]] != 'blueball']
         res = nmsed_out[task_index, :]
         results = []
         for item in res:
             if is_task_valid(item):
+                # TODO
                 results.append(res_to_detection(item, self.label_list, frame))
         return results
-
-
-def test_task_detector():
-    td = TaskDetector()
-    print("********************************")
-    # for i in range(1,30):
-    for name in [7, 12, 18, 20, 22, 165, 168]:
-        frame = cv2.imread("test/task/{}.png".format(name))
-        tasks = td.detect(frame)
-        print("test/task/{}.png: ".format(name),tasks)
-        print("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@")
-
-
-def test_sign_detector():
-    sd = SignDetector()
-    print("********************************")
-    for i in range(0,68):
-        frame = cv2.imread("image/{}.png".format(i))
-        signs, index = sd.detect(frame)
-        print("image/{}.png: ".format(i),signs)
-        print(index)
-    print("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@")
-
-
-def test_front_detector():
-    sd = SignDetector()
-    print("********************************")
-    for i in range(0,68):
-        frame = cv2.imread("front/{}.jpg".format(i))
-        signs, index = sd.detect(frame)
-        print("front/{}.jpg: ".format(i),signs)
-        print(index)
-        if signs!=[]:
-            print("signs=",signs[0].name,"signs_scroe=",signs[0].score)
-    print("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@")
-
-
-if __name__ == "__main__":
-    test_sign_detector()
-    # test_sign_detector()
-    # test_front_detector()
-    # task_detector = TaskDetector()
-    # sign_detector=SignDetector()
-    # front_camera = Camera(config.front_cam)
-    # side_camera = Camera(config.side_cam)
-    # num=0
-    # imgnum=0
-    # from driver import Driver
-    # driver=Driver()
-    # driver.set_speed(driver.full_speed * 0.6)
-    # front_camera.start()
-    # side_camera.start()
-    # while True:
-    #     num+=1
-    #     # side_camera.update()
-    #     front_image = front_camera.read()
-    #     driver.go(front_image)
-    #     side_image = side_camera.read()
-        #视觉数据采集
-        # imgnum+=1
-        # print("image%d"%imgnum)
-        # cv2.imwrite('./image/{}.png'.format(imgnum), side_image)
-        # time.sleep(0.01)
-        # res = task_detector.detect(side_image)
-        # print("*****************sidecam=", res,"num=",num)
-        # res = task_detector.detect(side_image)
-        # print("*****************sidecam=", res,"num=",num)
-        # res,index = sign_detector.detect(front_image)
-        # print("*****************sidecam=", res,"num=",num)

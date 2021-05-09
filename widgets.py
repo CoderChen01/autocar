@@ -202,21 +202,3 @@ class InfraredValue:
         infrared_sensor = struct.unpack('<i', struct.pack('4B', *return_data_infrared))[0]
         # print(ultrasonic_sensor)
         return infrared_sensor
-
-
-if __name__ == '__main__':
-    ser = ServoPWM(3)
-    ser.servocontrol(200, 10)
-    # m = MotorRotate(1)
-    # m2 = MotorRotate(2)
-    # m3 = MotorRotate(3)
-    # m4 = MotorRotate(4)
-    # m.motor_rotate(30)
-    # m2.motor_rotate(-40)
-    # m3.motor_rotate(30)
-    # m4.motor_rotate(-30)
-    # time.sleep(30)
-    # b = Button(1, 'DOWN')
-    # while not b.clicked():
-    #     pass
-    # print('up')

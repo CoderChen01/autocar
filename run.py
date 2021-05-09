@@ -31,7 +31,7 @@ class Runner:
             if not self.state.value:  # Wait for cruising
                 continue
             # TODO
-
+            task_id_map[self.task_id.value]()
         side_camera.stop()
 
     def cruise_processor(self):
@@ -81,7 +81,7 @@ class Runner:
         """
         set tasks based on the detection
         """
-        nearest = sign_result[0][sign_result[1]]
+        nearest = sign_result[0][sign_result[1]]  # results[blow_center_index]
         task_id = nearest.index
         if task_id:
             self.task_id.value = task_id
@@ -96,9 +96,13 @@ class Runner:
 if __name__ == '__main__':
     # TODO 我打算先使用串行方式编码调试效果，
     #  模型返回结果为detectors.DetectionResult类
+    start_button = Button(1, 'UP')
+    stop_button = Button(1, 'DOWN')
+    front_camera = Camera(0)
+    driver = Driver()
     front_camera.start()
     # 基准速度
-    driver.set_speed(35)
+    driver.set_speed(50)
     # 转弯系数
     driver.cart.Kx = 0.8
     # 延时
@@ -110,13 +114,9 @@ if __name__ == '__main__':
         print("Wait for start!")
     while True:
         front_image = front_camera.read()
-        results, low_index = sign_detector.detect(front_image)
-        if results:
-            pass
         driver.go(front_image)
-        if check_stop():
+        if stop_button.clicked():
             print("End of program!")
             break
     driver.stop()
-    side_camera.stop()
     front_camera.stop()
