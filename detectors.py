@@ -9,8 +9,8 @@ from camera import Camera
 
 
 ssd_args = {
-    "shape": [1, 3, 480, 480],
-    "ms": [127.5, 0.007843]
+    'shape': [1, 3, 480, 480],
+    'ms': [127.5, 0.007843]
 }
 
 
