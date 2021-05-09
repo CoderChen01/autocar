@@ -117,3 +117,9 @@ def change_camera_direction(servo_485_port, direction):
         servo.servocontrol(-125, 100)
     elif direction == 'left':
         servo.servocontrol(40, 100)
+
+task_id_map = [-1, take_barracks,
+               capture_target,
+               raise_flag,
+               transport_forage,
+               shot_target]

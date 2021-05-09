@@ -45,7 +45,7 @@ def ssd_preprocess(args, src):
 
     z = np.zeros((1, shape[2], shape[3], 3)).astype(np.float32)
     z[0, 0:img.shape[0], 0:img.shape[1] + 0, 0:img.shape[2]] = img
-    z = z.reshape(1, 3, shape[3], shape[2])
+    z = z.reshape((1, 3, shape[3], shape[2]))
     return z
 
 
@@ -61,7 +61,7 @@ def infer_ssd(predictor, image):
 
 def is_sign_valid(o):
     valid = False
-    if o[1] > config.sign["threshold"]:
+    if o[1] > config.sign['threshold']:
         valid = True
     return valid
 
@@ -78,11 +78,11 @@ class DetectionResult:
     def __init__(self):
         self.index = 0
         self.score = 0
-        self.name = ""
+        self.name = ''
         self.relative_box = [0, 0, 0, 0]
         self.relative_center_y = -1
 
-    def __repr__(self):
+    def __str__(self):
         return "name:{} scroe:{} relative_box: {}".format(self.name, self.score, self.relative_box)
 
 
@@ -111,7 +111,6 @@ def in_centered_in_image(res):
     return False
 
 
-# should be a class method?
 def res_to_detection(item, label_list, frame):
     detection_object = DetectionResult()
     detection_object.index = item[0]
@@ -119,20 +118,18 @@ def res_to_detection(item, label_list, frame):
     detection_object.name = label_list[item[0]]
     detection_object.relative_box = item[2:6]
     detection_object.relative_center_y = (detection_object.relative_box[1] + detection_object.relative_box[3]) / 2
-    # print("res_to_detection:{}  {}".format(detection_object.name, detection_object.score))
     return detection_object
 
 
 class SignDetector:
     def __init__(self):
         self.predictor = predictor_wrapper.PaddleLitePredictor()
-        self.predictor.load(config.sign["model"])
-        self.label_list = config.sign["label_list"]
-        self.class_num = config.sign["class_num"]
+        self.predictor.load(config.sign['model'])
+        self.label_list = config.sign['label_list']
+        self.class_num = config.sign['class_num']
 
-    def detect(self, frame, status='cruise'):
+    def detect(self, frame):
         res = infer_ssd(self.predictor, frame)
-        # print("res=",res)
         res = np.array(res)
         labels = res[:, 0]
         scores = res[:, 1]
@@ -148,20 +145,16 @@ class SignDetector:
 
         maxscore_index_per_class = [i for i in maxscore_index_per_class if i != -1]
         res = res[maxscore_index_per_class, :]
-        # print(res)
         blow_center = 0
         blow_center_index = -1
-        index = 0
         results = []
-        for item in res:
+        for index, item in enumerate(res):
             if is_sign_valid(item):
                 detect_res = res_to_detection(item, self.label_list, frame)
-                # print(detect_res)
                 results.append(detect_res)
                 if detect_res.relative_center_y > blow_center:
                     blow_center_index = index
                     blow_center = detect_res.relative_center_y
-                index += 1
         return results, blow_center_index
 
 

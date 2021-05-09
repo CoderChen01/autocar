@@ -39,13 +39,12 @@ sign_list = {
 	4: "soldier",
 	5: "target"
 }
-
+HAS_SIGN_THRESHOLD = 80
 # sign models
 sign = {
 	"model": model_prefix + "models/sign",
 	"threshold": 0.3,
 	"label_list": sign_list,
-	# label = 0 is background
 	"class_num": 10
 }
 
