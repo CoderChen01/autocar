@@ -22,8 +22,6 @@ class Runner:
         self.is_run = mp.Value('i', 0)
         self.state = mp.Value('i', 0)
         self.task_id = mp.Value('i', 0)
-        self.task_param = mp.Array('i', [0, 0])
-        self.side_camera_direction = mp.Value('i', 0)
 
     def task_processor(self):
         driver = Driver()
