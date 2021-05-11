@@ -1,4 +1,6 @@
 import time
+import datetime
+import os
 
 import cv2
 
@@ -7,21 +9,27 @@ from widgets import Button
 from tasks import light_work
 from camera import Camera
 
-cam_id = config.front_cam
+CAM_ID = config.front_cam
+IS_TEST = True
 
 start_button = Button(1, "UP")
 stop_button = Button(1, "DOWN")
-cam = Camera(cam_id, width=640, height=480)
+cam = Camera(CAM_ID, width=640, height=480)
 counter = 0
 
-if cam == config.front_cam:
-    result_dir = './image/front_image'
+if CAM_ID == config.front_cam:
+    result_dir = './image/{}_front_image_{}'.format(
+        'test' if IS_TEST else 'data',
+        datetime.now().strftime('%Y%m%d%H%M%S'))
 else:
-    result_dir = './image/side_image'
+    result_dir = './image/side_image_{}'.format(
+        'test' if IS_TEST else 'data',
+        datetime.now().strftime('%Y%m%d%H%M%S'))
 
 while not start_button.clicked():
     pass
 
+cam.start()
 time.sleep(0.2)
 light_work(2, 'red')
 time.sleep(0.2)
@@ -31,11 +39,21 @@ light_work(2, 'off')
 print('Start!')
 print('Press the "Down button" to take photos!')
 
-cam.start()
-while stop_button.clicked():
-    path = "{}/{}.png".format(result_dir, btn)
-    counter += 1
-    image = cam.read()
-    name = "{}.png".format(btn)
-    cv2.imwrite(path, image)
+if not IS_TEST:
+    while not stop_button.clicked():
+        path = "{}/{}.png".format(result_dir, counter)
+        counter += 1
+        image = cam.read()
+        name = "{}.png".format(counter)
+        print(path)
+        cv2.imwrite(path, image)
+else:
+    while not stop_button.clicked():
+        path = "{}/{}.png".format(result_dir, counter)
+        counter += 1
+        image = cam.read()
+        name = "{}.png".format(counter)
+        cv2.imwrite(path, image)
+        while not start_button.clicked():  # Press the start button to take a photo
+            pass
 cam.stop()
