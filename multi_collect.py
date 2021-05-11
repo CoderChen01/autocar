@@ -39,7 +39,7 @@ class Collector:
                     self.is_start.value = 0
             elif self.js.type(type_) == 'axis':
                 print('axis:{} state: {}'.format(number, value))
-                if number == 2:
+                if number == 2 or number == 6:
                     self.x_axis.value = value * 1.0 / 32767
 
     def run(self):
