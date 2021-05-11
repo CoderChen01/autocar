@@ -25,7 +25,7 @@ else:
     result_dir = './image/side_image_{}'.format(
         'test' if IS_TEST else 'data',
         datetime.now().strftime('%Y%m%d%H%M%S'))
-if os.path.exists(result_dir):
+if not os.path.exists(result_dir):
     os.makedirs(result_dir)
 
 while not start_button.clicked():
@@ -54,8 +54,8 @@ else:
         start_time = time.time()
         while not start_button.clicked():  # Press the start button to take a photo
             if time.time() - start_time > 10:
-                exit(0)
                 cam.stop()
+                exit(0)
         path = "{}/{}.png".format(result_dir, counter)
         counter += 1
         image = cam.read()
