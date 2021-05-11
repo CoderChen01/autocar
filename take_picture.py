@@ -31,10 +31,11 @@ light_work(2, 'off')
 print('Start!')
 print('Press the "Down button" to take photos!')
 
+cam.start()
 while stop_button.clicked():
     path = "{}/{}.png".format(result_dir, btn)
     counter += 1
-    image = camera.read()
+    image = cam.read()
     name = "{}.png".format(btn)
     cv2.imwrite(path, image)
-camera.release()
+cam.stop()
