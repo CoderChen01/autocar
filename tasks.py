@@ -30,14 +30,14 @@ def light_work(light_port, color):
 
 def raise_flag(servo1):
     servo = ServoPWM(servo_port)
-    servo.servocontrol(0, 10)
+    servo.servocontrol(200, 10)
     light_work(2, 'green')
     light_work(2, 'off')
     light_work(2, 'green')
     light_work(2, 'off')
     light_work(2, 'green')
     light_work(2, 'off')
-    servo.servocontrol(270, 10)
+    servo.servocontrol(200, 10)
 
 
 def shot_target(motor_port):
@@ -113,9 +113,9 @@ def take_barracks():
 
 def change_camera_direction(servo_485_port, direction):
     servo = Servo(servo_485_port)
-    if direction == 'right':
+    if direction:  # right
         servo.servocontrol(-125, 100)
-    elif direction == 'left':
+    else:
         servo.servocontrol(40, 100)
 
 task_id_map = [-1, take_barracks,

@@ -22,6 +22,7 @@ class Runner:
         self.is_run = mp.Value('i', 0)
         self.state = mp.Value('i', 0)
         self.task_id = mp.Value('i', 0)
+        self.task_param = mp.Array('i', range(2))
         self.side_camera_direction = mp.Value('i', 0)
 
     def task_processor(self):
@@ -44,10 +45,10 @@ class Runner:
         while self.is_run.value:
             if self.state.value:  # Wait for a task
                 continue
-            # TODO
             frame = front_camera.read()
             sign_result = sign_detector.detect(frame)
             if self.has_sign(sign_result):  # change state to task
+                self.dispatch_task(sign_result)
                 self.change_state(True)
                 continue
             angle = cruiser.cruise(frame)  # get angle from frame
@@ -73,6 +74,8 @@ class Runner:
         """
         determine if the task is approaching
         """
+        if sign_result[1] == -1:
+            return False
         nearest = sign_result[0][sign_result[1]]
         if nearest.relative_center_y > config.HAS_SIGN_THRESHOLD:
             return True

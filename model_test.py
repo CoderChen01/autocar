@@ -186,5 +186,4 @@ if __name__ == "__main__":
     for entry in os.scandir(directory):
         img = cv2.imread(entry.path)
         results, blow_index = sign_detector.detect(img)
-        print(results, blow_index)
-        print(calculate_area(results[blow_index]))
+        print(results[blow_index].relative_center_y, results[blow_index].index)
