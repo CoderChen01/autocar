@@ -50,12 +50,14 @@ if not IS_TEST:
         print(path)
         cv2.imwrite(path, image)
 else:
-    while not stop_button.clicked():
+    while True:
+        start_time = time.time()
+        while not start_button.clicked():  # Press the start button to take a photo
+            if time.time() - start_time > 10:
+                exit(0)
         path = "{}/{}.png".format(result_dir, counter)
         counter += 1
         image = cam.read()
         name = "{}.png".format(counter)
         cv2.imwrite(path, image)
-        while not start_button.clicked():  # Press the start button to take a photo
-            pass
 cam.stop()
