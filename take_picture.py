@@ -1,38 +1,40 @@
-import cv2
 import time
+
+import cv2
+
+import config
 from widgets import Button
 from obstacle import Lightwork
-#摄像头编号
-# cam=0
-cam=0
-#程序开启运行开关
+from camera import Camera
+
+cam_id = config.front_cam
+
 start_button = Button(1, "UP")
-#程序关闭开关
 stop_button = Button(1, "DOWN")
-camera = cv2.VideoCapture(cam)
-camera .set(cv2.CAP_PROP_FRAME_WIDTH, 640)
-camera .set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
-btn=0
-if __name__ == "__main__":
-    if cam==0:
-        result_dir="./front_image"
-    #cam=1
-    else:
-        result_dir = "./side_image"
-    time.sleep(0.2)
-    Lightwork(2, "red")
-    time.sleep(0.2)
-    Lightwork(2, "green")
-    time.sleep(0.2)
-    Lightwork(2, "off")
-    print("Start!")
-    print('''Press the "Down button" to take photos!''')
-    while stop_button.clicked():
-            print("btn",btn)
-            path = "{}/{}.png".format(result_dir, btn);
-            btn+=1
-            time.sleep(0.2)
-            return_value, image = camera.read()
-            name = "{}.png".format(btn)
-            cv2.imwrite(path, image)
-    camera.release()
+cam = Camera(cam_id, width=640, height=480)
+counter = 0
+
+if cam == config.front_cam:
+    result_dir = './image/front_image'
+else:
+    result_dir = './image/side_image'
+
+while not start_button.clicked():
+    pass
+
+time.sleep(0.2)
+Lightwork(2, 'red')
+time.sleep(0.2)
+Lightwork(2, 'green')
+time.sleep(0.2)
+Lightwork(2, 'off')
+print('Start!')
+print('Press the "Down button" to take photos!')
+
+while stop_button.clicked():
+    path = "{}/{}.png".format(result_dir, btn)
+    counter += 1
+    image = camera.read()
+    name = "{}.png".format(btn)
+    cv2.imwrite(path, image)
+camera.release()
