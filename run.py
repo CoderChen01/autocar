@@ -17,7 +17,8 @@ from cart import Cart
 
 
 class Runner:
-    def __init__(self):
+    def __init__(self, speed=35):
+        self.speed = speed
         self.is_run = mp.Value('i', 0)
         self.state = mp.Value('i', 0)
         self.task_id = mp.Value('i', 0)

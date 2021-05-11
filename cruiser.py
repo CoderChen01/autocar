@@ -4,6 +4,8 @@ import numpy as np
 import predictor_wrapper
 import config
 
+from cart import Cart
+
 
 cnn_args = {
     "shape": [1, 3, 128, 128],
@@ -55,11 +57,3 @@ class Cruiser:
     def cruise(self, frame):
         res = infer_cnn(self.predictor, self.buf, frame)
         return res
-
-if __name__ == "__main__":
-    from camera import Camera
-    c = Cruiser()
-    cam = Camera(config.front_cam)
-    cam.start()
-    while True:
-        print(c.cruise(cam.read()))
