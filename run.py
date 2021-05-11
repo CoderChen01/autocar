@@ -22,18 +22,33 @@ class Runner:
         self.is_run = mp.Value('i', 0)
         self.state = mp.Value('i', 0)
         self.task_id = mp.Value('i', 0)
-        self.task_param = mp.Array('i', range(2))
+        self.task_param = mp.Array('i', [0, 0])
         self.side_camera_direction = mp.Value('i', 0)
 
     def task_processor(self):
+        driver = Driver()
         task_detector = TaskDetector()
         side_camera = Camera(config.side_cam)
         side_camera.start()
         while self.is_run.value:
             if not self.state.value:  # Wait for cruising
                 continue
-            # TODO
-            task_id_map[self.task_id.value]()
+            results = task_detector.detect(side_camera.read())
+            if self.task_id.value == 3:  # raise flag
+                if results[0].index == 1:
+                    raise_flag(3)
+                elif results[0].index == 2:
+                    raise_flag(4)
+                elif results[0].index == 3:
+                    raise_flag(5)
+            elif self.task_id.value == 5:
+                shot_target(2)
+            elif self.task_id.value == 1:
+                take_barracks()
+            elif self.task_id.value == 2:
+                capture_target(2, 2)
+            elif self.task_id.value == 4:
+                transport_forage(1)
         side_camera.stop()
 
     def cruise_processor(self):
@@ -42,14 +57,22 @@ class Runner:
         sign_detector = SignDetector()
         front_camera = Camera(config.front_cam)
         front_camera.start()
+        has_sign = False
+        first_result = None
         while self.is_run.value:
             if self.state.value:  # Wait for a task
                 continue
             frame = front_camera.read()
             sign_result = sign_detector.detect(frame)
-            if self.has_sign(sign_result):  # change state to task
-                self.dispatch_task(sign_result)
+            if not has_sign and self.has_sign(sign_result):
+                has_sign = True
+                first_result = sign_result
+            if has_sign and not has_sign(sign_result):
+                driver.stop()
+                self.dispatch_task(first_result)
                 self.change_state(True)
+                has_sign = False
+                first_result = None
                 continue
             angle = cruiser.cruise(frame)  # get angle from frame
             driver.go(angle)
@@ -76,10 +99,7 @@ class Runner:
         """
         if sign_result[1] == -1:
             return False
-        nearest = sign_result[0][sign_result[1]]
-        if nearest.relative_center_y > config.HAS_SIGN_THRESHOLD:
-            return True
-        return False
+        return True
 
     def dispatch_task(self, sign_result):
         """

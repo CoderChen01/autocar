@@ -37,7 +37,7 @@ def raise_flag(servo1):
     light_work(2, 'off')
     light_work(2, 'green')
     light_work(2, 'off')
-    servo.servocontrol(200, 10)
+    servo.servocontrol(0, 10)
 
 
 def shot_target(motor_port):
@@ -117,9 +117,3 @@ def change_camera_direction(servo_485_port, direction):
         servo.servocontrol(-125, 100)
     else:
         servo.servocontrol(40, 100)
-
-task_id_map = [-1, take_barracks,
-               capture_target,
-               raise_flag,
-               transport_forage,
-               shot_target]
