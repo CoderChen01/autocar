@@ -4,7 +4,7 @@ import cv2
 
 import config
 from widgets import Button
-from widgets import Lightwork
+from widgets import Light
 from camera import Camera
 
 cam_id = config.front_cam
