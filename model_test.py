@@ -1,7 +1,7 @@
 import os
 import cv2
 from cruiser import Cruiser
-from detectors import SignDetector,TaskDetector
+from detectors import SignDetector,TaskDetector, calculate_area
 from camera import Camera
 import config
 import time
@@ -21,7 +21,7 @@ def read_dir(dir_path):
     files = []
     for filename in os.listdir(dir_path):
         file_name, file_extension = os.path.splitext(filename)
-        if (file_extension.lower() in image_extensions):
+        if file_extension.lower() in image_extensions:
             files.append(filename)
     return files
 
@@ -63,6 +63,7 @@ def draw_res(frame, results):
         frame = cv2.putText(frame, item.name, org, font,
                            fontScale, color, thickness, cv2.LINE_AA)
         return frame
+
 #对前向摄像头拍摄的视频文件进行模型推理。
 def test_front_video():
     #视频文件
@@ -90,6 +91,7 @@ def test_front_video():
     cap.release()
     out.release()
     cv2.destroyAllWindows()
+
 #对前向摄像头拍摄图片进行动态识别，包括车道值，不同的车道值代表了不同的转弯强度
 def test_cruise():
     front_camera = Camera(config.front_cam)
@@ -103,6 +105,7 @@ def test_cruise():
         frame = draw_cruise_result(front_image , cruise_result)
         cv2.imwrite('test/cruise_res/' + str(index) + '.jpg', frame)
         time.sleep(1)
+
 #前向车道地面标志动态识别
 def test_sign():
     front_camera = Camera(config.front_cam)
@@ -178,11 +181,10 @@ def test_sign_detector():
 
 
 if __name__ == "__main__":
-    test_sign()
-    # os.system("startx")
-    # time.sleep(1.5)
-    # test_front()
-    # test_sign_detector()
-    # test_cruise()
-    # test_sign()
-    # test_task()
+    directory = 'image/test_front_image_20561019103718'
+    sign_detector = SignDetector()
+    for entry in os.scandir(directory):
+        img = cv2.imread(entry.path)
+        results, blow_index = sign_detector.detect(img)
+        print(results, blow_index)
+        print(calculate_area(results[blow_index]))

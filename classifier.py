@@ -17,13 +17,13 @@ def process_image(frame, size, ms):
 
 # CNN网络预处理
 def cnn_preprocess(args, img, buf):
-    shape = args["shape"]
-    img = process_image(img, shape[2], args["ms"]);
+    shape = args['shape']
+    img = process_image(img, shape[2], args['ms'])
     hwc_shape = list(shape)
     hwc_shape[3], hwc_shape[1] = hwc_shape[1], hwc_shape[3]
     data = buf
     img = img.reshape(hwc_shape)
-    # print("hwc_shape:{}".format(hwc_shape))
+    # print('hwc_shape:{}'.format(hwc_shape))
     data[0:, 0:hwc_shape[1], 0:hwc_shape[2], 0:hwc_shape[3]] = img
     data = data.reshape(shape)
     return data
@@ -43,9 +43,9 @@ class Classifier:
     def __init__(self, args):
         self.args = args
         self.predictor = predictor_wrapper.PaddleLitePredictor()
-        self.predictor.load(args["model"])
-        self.label_list = args["label_list"]
-        hwc_shape = list(args["shape"])
+        self.predictor.load(args['model'])
+        self.label_list = args['label_list']
+        hwc_shape = list(args['shape'])
         hwc_shape[3], hwc_shape[1] = hwc_shape[1], hwc_shape[3]
         self.buf = np.zeros(hwc_shape).astype('float32')
 
@@ -53,5 +53,5 @@ class Classifier:
         res = infer_cnn(self.predictor, self.args, self.buf, frame)
         res = np.array(res)
         res = np.argmax(res)
-        print("fined labeled {}".format(res))
+        print('fined labeled {}'.format(res))
         return res

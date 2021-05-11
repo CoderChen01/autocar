@@ -43,7 +43,7 @@ HAS_SIGN_THRESHOLD = 80
 # sign models
 sign = {
 	"model": model_prefix + "models/sign",
-	"threshold": 0.3,
+	"threshold": 0.6,
 	"label_list": sign_list,
 	"class_num": 10
 }

@@ -14,7 +14,7 @@ IS_TEST = True
 
 start_button = Button(1, "UP")
 stop_button = Button(1, "DOWN")
-cam = Camera(CAM_ID, width=640, height=480)
+cam = Camera(CAM_ID)
 counter = 0
 
 if CAM_ID == config.front_cam:

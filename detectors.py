@@ -14,6 +14,14 @@ ssd_args = {
 }
 
 
+def calculate_area(relative_box, shape):
+    left = relative_box[0] * shape[1]
+    top = relative_box[1] * shape[0]
+    right = relative_box[2] * shape[1]
+    bottom = relative_box[3] * shape[0]
+    return (right - left) * (bottom - top)
+
+
 def name_to_index(name, label_list):
     for k, v in label_list.items():
         if v == name:
@@ -59,10 +67,11 @@ def infer_ssd(predictor, image):
     return np.array(out)
 
 
-def is_sign_valid(o):
-    # TODO Calculating area
+def is_sign_valid(res, shape):
+    area = calculate_area(res[2:6], shape)
     valid = False
-    if o[1] > config.sign['threshold']:
+    if res[1] > config.sign['threshold'] \
+       and (3000 < area < 15000):
         valid = True
     return valid
 
@@ -80,11 +89,12 @@ class DetectionResult:
         self.index = 0
         self.score = 0
         self.name = ''
+        self.shape = (160, 120)
         self.relative_box = [0, 0, 0, 0]
         self.relative_center_y = -1
         self.relative_center_x = -1
 
-    def __str__(self):
+    def __repr__(self):
         return "name:{} scroe:{} relative_box: {}".format(self.name, self.score, self.relative_box)
 
 
@@ -118,6 +128,7 @@ def res_to_detection(item, label_list, frame):
     detection_object.index = item[0]
     detection_object.score = item[1]
     detection_object.name = label_list[item[0]]
+    detection_object.shape = frame.shape
     detection_object.relative_box = item[2:6]
     detection_object.relative_center_x = (detection_object.relative_box[0]+ detection_object.relative_box[2]) / 2
     detection_object.relative_center_y = (detection_object.relative_box[1] + detection_object.relative_box[3]) / 2
@@ -151,13 +162,15 @@ class SignDetector:
         blow_center = 0
         blow_center_index = -1
         results = []
-        for index, item in enumerate(res):
-            if is_sign_valid(item):
+        results_index = 0
+        for item in res:
+            if is_sign_valid(item, frame.shape):
                 detect_res = res_to_detection(item, self.label_list, frame)
                 results.append(detect_res)
                 if detect_res.relative_center_y > blow_center:
-                    blow_center_index = index
+                    blow_center_index = results_index
                     blow_center = detect_res.relative_center_y
+                results_index += 1
         return results, blow_center_index
 
 
