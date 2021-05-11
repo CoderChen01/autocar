@@ -62,4 +62,5 @@ else:
         name = "{}.png".format(counter)
         cv2.imwrite(path, image)
         print(path)
+        time.sleep(0.5)
 cam.stop()
