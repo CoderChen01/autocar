@@ -25,6 +25,8 @@ else:
     result_dir = './image/side_image_{}'.format(
         'test' if IS_TEST else 'data',
         datetime.now().strftime('%Y%m%d%H%M%S'))
+if os.path.exists(result_dir):
+    os.makedirs(result_dir)
 
 while not start_button.clicked():
     pass
