@@ -55,6 +55,7 @@ else:
         while not start_button.clicked():  # Press the start button to take a photo
             if time.time() - start_time > 10:
                 exit(0)
+                cam.stop()
         path = "{}/{}.png".format(result_dir, counter)
         counter += 1
         image = cam.read()
