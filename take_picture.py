@@ -4,7 +4,7 @@ import cv2
 
 import config
 from widgets import Button
-from widgets import Light
+from tasks import light_work
 from camera import Camera
 
 cam_id = config.front_cam
@@ -23,11 +23,11 @@ while not start_button.clicked():
     pass
 
 time.sleep(0.2)
-Lightwork(2, 'red')
+light_work(2, 'red')
 time.sleep(0.2)
-Lightwork(2, 'green')
+light_work(2, 'green')
 time.sleep(0.2)
-Lightwork(2, 'off')
+light_work(2, 'off')
 print('Start!')
 print('Press the "Down button" to take photos!')
 
