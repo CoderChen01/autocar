@@ -61,4 +61,5 @@ else:
         image = cam.read()
         name = "{}.png".format(counter)
         cv2.imwrite(path, image)
+        print(path)
 cam.stop()
