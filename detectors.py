@@ -75,7 +75,7 @@ def is_sign_valid(res, shape):
     valid = False
     if res[1] > config.sign['threshold'] \
        and (3000 < area < 15000) \
-       and (0.4 < relative_center_x < 0.65):
+       and (0.3 < relative_center_x < 0.65):
         valid = True
     return valid
 

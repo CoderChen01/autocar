@@ -28,4 +28,6 @@ class Serial:
     def read(self):
         return self.res
 
-serial_connection = Serial()
+    def close(self):
+        self.serial.close()
+

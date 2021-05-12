@@ -6,21 +6,34 @@ import cv2
 import serial
 
 import config
-from serial_port import serial_connection
+from serial_port import Serial
 
 
-serial0 = serial_connection
-serial1 = serial.Serial('/dev/ttyUSB0',
-                        115200,
-                        timeout=1,
-                        parity=serial.PARITY_NONE,
-                        stopbits=1)
+class Serial0:
+    def __init__(self):
+        self.serial = serial.Serial('/dev/ttyUSB0',
+                                115200,
+                                timeout=1,
+                                parity=serial.PARITY_NONE,
+                                stopbits=1)
+    def __del__(self):
+        self.serial.close()
 
 
-class Light:
+class Serial1:
+    def __init__(self):
+        self.serial = Serial()
+
+    def __del__(self):
+        self.serial.close()
+
+
+class Light(Serial0):
     def __init__(self, port):
+        super(Light, self).__init__()
         self.port = port
         self.port_str = '{:02x}'.format(port)
+
 
     def lightcontrol(self, which, Red, Green, Blue):
         which_str = '{:02x}'.format(which)
@@ -30,25 +43,26 @@ class Light:
         cmd_servo_data = bytes.fromhex(
             '77 68 08 00 02 3B {} {} {} {} {} 0A'
                 .format(self.port_str, which_str, Red_str, Green_str, Blue_str))
-        serial1.write(cmd_servo_data)
+        self.serial.write(cmd_servo_data)
 
     @staticmethod
     def lightoff():
         cmd_servo_data1 = bytes.fromhex('77 68 08 00 02 3B 02 00 00 00 00 0A')
         cmd_servo_data2 = bytes.fromhex('77 68 08 00 02 3B 03 00 00 00 00 0A')
         cmd_servo_data = cmd_servo_data1 + cmd_servo_data2
-        serial1.write(cmd_servo_data)
+        self.serial.write(cmd_servo_data)
 
 
-class UltrasonicSensor:
+class UltrasonicSensor(Serial1):
     def __init__(self, port):
+        super(UltrasonicSensor, self).__init__()
         self.port = port
         port_str = '{:02x}'.format(port)
         self.cmd_data = bytes.fromhex('77 68 04 00 01 D1 {} 0A'.format(port_str))
 
     def read(self):
-        serial0.write(self.cmd_data)
-        return_data = serial0.read()
+        self.serial.write(self.cmd_data)
+        return_data = self.serial.read()
         if len(return_data) < 11 \
                 or return_data[7] != 0xD1 \
                 or return_data[8] != self.port:
@@ -58,25 +72,33 @@ class UltrasonicSensor:
         return int(ultrasonic_sensor)
 
 
-class Buzzer:
+class Buzzer(Serial0):
     def __init__(self):
+        super(Buzzer, self).__init__()
         self.cmd_data = bytes.fromhex('77 68 06 00 02 3D 03 02 0A')
+        self.serial = serial.Serial('/dev/ttyUSB0',
+                                115200,
+                                timeout=1,
+                                parity=serial.PARITY_NONE,
+                                stopbits=1)
 
     def rings(self):
-        serial1.write(self.cmd_data)
+        self.serial.write(self.cmd_data)
 
 
-class Button:
+class Button(Serial1):
     def __init__(self, port, buttonstr):
+        super(Button, self).__init__()
         self.state = False
         self.port = port
         self.buttonstr = buttonstr
         port_str = '{:02x}'.format(port)
         self.cmd_data = bytes.fromhex('77 68 05 00 01 E1 {} 01 0A'.format(port_str))
+        self.serial = Serial()
 
     def clicked(self):
-        serial0.write(self.cmd_data)
-        response = serial0.read()
+        self.serial.write(self.cmd_data)
+        response = self.serial.read()
         buttonclick = 'no'
         if len(response) == 9 and response[5] == 0xE1 and response[6] == self.port:
             button_byte = response[3:5] + bytes.fromhex('00 00')
@@ -93,23 +115,35 @@ class Button:
         return self.buttonstr == buttonclick
 
 
-class MotorRotate:
+class MotorRotate(Serial0):
     def __init__(self, port):
+        super(MotorRotate, self).__init__()
         self.port = port
         self.port_str = '{:02x}'.format(port)
+        self.serial = serial.Serial('/dev/ttyUSB0',
+                                115200,
+                                timeout=1,
+                                parity=serial.PARITY_NONE,
+                                stopbits=1)
 
     def motor_rotate(self, speed):
         cmd_servo_data = bytes.fromhex('77 68 06 00 02 0C 02') \
                          + bytes.fromhex(self.port_str) \
                          + speed.to_bytes(1, byteorder='big', signed=True) \
                          + bytes.fromhex('0A')
-        serial1.write(cmd_servo_data)
+        self.serial.write(cmd_servo_data)
 
 
-class ServoPWM:
+class ServoPWM(Serial0):
     def __init__(self, ID):
+        super(ServoPWM, self).__init__()
         self.ID = ID
         self.ID_str = '{:02x}'.format(ID)
+        self.serial = serial.Serial('/dev/ttyUSB0',
+                                115200,
+                                timeout=1,
+                                parity=serial.PARITY_NONE,
+                                stopbits=1)
 
     def servocontrol(self, angle, speed):
         cmd_servo_data = bytes.fromhex('77 68 06 00 02 0B') \
@@ -117,13 +151,19 @@ class ServoPWM:
                          + speed.to_bytes(1, byteorder='big', signed=True) \
                          + angle.to_bytes(1, byteorder='big', signed=False) \
                          + bytes.fromhex('0A')
-        serial1.write(cmd_servo_data)
+        self.serial.write(cmd_servo_data)
 
 
-class Servo:
+class Servo(Serial0):
     def __init__(self, ID):
+        super(Servo, self).__init__()
         self.ID = ID
         self.ID_str = '{:02x}'.format(ID)
+        self.serial = serial.Serial('/dev/ttyUSB0',
+                                115200,
+                                timeout=1,
+                                parity=serial.PARITY_NONE,
+                                stopbits=1)
 
     def servocontrol(self, angle, speed):
         cmd_servo_data = bytes.fromhex('77 68 06 00 02 36') \
@@ -131,80 +171,4 @@ class Servo:
                          + speed.to_bytes(1, byteorder='big',signed=True) \
                          + angle.to_bytes(1, byteorder='big', signed=True) \
                          + bytes.fromhex('0A')
-        serial1.write(cmd_servo_data)
-
-
-class LimitSwitch:
-    def __init__(self, port):
-        self.state = False
-        self.port = port
-        self.state = True
-        port_str = '{:02x}'.format(port)
-        # print (port_str)
-        self.cmd_data = bytes.fromhex('77 68 04 00 01 DD {} 0A'.format(port_str))
-
-    # print('77 68 04 00 01 DD {} 0A'.format(port_str))
-
-    def clicked(self):
-        serial.write(self.cmd_data)
-        response = serial.read()  # 77 68 01 00 0D 0A
-        if len(response) < 8 or response[4] != 0xDD or response[5] != self.port \
-                or response[2] != 0x01:
-            return False
-        state = response[3] == 0x01
-        # print("state=",state)
-        # print("elf.state=", self.state)
-        clicked = False
-        if state == True and self.state == True and clicked == False:
-            clicked = True
-        if state == False and self.state == True and clicked == True:
-            clicked = False
-        # print('clicked=',clicked)
-        return clicked
-
-
-class InfraredValue:
-    def __init__(self, port):
-        port_str = '{:02x}'.format(port)
-        self.cmd_data = bytes.fromhex('77 68 04 00 01 D1 {} 0A'.format(port_str))
-
-    def read(self):
-        serial.write(self.cmd_data)
-        return_data = serial.read()
-        if return_data[2] != 0x04:
-            return None
-        if return_data[3] == 0x0a:
-            return None
-        # print("**********************************")
-        # print("return_data[3]=%x" % return_data[3])
-        # print(type(return_data[3]))
-        # print("return_data[4]=%x" % return_data[4])
-        # print("return_data[5]=%x" % return_data[5])
-        # print("return_data[6]=%x" % return_data[6])
-        # print(return_data.hex())
-        return_data_infrared = return_data[3:7]
-        print(return_data_infrared)
-        infrared_sensor = struct.unpack('<i', struct.pack('4B', *return_data_infrared))[0]
-        # print(ultrasonic_sensor)
-        return infrared_sensor
-
-
-class MagnetoSensor:
-    def __init__(self, port):
-        self.port = port
-        port_str = '{:02x}'.format(self.port)
-        self.cmd_data = bytes.fromhex('77 68 04 00 01 CF {} 0A'.format(port_str))
-
-    def read(self):
-        serial.write(self.cmd_data)
-        return_data = serial.read()
-        # print("return_data=",return_data[8])
-        if len(return_data) < 11 \
-                or return_data[7] != 0xCF \
-                or return_data[8] != self.port:
-            return None
-        # print(return_data.hex())
-        return_data = return_data[3:7]
-        mag_sensor = struct.unpack('<i', struct.pack('4B', *return_data))[0]
-        # print(ultrasonic_sensor)
-        return int(mag_sensor)
+        self.serial.write(cmd_servo_data)
