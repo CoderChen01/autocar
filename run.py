@@ -16,7 +16,7 @@ from driver import Driver
 from cart import Cart
 
 
-SPEED = 35
+SPEED = 25
 STATE = 0
 TASK_ID = 0
 RAISE_FLAG_RECORD = 3
@@ -29,6 +29,11 @@ STOP_BUTTON = Button(1, 'DOWN')
 DRIVER = Driver()
 DRIVER.set_speed(SPEED)
 DRIVER.set_Kx(0.9)
+
+
+SIGN_DETECTOR = SignDetector()
+TASK_DETECTOR = TaskDetector()
+
 
 def has_sign(sign_result):
     """
@@ -62,14 +67,17 @@ def task_processor():
     print('task...')
     global STATE
     global RAISE_FLAG_RECORD
-    side_camera = cv2.VideoCapture(config.side_cam)
-    task_detector = TaskDetector()
-    retval, frame = side_camera.read()
-    while not retval:
+    side_camera = Camera(config.side_cam)
+    side_camera.start()
+    frame = side_camera.read()
+    while frame is None:
         print('no frame...')
-        side_camera = cv2.VideoCapture(config.side_cam)
-        retval, frame = side_camera.read()
-    results = task_detector.detect(frame)
+        front_camera.stop()
+        time.sleep(0.5)
+        front_camera.start()
+        time.sleep(0.5)
+        frame = side_camera.read()
+    results = TASK_DETECTOR.detect(frame)
     if TASK_ID == 3:  # raise flag
         raise_flag(RAISE_FLAG_RECORD)
         print('raise flag...')
@@ -87,7 +95,7 @@ def task_processor():
         transport_forage(1)
         print('transport forage...')
     STATE = 0
-    side_camera.release()
+    side_camera.stop()
 
 
 def cruise_processor():
@@ -96,7 +104,6 @@ def cruise_processor():
     global SPEED
     front_camera = Camera(config.front_cam)
     front_camera.start()
-    sign_detector = SignDetector()
     _has_sign = False
     first_result = None
     while not STOP_BUTTON.clicked():
@@ -104,19 +111,20 @@ def cruise_processor():
         if frame is None:
             print('no frame...')
             front_camera.stop()
+            time.sleep(0.5)
             front_camera.start()
             time.sleep(0.5)
             frame = front_camera.read()
-        sign_result = sign_detector.detect(frame)
+        sign_result = SIGN_DETECTOR.detect(frame)
         if not _has_sign and has_sign(sign_result):
             _has_sign = True
             first_result = sign_result
         if _has_sign and not has_sign(sign_result):
             dispatch_task(first_result)
             change_state(True)
-            DRIVER.stop()
             break
         DRIVER.go(frame)
+    DRIVER.stop()
     front_camera.stop()
 
 
