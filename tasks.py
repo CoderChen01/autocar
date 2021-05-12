@@ -32,10 +32,15 @@ def raise_flag(servo_port):
     servo = ServoPWM(servo_port)
     servo.servocontrol(200, 10)
     light_work(2, 'green')
+    time.sleep(0.5)
     light_work(2, 'off')
+    time.sleep(0.5)
     light_work(2, 'green')
+    time.sleep(0.5)
     light_work(2, 'off')
+    time.sleep(0.5)
     light_work(2, 'green')
+    time.sleep(0.5)
     light_work(2, 'off')
     servo.servocontrol(0, 10)
 
@@ -45,13 +50,13 @@ def shot_target(motor_port):
     setmotor1 = MotorRotate(motor_port)
     time.sleep(0.5)
     for _ in range(2):
-        setmotor1.motor_rotate(40)
+        setmotor1.motor_rotate(70)
         time.sleep(0.5)
         setmotor1.motor_rotate(0)
         time.sleep(0.3)
-        setmotor1.motor_rotate(-60)
-        setmotor1.motor_rotate(0)
+        setmotor1.motor_rotate(-70)
         time.sleep(1)
+        setmotor1.motor_rotate(0)
     print("shot_target stop!")
 
 
@@ -67,7 +72,7 @@ def capture_target(servo_485_id, servo_pwm_id):
     time.sleep(2)
     servo2.servocontrol(180, servo2speed)
     time.sleep(2)
-    servo1.servocontrol(-85,servo1speed)
+    servo1.servocontrol(-80,servo1speed)
     time.sleep(2)
 
 
@@ -120,4 +125,4 @@ def change_camera_direction(servo_485_port, direction):
 
 
 if __name__ == '__main__':
-    shot_target(2)
+    capture_target(1, 2)

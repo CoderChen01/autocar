@@ -3,12 +3,18 @@ import time
 import struct
 
 import cv2
+import serial
 
 import config
 from serial_port import serial_connection
 
 
-serial = serial_connection
+serial0 = serial_connection
+serial1 = serial.Serial('/dev/ttyUSB0',
+                        115200,
+                        timeout=1,
+                        parity=serial.PARITY_NONE,
+                        stopbits=1)
 
 
 class Light:
@@ -24,14 +30,14 @@ class Light:
         cmd_servo_data = bytes.fromhex(
             '77 68 08 00 02 3B {} {} {} {} {} 0A'
                 .format(self.port_str, which_str, Red_str, Green_str, Blue_str))
-        serial.write(cmd_servo_data)
+        serial1.write(cmd_servo_data)
 
     @staticmethod
     def lightoff():
         cmd_servo_data1 = bytes.fromhex('77 68 08 00 02 3B 02 00 00 00 00 0A')
         cmd_servo_data2 = bytes.fromhex('77 68 08 00 02 3B 03 00 00 00 00 0A')
         cmd_servo_data = cmd_servo_data1 + cmd_servo_data2
-        serial.write(cmd_servo_data)
+        serial1.write(cmd_servo_data)
 
 
 class UltrasonicSensor:
@@ -41,8 +47,8 @@ class UltrasonicSensor:
         self.cmd_data = bytes.fromhex('77 68 04 00 01 D1 {} 0A'.format(port_str))
 
     def read(self):
-        serial.write(self.cmd_data)
-        return_data = serial.read()
+        serial0.write(self.cmd_data)
+        return_data = serial0.read()
         if len(return_data) < 11 \
                 or return_data[7] != 0xD1 \
                 or return_data[8] != self.port:
@@ -52,33 +58,12 @@ class UltrasonicSensor:
         return int(ultrasonic_sensor)
 
 
-class MagnetoSensor:
-    def __init__(self, port):
-        self.port = port
-        port_str = '{:02x}'.format(self.port)
-        self.cmd_data = bytes.fromhex('77 68 04 00 01 CF {} 0A'.format(port_str))
-
-    def read(self):
-        serial.write(self.cmd_data)
-        return_data = serial.read()
-        # print("return_data=",return_data[8])
-        if len(return_data) < 11 \
-                or return_data[7] != 0xCF \
-                or return_data[8] != self.port:
-            return None
-        # print(return_data.hex())
-        return_data = return_data[3:7]
-        mag_sensor = struct.unpack('<i', struct.pack('4B', *return_data))[0]
-        # print(ultrasonic_sensor)
-        return int(mag_sensor)
-
-
 class Buzzer:
     def __init__(self):
         self.cmd_data = bytes.fromhex('77 68 06 00 02 3D 03 02 0A')
 
     def rings(self):
-        serial.write(self.cmd_data)
+        serial1.write(self.cmd_data)
 
 
 class Button:
@@ -90,8 +75,8 @@ class Button:
         self.cmd_data = bytes.fromhex('77 68 05 00 01 E1 {} 01 0A'.format(port_str))
 
     def clicked(self):
-        serial.write(self.cmd_data)
-        response = serial.read()
+        serial0.write(self.cmd_data)
+        response = serial0.read()
         buttonclick = 'no'
         if len(response) == 9 and response[5] == 0xE1 and response[6] == self.port:
             button_byte = response[3:5] + bytes.fromhex('00 00')
@@ -118,7 +103,7 @@ class MotorRotate:
                          + bytes.fromhex(self.port_str) \
                          + speed.to_bytes(1, byteorder='big', signed=True) \
                          + bytes.fromhex('0A')
-        serial.write(cmd_servo_data)
+        serial1.write(cmd_servo_data)
 
 
 class ServoPWM:
@@ -132,7 +117,7 @@ class ServoPWM:
                          + speed.to_bytes(1, byteorder='big', signed=True) \
                          + angle.to_bytes(1, byteorder='big', signed=False) \
                          + bytes.fromhex('0A')
-        serial.write(cmd_servo_data)
+        serial1.write(cmd_servo_data)
 
 
 class Servo:
@@ -146,7 +131,7 @@ class Servo:
                          + speed.to_bytes(1, byteorder='big',signed=True) \
                          + angle.to_bytes(1, byteorder='big', signed=True) \
                          + bytes.fromhex('0A')
-        serial.write(cmd_servo_data)
+        serial1.write(cmd_servo_data)
 
 
 class LimitSwitch:
@@ -202,3 +187,24 @@ class InfraredValue:
         infrared_sensor = struct.unpack('<i', struct.pack('4B', *return_data_infrared))[0]
         # print(ultrasonic_sensor)
         return infrared_sensor
+
+
+class MagnetoSensor:
+    def __init__(self, port):
+        self.port = port
+        port_str = '{:02x}'.format(self.port)
+        self.cmd_data = bytes.fromhex('77 68 04 00 01 CF {} 0A'.format(port_str))
+
+    def read(self):
+        serial.write(self.cmd_data)
+        return_data = serial.read()
+        # print("return_data=",return_data[8])
+        if len(return_data) < 11 \
+                or return_data[7] != 0xCF \
+                or return_data[8] != self.port:
+            return None
+        # print(return_data.hex())
+        return_data = return_data[3:7]
+        mag_sensor = struct.unpack('<i', struct.pack('4B', *return_data))[0]
+        # print(ultrasonic_sensor)
+        return int(mag_sensor)
