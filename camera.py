@@ -10,6 +10,7 @@ class Camera:
         self.stream = cv2.VideoCapture(src)
         self.stream.set(cv2.CAP_PROP_FRAME_WIDTH, width)
         self.stream.set(cv2.CAP_PROP_FRAME_HEIGHT, height)
+        self.stream.set(cv2.CAP_PROP_FPS, 15)
         self.stopped = False
         for _ in range(10):  # warm up the camera
             (self.grabbed, self.frame) = self.stream.read()

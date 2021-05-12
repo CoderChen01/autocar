@@ -186,4 +186,16 @@ if __name__ == "__main__":
     for entry in os.scandir(directory):
         img = cv2.imread(entry.path)
         results, blow_index = sign_detector.detect(img)
-        print(results[blow_index].relative_center_y, results[blow_index].index)
+        print(results, blow_index)
+        if blow_index == -1:
+            continue
+        print(results[blow_index].relative_center_x, results[blow_index].relative_center_y)
+        cv2.imwrite(directory + '/' + entry.name.split('.')[0] + '.jpg', draw_res(img, results))
+        # print(results[blow_index].relative_center_y, results[blow_index].index)
+    # directory = 'image/side_image_test'
+    # task_detector = TaskDetector()
+    # for entry in os.scandir(directory):
+    #     img = cv2.imread(entry.path)
+    #     results = task_detector.detect(img)
+    #     print(results)
+        # print(results[0].relative_center_x, results[0].index)

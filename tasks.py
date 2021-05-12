@@ -28,7 +28,7 @@ def light_work(light_port, color):
     light.lightcontrol(0, light_color[0], light_color[1], light_color[2])
 
 
-def raise_flag(servo1):
+def raise_flag(servo_port):
     servo = ServoPWM(servo_port)
     servo.servocontrol(200, 10)
     light_work(2, 'green')
@@ -117,3 +117,7 @@ def change_camera_direction(servo_485_port, direction):
         servo.servocontrol(-125, 100)
     else:
         servo.servocontrol(40, 100)
+
+
+if __name__ == '__main__':
+    shot_target(2)
