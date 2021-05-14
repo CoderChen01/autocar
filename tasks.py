@@ -31,7 +31,7 @@ def light_work(light_port, color):
 
 def raise_flag(servo_port):
     servo = ServoPWM(servo_port)
-    servo.servocontrol(200, 10)
+    servo.servocontrol(200, 100)
     time.sleep(0.5)
     light_work(2, 'green')
     time.sleep(1)
@@ -45,7 +45,8 @@ def raise_flag(servo_port):
     time.sleep(1)
     light_work(2, 'off')
     time.sleep(0.5)
-    servo.servocontrol(0, 10)
+    servo.servocontrol(0, 100)
+    time.sleep(0.5)
 
 
 def shot_target(motor_port):
@@ -82,7 +83,6 @@ def capture_target(servo_485_id, servo_pwm_id):
 def transport_forage(motor_port):
     print("transport_forage start!")
     setmotor1 = MotorRotate(motor_port)
-    time.sleep(1)
     setmotor1.motor_rotate(10)
     time.sleep(1.5)
     setmotor1.motor_rotate(0)
@@ -125,5 +125,4 @@ def change_camera_direction(servo_485_port, direction):
 
 
 if __name__ == '__main__':
-    transport_forage(1)
-    time.sleep(40)
+    raise_flag(3)

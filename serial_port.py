@@ -34,3 +34,5 @@ class Serial:
     def close(self):
         self.serial.close()
 
+
+_serial = Serial()
