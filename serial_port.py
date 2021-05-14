@@ -28,6 +28,9 @@ class Serial:
     def read(self):
         return self.res
 
+    def write_raw(self, data):
+        self.serial.write(data)
+        
     def close(self):
         self.serial.close()
 

@@ -56,3 +56,5 @@ cruise = {
 JOYSTICK_ADDR = '/dev/input/js0'
 # sign_threshold = 0.3
 # task_threshold = 0.4
+
+COLLECTION_SPEED = 25

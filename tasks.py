@@ -1,6 +1,7 @@
 import time
 
 from widgets import *
+from driver import Driver
 
 
 def buzzing():
@@ -31,17 +32,19 @@ def light_work(light_port, color):
 def raise_flag(servo_port):
     servo = ServoPWM(servo_port)
     servo.servocontrol(200, 10)
-    light_work(2, 'green')
     time.sleep(0.5)
+    light_work(2, 'green')
+    time.sleep(1)
     light_work(2, 'off')
     time.sleep(0.5)
     light_work(2, 'green')
-    time.sleep(0.5)
+    time.sleep(1)
     light_work(2, 'off')
     time.sleep(0.5)
     light_work(2, 'green')
-    time.sleep(0.5)
+    time.sleep(1)
     light_work(2, 'off')
+    time.sleep(0.5)
     servo.servocontrol(0, 10)
 
 
@@ -79,21 +82,18 @@ def capture_target(servo_485_id, servo_pwm_id):
 def transport_forage(motor_port):
     print("transport_forage start!")
     setmotor1 = MotorRotate(motor_port)
-    time.sleep(0.5)
+    time.sleep(1)
     setmotor1.motor_rotate(10)
     time.sleep(1.5)
     setmotor1.motor_rotate(0)
     time.sleep(0.2)
-    setmotor1.motor_rotate(-20)
+    setmotor1.motor_rotate(-30)
     time.sleep(0.2)
     setmotor1.motor_rotate(0)
     print("transport_forage stop!")
 
 
-def take_barracks():
-    driver = Driver()
-    driver.set_speed(driver.full_speed)
-    driver.set_Kx(0.8)
+def take_barracks(driver):
     driver.stop()
     time.sleep(0.5)
     driver.driver_run(20, 19)
@@ -125,4 +125,5 @@ def change_camera_direction(servo_485_port, direction):
 
 
 if __name__ == '__main__':
-    capture_target(1, 2)
+    transport_forage(1)
+    time.sleep(40)

@@ -10,10 +10,10 @@ from tasks import *
 from detectors import SignDetector
 from detectors import TaskDetector
 from widgets import Button
-from camera import Camera
 from cruiser import Cruiser
 from driver import Driver
 from cart import Cart
+from improved_videocapture import BackgroundVideoCapture
 
 
 SPEED = 25
@@ -25,6 +25,8 @@ RAISE_FLAG_RECORD = 3
 START_BUTTON = Button(1, 'UP')
 STOP_BUTTON = Button(1, 'DOWN')
 
+FRON_CAMERA = BackgroundVideoCapture(config.front_cam)
+SIDE_CAMERA = BackgroundVideoCapture(config.side_cam)
 
 DRIVER = Driver()
 DRIVER.set_speed(SPEED)
@@ -67,16 +69,12 @@ def task_processor():
     print('task...')
     global STATE
     global RAISE_FLAG_RECORD
-    side_camera = Camera(config.side_cam)
-    side_camera.start()
-    frame = side_camera.read()
-    while frame is None:
-        print('no frame...')
-        front_camera.stop()
-        time.sleep(0.5)
-        front_camera.start()
-        time.sleep(0.5)
-        frame = side_camera.read()
+    grabbed, frame = SIDE_CAMERA.read()
+    for _ in range(30):
+        if grabbed:
+            break
+        print('no frame, retrying...')
+        grabbed, frame = SIDE_CAMERA.read()
     results = TASK_DETECTOR.detect(frame)
     if TASK_ID == 3:  # raise flag
         raise_flag(RAISE_FLAG_RECORD)
@@ -86,7 +84,7 @@ def task_processor():
         shot_target(2)
         print('shot target...')
     elif TASK_ID == 1:
-        take_barracks()
+        take_barracks(DRIVER)
         print('take barracks...')
     elif TASK_ID == 2:
         capture_target(1, 2)
@@ -95,26 +93,22 @@ def task_processor():
         transport_forage(1)
         print('transport forage...')
     STATE = 0
-    side_camera.stop()
 
 
 def cruise_processor():
     print('cruise...')
     global STATE
     global SPEED
-    front_camera = Camera(config.front_cam)
-    front_camera.start()
     _has_sign = False
     first_result = None
     while not STOP_BUTTON.clicked():
-        frame = front_camera.read()
-        if frame is None:
-            print('no frame...')
-            front_camera.stop()
-            time.sleep(0.5)
-            front_camera.start()
-            time.sleep(0.5)
-            frame = front_camera.read()
+        grabbed, frame = FRON_CAMERA.read()
+        print(frame)
+        for _ in range(30):
+            if grabbed:
+                break
+            print('no frame, retrying...')
+            grabbed, frame = FRON_CAMERA.read()
         sign_result = SIGN_DETECTOR.detect(frame)
         if not _has_sign and has_sign(sign_result):
             _has_sign = True
@@ -125,7 +119,6 @@ def cruise_processor():
             break
         DRIVER.go(frame)
     DRIVER.stop()
-    front_camera.stop()
 
 
 def run():

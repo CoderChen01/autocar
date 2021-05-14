@@ -45,10 +45,7 @@ class Logger:
             _, image = self.camera.read()
             path = "{}/{}.jpg".format(self.result_dir, self.counter)
             self.map[self.counter] = axis
-            start = time.time()
-            t = threading.Thread(target=cv2.imwrite, args=(path, image))
-            t.start()
-            print('end time: {}s'.format(time.time() - start))
+            cv2.imwrite(path, image)
             self.counter = self.counter + 1
 
     def stopped(self):
