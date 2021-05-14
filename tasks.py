@@ -31,7 +31,7 @@ def light_work(light_port, color):
 
 def raise_flag(servo_port):
     servo = ServoPWM(servo_port)
-    servo.servocontrol(200, 100)
+    servo.servocontrol(120, 100)
     time.sleep(0.5)
     light_work(2, 'green')
     time.sleep(1)
@@ -93,7 +93,10 @@ def transport_forage(motor_port):
     print("transport_forage stop!")
 
 
-def take_barracks(driver):
+def take_barracks():
+    driver = Driver()
+    driver.set_Kx(config.RUN_KX)
+    driver.set_speed(config.RUN_SPEED)
     driver.stop()
     time.sleep(0.5)
     driver.driver_run(20, 19)
@@ -125,4 +128,4 @@ def change_camera_direction(servo_485_port, direction):
 
 
 if __name__ == '__main__':
-    raise_flag(3)
+    raise_flag(6)

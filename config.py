@@ -58,3 +58,5 @@ JOYSTICK_ADDR = '/dev/input/js0'
 # task_threshold = 0.4
 
 COLLECTION_SPEED = 25
+RUN_SPEED = 35
+RUN_KX = 0.9

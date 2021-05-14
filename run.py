@@ -16,11 +16,11 @@ from cart import Cart
 from improved_videocapture import BackgroundVideoCapture
 
 
-SPEED = 25
+SPEED = config.RUN_SPEED
+KX = config.RUN_KX
 STATE = 0
 TASK_ID = 0
 RAISE_FLAG_RECORD = 3
-
 
 START_BUTTON = Button(1, 'UP')
 STOP_BUTTON = Button(1, 'DOWN')
@@ -30,8 +30,7 @@ SIDE_CAMERA = BackgroundVideoCapture(config.side_cam)
 
 DRIVER = Driver()
 DRIVER.set_speed(SPEED)
-DRIVER.set_Kx(0.9)
-
+DRIVER.set_Kx(KX)
 
 SIGN_DETECTOR = SignDetector()
 TASK_DETECTOR = TaskDetector()
@@ -84,7 +83,7 @@ def task_processor():
         shot_target(2)
         print('shot target...')
     elif TASK_ID == 1:
-        take_barracks(DRIVER)
+        take_barracks()
         print('take barracks...')
     elif TASK_ID == 2:
         capture_target(1, 2)

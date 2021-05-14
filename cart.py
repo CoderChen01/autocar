@@ -2,8 +2,7 @@ import time
 import math
 from ctypes import *
 
-import serial
-
+from serial_port import _serial as serial
 
 comma_head_01_motor = bytes.fromhex('77 68 06 00 02 0C 01 01')  # front-left
 comma_head_02_motor = bytes.fromhex('77 68 06 00 02 0C 01 02')  # front-right -
@@ -17,11 +16,7 @@ class Cart:
         self.Kx=0.85
         portx = "/dev/ttyUSB0"
         bps = 115200
-        self.serial = serial.Serial(portx,
-                                    bps,
-                                    timeout=1,
-                                    parity=serial.PARITY_NONE,
-                                    stopbits=1)
+        self.serial = serial
         self.p = 0.8
         self.full_speed = self.velocity
         self.slow_ratio = 0.97
@@ -86,10 +81,10 @@ class Cart:
                              + right_rear.to_bytes(1, byteorder='big', signed=True) \
                              + comma_trail
 
-        self.serial.write(send_data_01_motor)
-        self.serial.write(send_data_02_motor)
-        self.serial.write(send_data_03_motor)
-        self.serial.write(send_data_04_motor)
+        self.serial.write_raw(send_data_01_motor)
+        self.serial.write_raw(send_data_02_motor)
+        self.serial.write_raw(send_data_03_motor)
+        self.serial.write_raw(send_data_04_motor)
 
     def turn_left(self):
         speed = self.velocity 
