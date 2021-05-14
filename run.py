@@ -102,12 +102,12 @@ def cruise_processor():
     first_result = None
     while not STOP_BUTTON.clicked():
         grabbed, frame = FRON_CAMERA.read()
-        print(frame)
         for _ in range(30):
             if grabbed:
                 break
             print('no frame, retrying...')
             grabbed, frame = FRON_CAMERA.read()
+        DRIVER.go(frame)
         sign_result = SIGN_DETECTOR.detect(frame)
         if not _has_sign and has_sign(sign_result):
             _has_sign = True
@@ -116,7 +116,6 @@ def cruise_processor():
             dispatch_task(first_result)
             change_state(True)
             break
-        DRIVER.go(frame)
     DRIVER.stop()
 
 
