@@ -23,7 +23,6 @@ class Cart:
         self.min_speed = 20
 
     def steer(self, angle):
-        print(angle)
         speed = int(self.velocity)
         if abs(angle) > 0.12:
             speed = int(self.velocity * self.slow_ratio)

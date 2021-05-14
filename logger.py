@@ -8,13 +8,12 @@ import cv2
 
 import config
 from cart import Cart
+from improved_videocapture import BackgroundVideoCapture
 
 
 class Logger:
     def __init__(self, velocity=20):
-        self.camera = cv2.VideoCapture(config.front_cam)
-        self.camera.set(cv2.CAP_PROP_FRAME_WIDTH, 160)
-        self.camera.set(cv2.CAP_PROP_FRAME_HEIGHT, 120)
+        self.camera = BackgroundVideoCapture(config.front_cam, (160, 120))
         self.started = False
         self.stopped_ = False
         self.counter = 0
@@ -34,7 +33,7 @@ class Logger:
             return
         self.stopped_ = True
         self.cart.stop()
-        self.camera.release()
+        self.camera.close()
         path = "{}/result.json".format(self.result_dir)
         with open(path, 'w') as fp:
             json.dump(self.map.copy(), fp)
