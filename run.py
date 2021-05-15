@@ -74,6 +74,8 @@ def task_processor():
             break
         print('no frame, retrying...')
         grabbed, frame = SIDE_CAMERA.read()
+    if not grabbed:
+        exit(-1)
     results = TASK_DETECTOR.detect(frame)
     if TASK_ID == 3:  # raise flag
         raise_flag(RAISE_FLAG_RECORD)
@@ -107,6 +109,8 @@ def cruise_processor():
                 break
             print('no frame, retrying...')
             grabbed, frame = FRON_CAMERA.read()
+        if not grabbed:
+            exit(-1)
         DRIVER.go(frame)
         sign_result = SIGN_DETECTOR.detect(frame)
         if not _has_sign and has_sign(sign_result):
