@@ -50,6 +50,8 @@ if not IS_TEST:
         print(path)
         cv2.imwrite(path, image)
         if pause_button.clicked():
+            print('puase, wait to start...')
+            time.sleep(2)
             while not pause_button.clicked():
                 print('puase, wait to start...')
                 pass
