@@ -22,7 +22,6 @@ class Collector:
         self.stopped = multiprocessing.Value('i', 0)
         self.x_axis = multiprocessing.Value('d', 0.0)
 
-
     def _controller(self):
         while not self.stopped.value:
             _, value, type_, number = self.js.read()
