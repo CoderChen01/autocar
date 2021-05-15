@@ -73,14 +73,13 @@ class Button:
         if len(response) == 9 and response[5] == 0xE1 and response[6] == self.port:
             button_byte = response[3:5] + bytes.fromhex('00 00')
             button_value = struct.unpack('<i', struct.pack('4B', *button_byte))[0]
-            # print("%x"%button_value)
             if 0x1f1 <= button_value <= 0x20f:
                 buttonclick = 'UP'
-            elif 0x330 <= button_value <= 0x33f:
+            elif 0x157 <= button_value <= 0x160:
                 buttonclick = 'LEFT'
             elif 0x2ff <= button_value <= 0x30f:
                 buttonclick = 'DOWN'
-            elif 0x2a0 <= button_value <= 0x2af:
+            elif 0x57 <= button_value <= 0x5a:
                 buttonclick = 'RIGHT'
         return self.buttonstr == buttonclick
 
@@ -124,3 +123,9 @@ class Servo:
                          + angle.to_bytes(1, byteorder='big', signed=True) \
                          + bytes.fromhex('0A')
         serial.write_raw(cmd_servo_data)
+
+
+if __name__ == '__main__':
+    b = Button(1, 'LEFT')
+    while True:
+        print(b.clicked())

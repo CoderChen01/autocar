@@ -7,14 +7,15 @@ import cv2
 import config
 from widgets import Button
 from tasks import light_work
-from camera import Camera
+from improved_videocapture import BackgroundVideoCapture
 
 CAM_ID = config.front_cam
-IS_TEST = True
+IS_TEST = False
 
-start_button = Button(1, "UP")
-stop_button = Button(1, "DOWN")
-cam = Camera(CAM_ID)
+start_button = Button(1, 'UP')
+stop_button = Button(1, 'DOWN')
+pause_button = Button(1, 'LEFT')
+cam = BackgroundVideoCapture(CAM_ID)
 counter = 0
 
 if CAM_ID == config.front_cam:
@@ -22,7 +23,7 @@ if CAM_ID == config.front_cam:
         'test' if IS_TEST else 'data',
         datetime.now().strftime('%Y%m%d%H%M%S'))
 else:
-    result_dir = './image/side_image_{}'.format(
+    result_dir = './image/{}_side_image_{}'.format(
         'test' if IS_TEST else 'data',
         datetime.now().strftime('%Y%m%d%H%M%S'))
 if not os.path.exists(result_dir):
@@ -31,7 +32,6 @@ if not os.path.exists(result_dir):
 while not start_button.clicked():
     pass
 
-cam.start()
 time.sleep(0.2)
 light_work(2, 'red')
 time.sleep(0.2)
@@ -45,10 +45,14 @@ if not IS_TEST:
     while not stop_button.clicked():
         path = "{}/{}.png".format(result_dir, counter)
         counter += 1
-        image = cam.read()
+        _, image = cam.read()
         name = "{}.png".format(counter)
         print(path)
         cv2.imwrite(path, image)
+        if pause_button.clicked():
+            while not pause_button.clicked():
+                print('puase, wait to start...')
+                pass
 else:
     while True:
         start_time = time.time()
@@ -63,4 +67,4 @@ else:
         cv2.imwrite(path, image)
         print(path)
         time.sleep(0.5)
-cam.stop()
+cam.close()
