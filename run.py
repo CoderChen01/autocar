@@ -14,6 +14,7 @@ from cruiser import Cruiser
 from driver import Driver
 from cart import Cart
 from improved_videocapture import BackgroundVideoCapture
+from god import God
 
 
 SPEED = config.RUN_SPEED
