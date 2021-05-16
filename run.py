@@ -38,40 +38,12 @@ DRIVER.set_Kx(KX)
 TASK_DETECTOR = TaskDetector()
 
 
-def has_sign(sign_result):
-    """
-    determine if the task is approaching
-    """
-    if sign_result[1] == -1:
-        return False
-    return True
-
-
-def dispatch_task(sign_result):
-    """
-    set tasks based on the detection
-    """
-    global TASK_ID
-    nearest = sign_result[0][sign_result[1]]  # results[blow_center_index]
-    task_id = nearest.index
-    if task_id:
-        TASK_ID = task_id
-
-
-def change_state(is_task):
-    global STATE
-    if is_task:
-        STATE = 1
-    else:
-        STATE = 0
-
-
 def task_processor():
     print('task...')
     global STATE
     global RAISE_FLAG_RECORD
     global DRIVER
-    time.sleep(0.5)
+    time.sleep(1.5)
     DRIVER.stop()
     grabbed, frame = SIDE_CAMERA.read()
     for _ in range(30):
@@ -82,20 +54,20 @@ def task_processor():
     if not grabbed:
         exit(-1)
     results = TASK_DETECTOR.detect(frame)
-    if TASK_ID == 3:  # raise flag
+    if TASK_ID.value == 3:  # raise flag
         raise_flag(RAISE_FLAG_RECORD)
         print('raise flag...')
         RAISE_FLAG_RECORD += 1
-    elif TASK_ID == 5:
+    elif TASK_ID.value == 5:
         shot_target(2)
         print('shot target...')
-    elif TASK_ID == 1:
+    elif TASK_ID.value == 1:
         take_barracks()
         print('take barracks...')
-    elif TASK_ID == 2:
+    elif TASK_ID.value == 2:
         capture_target(1, 2)
         print('capture target...')
-    elif TASK_ID == 4:
+    elif TASK_ID.value == 4:
         transport_forage(1)
         print('transport forage...')
     STATE.value = 0

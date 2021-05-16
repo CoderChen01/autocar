@@ -43,10 +43,10 @@ print('Press the "Down button" to take photos!')
 
 if not IS_TEST:
     while not stop_button.clicked():
-        path = "{}/{}.png".format(result_dir, counter)
+        path = "{}/{}.jpg".format(result_dir, counter)
         counter += 1
         _, image = cam.read()
-        name = "{}.png".format(counter)
+        name = "{}.jpg".format(counter)
         print(path)
         cv2.imwrite(path, image)
         if pause_button.clicked():
@@ -62,10 +62,10 @@ else:
             if time.time() - start_time > 10:
                 cam.stop()
                 exit(0)
-        path = "{}/{}.png".format(result_dir, counter)
+        path = "{}/{}.jpg".format(result_dir, counter)
         counter += 1
         image = cam.read()
-        name = "{}.png".format(counter)
+        name = "{}.jpg".format(counter)
         cv2.imwrite(path, image)
         print(path)
         time.sleep(0.5)
