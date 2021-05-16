@@ -60,7 +60,3 @@ mission_low = 0.3
 mission_high = 0.75
 MISS_DURATION = 200
 EMLARGE_RATIO = 1.2
-
-
-####################### remote control config ######################
-JOYSTICK_ADDR = '/dev/input/js0'

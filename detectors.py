@@ -201,7 +201,7 @@ class TaskDetector:
 
         selected_indexes = [i for i in max_indexes if i != -1]
         task_index = [i for i in selected_indexes if
-                      configs.mission_label_list[predict_label[i]] != 'redball' or configs.mission_label_list[
+                      configs.TASK_LIST[predict_label[i]] != 'redball' or configs.TASK_LIST[
                           predict_label[i]] != 'blueball']
         res = nmsed_out[task_index, :]
         results = []

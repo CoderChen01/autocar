@@ -18,7 +18,7 @@ pause_button = Button(1, 'LEFT')
 cam = BackgroundVideoCapture(CAM_ID)
 counter = 0
 
-if CAM_ID == configs.front_cam:
+if CAM_ID == configs.FRONT_CAM:
     result_dir = './image/{}_front_image_{}'.format(
         'test' if IS_TEST else 'data',
         datetime.now().strftime('%Y%m%d%H%M%S'))

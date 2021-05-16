@@ -1,11 +1,9 @@
 import cv2
 import numpy as np
 
-import configs
 import predictor_wrapper
 
 
-# CNN网络的图片预处理
 def process_image(frame, size, ms):
     frame = cv2.resize(frame, (size, size))
     img = frame.astype(np.float32)
@@ -15,7 +13,6 @@ def process_image(frame, size, ms):
     return img
 
 
-# CNN网络预处理
 def cnn_preprocess(args, img, buf):
     shape = args['shape']
     img = process_image(img, shape[2], args['ms'])
@@ -29,7 +26,6 @@ def cnn_preprocess(args, img, buf):
     return data
 
 
-# CNN网络预测
 def infer_cnn(predictor, args, buf, image):
     data = cnn_preprocess(args, image, buf)
     predictor.set_input(data, 0)
