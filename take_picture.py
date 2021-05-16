@@ -9,7 +9,7 @@ from widgets import Button
 from tasks import light_work
 from improved_videocapture import BackgroundVideoCapture
 
-CAM_ID = config.front_cam
+CAM_ID = config.FRONT_CAM
 IS_TEST = False
 
 start_button = Button(1, 'UP')

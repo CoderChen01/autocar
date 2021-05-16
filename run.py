@@ -29,8 +29,8 @@ RAISE_FLAG_RECORD = 3
 START_BUTTON = Button(1, 'UP')
 STOP_BUTTON = Button(1, 'DOWN')
 
-FRON_CAMERA = BackgroundVideoCapture(config.front_cam)
-SIDE_CAMERA = BackgroundVideoCapture(config.side_cam)
+FRON_CAMERA = BackgroundVideoCapture(config.FRONT_CAM)
+SIDE_CAMERA = BackgroundVideoCapture(config.SIDE_CAM)
 
 DRIVER = Driver()
 DRIVER.set_speed(SPEED)

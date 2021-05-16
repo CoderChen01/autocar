@@ -129,7 +129,7 @@ class DetectionResult:
         self.index = 0
         self.score = 0
         self.name = ''
-        self.shape = (160, 120)
+        self.shape = (640, 480)
         self.relative_box = [0, 0, 0, 0]
         self.relative_center_y = -1
         self.relative_center_x = -1
