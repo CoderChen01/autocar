@@ -18,9 +18,12 @@ from improved_videocapture import BackgroundVideoCapture
 
 SPEED = config.RUN_SPEED
 KX = config.RUN_KX
-STATE = 0
-TASK_ID = 0
+STATE = mp.Value('i', 0)
+TASK_ID = mp.Value('i', 0)
+FRAME_QUEUE = mp.Queue()
+LOCK = mp.Lock()
 RAISE_FLAG_RECORD = 3
+
 
 START_BUTTON = Button(1, 'UP')
 STOP_BUTTON = Button(1, 'DOWN')
@@ -32,7 +35,6 @@ DRIVER = Driver()
 DRIVER.set_speed(SPEED)
 DRIVER.set_Kx(KX)
 
-SIGN_DETECTOR = SignDetector()
 TASK_DETECTOR = TaskDetector()
 
 
@@ -68,6 +70,9 @@ def task_processor():
     print('task...')
     global STATE
     global RAISE_FLAG_RECORD
+    global DRIVER
+    time.sleep(0.5)
+    DRIVER.stop()
     grabbed, frame = SIDE_CAMERA.read()
     for _ in range(30):
         if grabbed:
@@ -93,15 +98,15 @@ def task_processor():
     elif TASK_ID == 4:
         transport_forage(1)
         print('transport forage...')
-    STATE = 0
+    STATE.value = 0
 
 
 def cruise_processor():
     print('cruise...')
     global STATE
     global SPEED
-    _has_sign = False
-    first_result = None
+    global FRAME_QUEUE
+    global LOCK
     while not STOP_BUTTON.clicked():
         grabbed, frame = FRON_CAMERA.read()
         for _ in range(30):
@@ -111,26 +116,50 @@ def cruise_processor():
             grabbed, frame = FRON_CAMERA.read()
         if not grabbed:
             exit(-1)
-        DRIVER.go(frame)
-        sign_result = SIGN_DETECTOR.detect(frame)
-        if not _has_sign and has_sign(sign_result):
-            _has_sign = True
-            first_result = sign_result
-        if _has_sign and not has_sign(sign_result):
-            dispatch_task(first_result)
-            change_state(True)
+        with LOCK:
+            DRIVER.go(frame)
+        FRAME_QUEUE.put(frame)
+        if STATE.value:
             break
-    DRIVER.stop()
+
+
+def sign_sub_processor():
+    global STATE
+    global FRAME_QUEUE
+    sign_detector = SignDetector()
+    while True:
+        if STATE.value:
+            continue
+        if FRAME_QUEUE.qsize() == 0:
+            continue
+        while FRAME_QUEUE.qsize() > 1:
+            FRAME_QUEUE.get()
+        frame = FRAME_QUEUE.get()
+        with LOCK:
+            results, blow_index = sign_detector.detect(frame)
+        if not results:
+            TASK_ID.value = 0
+            STATE.value = 0
+            continue
+        TASK_ID.value = results[blow_index].index
+        STATE.value = 1
 
 
 def run():
+    global FRON_CAMERA
+    global SIDE_CAMERA
     state_map = [cruise_processor, task_processor]
     while not START_BUTTON.clicked():  # wait for starting
         pass
     print('start operation...')
+    sign_sub = mp.Process(target=sign_sub_processor)
+    sign_sub.daemon = True
+    sign_sub.start()
     while not STOP_BUTTON.clicked():
         # wait for stopping
-        state_map[STATE]()
+        state_map[STATE.value]()
+    FRON_CAMERA.close()
+    SIDE_CAMERA.close()
 
 
 if __name__=='__main__':
