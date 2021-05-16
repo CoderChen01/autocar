@@ -55,6 +55,8 @@ def task_processor():
         exit(-1)
     results = TASK_DETECTOR.detect(frame)
     if TASK_ID.value == 3:  # raise flag
+        if RAISE_FLAG_RECORD == 6:
+            RAISE_FLAG_RECORD = 3
         raise_flag(RAISE_FLAG_RECORD)
         print('raise flag...')
         RAISE_FLAG_RECORD += 1
