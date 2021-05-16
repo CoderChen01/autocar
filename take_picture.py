@@ -4,12 +4,12 @@ import os
 
 import cv2
 
-import config
+import configs
 from widgets import Button
 from tasks import light_work
 from improved_videocapture import BackgroundVideoCapture
 
-CAM_ID = config.FRONT_CAM
+CAM_ID = configs.FRONT_CAM
 IS_TEST = False
 
 start_button = Button(1, 'UP')
@@ -18,7 +18,7 @@ pause_button = Button(1, 'LEFT')
 cam = BackgroundVideoCapture(CAM_ID)
 counter = 0
 
-if CAM_ID == config.front_cam:
+if CAM_ID == configs.front_cam:
     result_dir = './image/{}_front_image_{}'.format(
         'test' if IS_TEST else 'data',
         datetime.now().strftime('%Y%m%d%H%M%S'))

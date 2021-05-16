@@ -3,7 +3,7 @@ import cv2
 from cruiser import Cruiser
 from detectors import SignDetector,TaskDetector, calculate_area
 from camera import Camera
-import config
+import configs
 import time
 #测试图片存放位置和测试输出结果位置
 cruiser_images_dir = "test/cruise"
@@ -94,7 +94,7 @@ def test_front_video():
 
 #对前向摄像头拍摄图片进行动态识别，包括车道值，不同的车道值代表了不同的转弯强度
 def test_cruise():
-    front_camera = Camera(config.front_cam)
+    front_camera = Camera(configs.front_cam)
     front_camera.start()
     time.sleep(1)
     cruiser = Cruiser()
@@ -108,7 +108,7 @@ def test_cruise():
 
 #前向车道地面标志动态识别
 def test_sign():
-    front_camera = Camera(config.front_cam)
+    front_camera = Camera(configs.front_cam)
     front_camera.start()
     time.sleep(1)
     cruiser = Cruiser()
@@ -125,7 +125,7 @@ def test_sign():
 
 #侧向任务动态识别
 def test_task():
-    side_camera = Camera(config.side_cam)
+    side_camera = Camera(configs.side_cam)
     side_camera.start()
     time.sleep(1)
     td = TaskDetector()

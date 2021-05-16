@@ -1,7 +1,7 @@
 import cv2
 import numpy as np
 
-import config
+import configs
 import predictor_wrapper
 
 

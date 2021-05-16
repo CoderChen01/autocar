@@ -5,7 +5,7 @@ import multiprocessing as mp
 
 import cv2
 
-import config
+import configs
 from tasks import *
 from detectors import SignDetector
 from detectors import TaskDetector
@@ -17,8 +17,8 @@ from improved_videocapture import BackgroundVideoCapture
 from god import God
 
 
-SPEED = config.RUN_SPEED
-KX = config.RUN_KX
+SPEED = configs.RUN_SPEED
+KX = configs.RUN_KX
 STATE = mp.Value('i', 0)
 TASK_ID = mp.Value('i', 0)
 FRAME_QUEUE = mp.Queue()
@@ -29,8 +29,8 @@ RAISE_FLAG_RECORD = 3
 START_BUTTON = Button(1, 'UP')
 STOP_BUTTON = Button(1, 'DOWN')
 
-FRON_CAMERA = BackgroundVideoCapture(config.FRONT_CAM)
-SIDE_CAMERA = BackgroundVideoCapture(config.SIDE_CAM)
+FRON_CAMERA = BackgroundVideoCapture(configs.FRONT_CAM)
+SIDE_CAMERA = BackgroundVideoCapture(configs.SIDE_CAM)
 
 DRIVER = Driver()
 DRIVER.set_speed(SPEED)

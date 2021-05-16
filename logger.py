@@ -6,14 +6,14 @@ import json
 
 import cv2
 
-import config
+import configs
 from cart import Cart
 from improved_videocapture import BackgroundVideoCapture
 
 
 class Logger:
     def __init__(self, velocity=20):
-        self.camera = BackgroundVideoCapture(config.FRONT_CAM, (160, 120))
+        self.camera = BackgroundVideoCapture(configs.FRONT_CAM, (160, 120))
         self.started = False
         self.stopped_ = False
         self.counter = 0

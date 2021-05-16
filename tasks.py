@@ -95,8 +95,8 @@ def transport_forage(motor_port):
 
 def take_barracks():
     driver = Driver()
-    driver.set_Kx(config.RUN_KX)
-    driver.set_speed(config.RUN_SPEED)
+    driver.set_Kx(configs.RUN_KX)
+    driver.set_speed(configs.RUN_SPEED)
     driver.stop()
     time.sleep(0.5)
     driver.driver_run(20, 19)

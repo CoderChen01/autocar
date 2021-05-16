@@ -4,7 +4,7 @@ import cv2
 import numpy as np
 
 import predictor_wrapper
-import config
+import configs
 from camera import Camera
 
 
@@ -41,7 +41,7 @@ def clip_box(box):
     y_center = (ymin + ymax) / 2
     h = ymax - ymin
     w = xmax - xmin
-    scale = config.EMLARGE_RATIO
+    scale = configs.EMLARGE_RATIO
     return max(x_center - scale * w / 2, 0), max(y_center - scale * h / 2, 0), min(x_center + scale*w / 2, 1), min(y_center + scale * h / 2, 1)
 
 
@@ -55,7 +55,7 @@ def in_centered_in_image(res):
         relative_box = clip_box(relative_box)
         relative_center_x = (relative_box[0] + relative_box[2]) / 2
         print(">>>>>>>>>>>>>>>>>>>>>relative_center_x=",relative_center_x)
-        if config.mission_high > relative_center_x > config.mission_low:
+        if configs.mission_high > relative_center_x > configs.mission_low:
             return True
     return False
 
@@ -73,7 +73,7 @@ def is_sign_valid(res, shape):
     area = calculate_area(box, shape)
     relative_center_x = (box[0] + box[2]) / 2
     valid = False
-    if res[1] > config.sign['threshold'] \
+    if res[1] > configs.SIGN_MODEL['threshold'] \
        and (3000 < area < 15000) \
        and (0.3 < relative_center_x < 0.65):
         valid = True
@@ -83,7 +83,7 @@ def is_sign_valid(res, shape):
 def is_task_valid(o):
     valid = False
     # for o in res:
-    if o[1] > config.task["threshold"]:
+    if o[1] > configs.TASK_MODEL["threshold"]:
         valid = True
     return valid
 
@@ -141,9 +141,9 @@ class DetectionResult:
 class SignDetector:
     def __init__(self):
         self.predictor = predictor_wrapper.PaddleLitePredictor()
-        self.predictor.load(config.sign['model'])
-        self.label_list = config.sign['label_list']
-        self.class_num = config.sign['class_num']
+        self.predictor.load(configs.SIGN_MODEL['model'])
+        self.label_list = configs.SIGN_MODEL['label_list']
+        self.class_num = configs.SIGN_MODEL['class_num']
 
     def detect(self, frame):
         res = infer_ssd(self.predictor, frame)
@@ -180,28 +180,28 @@ class SignDetector:
 class TaskDetector:
     def __init__(self):
         self.predictor = predictor_wrapper.PaddleLitePredictor()
-        self.predictor.load(config.task['model'])
-        self.label_list = config.task['label_list']
+        self.predictor.load(configs.TASK_MODEL['model'])
+        self.label_list = configs.TASK_MODEL['label_list']
 
     # only one gt for one label
     def detect(self, frame):
         nmsed_out = infer_ssd(self.predictor, frame)
         # print("nmsed_out=",nmsed_out)
-        max_indexes = [-1 for i in range(config.MISSION_NUM)]
-        max_scores = [-1 for i in range(config.MISSION_NUM)]
+        max_indexes = [-1 for i in range(configs.MISSION_NUM)]
+        max_scores = [-1 for i in range(configs.MISSION_NUM)]
         # print("max_scores=",max_scores)
         predict_label = nmsed_out[:, 0].tolist()
         predict_score = nmsed_out[:, 1].tolist()
         count = 0
         for label, score in zip(predict_label, predict_score):
-            if score > max_scores[int(label)] and score > config.task['threshold']:
+            if score > max_scores[int(label)] and score > configs.TASK_MODEL['threshold']:
                 max_indexes[int(label)] = count
                 max_scores[int(label)] = score
             count += 1
 
         selected_indexes = [i for i in max_indexes if i != -1]
         task_index = [i for i in selected_indexes if
-                      config.mission_label_list[predict_label[i]] != 'redball' or config.mission_label_list[
+                      configs.mission_label_list[predict_label[i]] != 'redball' or configs.mission_label_list[
                           predict_label[i]] != 'blueball']
         res = nmsed_out[task_index, :]
         results = []

@@ -2,7 +2,7 @@ import sys
 import datetime
 import time
 import cv2
-import config
+import configs
 from widgets import Button
 from tasks import light_work
 from camera import Camera

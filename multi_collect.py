@@ -6,7 +6,7 @@ import json
 
 import cv2
 
-import config
+import configs
 from cart import Cart
 from joystick import JoyStick
 from logger import Logger
@@ -45,7 +45,7 @@ class Collector:
         t = multiprocessing.Process(target=self._controller)
         t.start()
         counter = 0
-        _logger = Logger(config.COLLECTION_SPEED)
+        _logger = Logger(configs.COLLECTION_SPEED)
         _logger.counter = counter
         while self.is_restart.value:
             while not self.is_start.value:
@@ -55,7 +55,7 @@ class Collector:
                 _logger.log(self.x_axis.value)
             _logger.stop()
             counter = _logger.counter
-            _logger = Logger(config.COLLECTION_SPEED)
+            _logger = Logger(configs.COLLECTION_SPEED)
             _logger.counter = counter
         t.join()
 

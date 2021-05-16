@@ -4,7 +4,7 @@ import struct
 
 import cv2
 
-import config
+import configs
 from serial_port import _serial as serial
 
 
