@@ -10,7 +10,7 @@ from tasks import light_work
 from improved_videocapture import BackgroundVideoCapture
 
 CAM_ID = configs.FRONT_CAM
-IS_TEST = False
+IS_TEST = True
 
 start_button = Button(1, 'UP')
 stop_button = Button(1, 'DOWN')
@@ -60,11 +60,11 @@ else:
         start_time = time.time()
         while not start_button.clicked():  # Press the start button to take a photo
             if time.time() - start_time > 10:
-                cam.stop()
+                cam.close()
                 exit(0)
         path = "{}/{}.jpg".format(result_dir, counter)
         counter += 1
-        image = cam.read()
+        _, image = cam.read()
         name = "{}.jpg".format(counter)
         cv2.imwrite(path, image)
         print(path)

@@ -4,7 +4,6 @@ import cv2 as cv
 from threading import Thread, Event, Lock
 
 
-from camera import Camera
 
 class BackgroundVideoCapture(object):
     """Wrapper on OpenCV VideoCapture object.
