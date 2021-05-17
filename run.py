@@ -19,10 +19,8 @@ from god import God
 
 SPEED = configs.RUN_SPEED
 KX = configs.RUN_KX
-STATE = mp.Value('i', 0)
-TASK_ID = mp.Value('i', 0)
-FRAME_QUEUE = mp.Queue()
-LOCK = mp.Lock()
+STATE = 0
+TASK_ID = 0
 RAISE_FLAG_RECORD = 3
 
 
@@ -37,6 +35,7 @@ DRIVER.set_speed(SPEED)
 DRIVER.set_Kx(KX)
 
 TASK_DETECTOR = TaskDetector()
+SIGN_DETECTOR = SignDetector()
 
 
 def task_processor():
@@ -49,65 +48,48 @@ def task_processor():
     if not grabbed:
         exit(-1)
     results = TASK_DETECTOR.detect(frame)
-    if TASK_ID.value == 1:  # raise flag
+    if TASK_ID == 1:  # raise flag
         if RAISE_FLAG_RECORD == 6:
             RAISE_FLAG_RECORD = 3
         raise_flag(RAISE_FLAG_RECORD)
         print('raise flag...')
         RAISE_FLAG_RECORD += 1
-    elif TASK_ID.value == 2:
+    elif TASK_ID == 2:
         shot_target(2)
         print('shot target...')
-    elif TASK_ID.value == 3:
+    elif TASK_ID == 3:
         take_barracks()
         print('take barracks...')
-    elif TASK_ID.value == 4:
+    elif TASK_ID == 4:
         capture_target(1, 2)
         print('capture target...')
-    elif TASK_ID.value == 5:
+    elif TASK_ID == 5:
         transport_forage(1)
         print('transport forage...')
     time.sleep(1)
-    STATE.value = 0
+    STATE = 0
 
 
 def cruise_processor():
     print('cruise...')
     global STATE
     global SPEED
-    global FRAME_QUEUE
-    global LOCK
+    global TASK_ID
+    global SIGN_DETECTOR
+    _has_sign = False
     while True:
         grabbed, frame = FRON_CAMERA.read()
         if not grabbed:
             exit(-1)
-        with LOCK:
-            DRIVER.go(frame)
-        FRAME_QUEUE.put(frame)
-        if STATE.value:
-            break
-
-
-def sign_sub_processor():
-    global STATE
-    global FRAME_QUEUE
-    sign_detector = SignDetector()
-    while True:
-        if STATE.value:
-            continue
-        if FRAME_QUEUE.empty():
-            continue
-        frame = FRAME_QUEUE.get()
-        with LOCK:
-            results = sign_detector.detect(frame)
+        DRIVER.go(frame)
+        results = SIGN_DETECTOR.detect(frame)
         if not results:
-            TASK_ID.value = 0
-            STATE.value = 0
+            STATE = 0
+            TASK_ID = 0
             continue
-        TASK_ID.value = results[0].index
-        STATE.value = 1
-        while not FRAME_QUEUE.empty():
-            FRAME_QUEUE.get()
+        STATE = 1
+        TASK_ID = results[0].index
+        break
 
 
 def run():
@@ -117,12 +99,9 @@ def run():
     while not START_BUTTON.clicked():  # wait for starting
         pass
     print('start operation...')
-    sign_sub = mp.Process(target=sign_sub_processor)
-    sign_sub.daemon = True
-    sign_sub.start()
     while True:
         # wait for stopping
-        state_map[STATE.value]()
+        state_map[STATE]()
     # FRON_CAMERA.close()
     # SIDE_CAMERA.close()
 
