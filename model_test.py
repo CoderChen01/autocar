@@ -2,7 +2,6 @@ import os
 import cv2
 from cruiser import Cruiser
 from detectors import SignDetector,TaskDetector, calculate_area
-from camera import Camera
 import configs
 import time
 #测试图片存放位置和测试输出结果位置
@@ -181,7 +180,7 @@ def test_sign_detector():
 
 
 if __name__ == "__main__":
-    directory = 'image/test_front_image_20561019103718'
+    directory = 'image/test_front_image_20561025013535'
     sign_detector = SignDetector()
     for entry in os.scandir(directory):
         img = cv2.imread(entry.path)

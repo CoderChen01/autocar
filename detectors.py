@@ -5,7 +5,6 @@ import numpy as np
 
 import predictor_wrapper
 import configs
-from camera import Camera
 
 
 ssd_args = {
