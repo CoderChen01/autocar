@@ -1,31 +1,12 @@
 import os
-import cv2
-from cruiser import Cruiser
-from detectors import SignDetector,TaskDetector, calculate_area
-import configs
 import time
-#测试图片存放位置和测试输出结果位置
-cruiser_images_dir = "test/cruise"
-cruiser_result_dir = "test/cruise_res"
-task_images_dir = "test/task"
-task_result_dir = "test/task_res"
-sign_images_dir = "test/sign"
-sign_result_dir = "test/sign_res"
-front_image_dir = "test/front"
-front_result_dir = "test/front_res"
 
-image_extensions = [".png",".jpg",".jpeg"]
+import cv2
 
-def read_dir(dir_path):
-    files = []
-    for filename in os.listdir(dir_path):
-        file_name, file_extension = os.path.splitext(filename)
-        if file_extension.lower() in image_extensions:
-            files.append(filename)
-    return files
+from cruiser import Cruiser
+from detectors import SignDetector, TaskDetector, calculate_area
+import configs
 
-def save_image(frame, save_path):
-    cv2.imwrite(save_path, frame)
 
 def draw_cruise_result(frame, res):
     color = (0, 244, 10)
@@ -40,6 +21,7 @@ def draw_cruise_result(frame, res):
                        fontScale, color, thickness, cv2.LINE_AA)
     print("angle=",txt)
     return frame
+
 
 def draw_res(frame, results):
     res = list(frame.shape)
@@ -61,9 +43,11 @@ def draw_res(frame, results):
         fontScale = 1
         frame = cv2.putText(frame, item.name, org, font,
                            fontScale, color, thickness, cv2.LINE_AA)
+        frame = cv2.putText(frame, str(round(item.relative_center_x, 2)) + ',' + str(round(item.relative_center_y, 2)),
+                            (40, 40), font, fontScale, color, 1, cv2.LINE_AA)
         return frame
 
-#对前向摄像头拍摄的视频文件进行模型推理。
+
 def test_front_video():
     #视频文件
     cap=cv2.VideoCapture('run.avi')
@@ -93,7 +77,7 @@ def test_front_video():
 
 
 if __name__ == "__main__":
-    directory = 'image/test_front_image_20561025013658'
+    directory = 'image/test_front_image_20561025015415'
     sign_detector = SignDetector()
     for entry in os.scandir(directory):
         img = cv2.imread(entry.path)
@@ -101,7 +85,7 @@ if __name__ == "__main__":
         if blow_index == -1:
             continue
         print(entry.name, results[blow_index].relative_center_x, results[blow_index].relative_center_y)
-        # cv2.imwrite(directory + '/' + entry.name.split('.')[0] + '.png', draw_res(img, results))
+        cv2.imwrite(directory + '/' + entry.name.split('.')[0] + '.png', draw_res(img, results))
         # print(results[blow_index].relative_center_y, results[blow_index].index)
     # directory = 'image/side_image_test'
     # task_detector = TaskDetector()

@@ -20,20 +20,6 @@ def name_to_index(name, label_list):
     return None
 
 
-def light_index_to_global(light_index):
-    return light_index
-
-
-def blue_index_to_global(blue_index):
-    return blue_index + 11
-
-
-def yellow_index_to_global(yellow_index):
-    if yellow_index == 0:
-        return 4
-    return 10
-
-
 def clip_box(box):
     xmin, ymin, xmax, ymax = box
     x_center = (xmin + xmax) / 2
@@ -53,7 +39,7 @@ def in_centered_in_image(res):
         relative_box = item.relative_box
         relative_box = clip_box(relative_box)
         relative_center_x = (relative_box[0] + relative_box[2]) / 2
-        print(">>>>>>>>>>>>>>>>>>>>>relative_center_x=",relative_center_x)
+        print('>>>>>>>>>>>>>>>>>>>>>relative_center_x=',relative_center_x)
         if configs.mission_high > relative_center_x > configs.mission_low:
             return True
     return False
@@ -71,10 +57,12 @@ def is_sign_valid(res, shape):
     box = res[2:6]
     area = calculate_area(box, shape)
     relative_center_x = (box[0] + box[2]) / 2
+    relative_center_y = (box[1] + box[3]) / 2
     valid = False
     if res[1] > configs.SIGN_MODEL['threshold'] \
        and (3000 < area < 15000) \
-       and (0.3 < relative_center_x < 0.65):
+       and (0.4 <= relative_center_x <= 0.6) \
+       and (0.2 <= relative_center_y <= 0.3):
         valid = True
     return valid
 
@@ -82,7 +70,7 @@ def is_sign_valid(res, shape):
 def is_task_valid(o):
     valid = False
     # for o in res:
-    if o[1] > configs.TASK_MODEL["threshold"]:
+    if o[1] > configs.TASK_MODEL['threshold']:
         valid = True
     return valid
 
@@ -100,7 +88,7 @@ def res_to_detection(item, label_list, frame):
 
 
 def ssd_preprocess(args, src):
-    shape = args["shape"]
+    shape = args['shape']
     img = cv2.resize(src, (shape[3], shape[2]))
     img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
     img = img.astype(np.float32)
@@ -134,7 +122,7 @@ class DetectionResult:
         self.relative_center_x = -1
 
     def __repr__(self):
-        return "name:{} scroe:{} relative_box: {}".format(self.name, self.score, self.relative_box)
+        return '{name:{} scroe:{} relative_box: {}}'.format(self.name, self.score, self.relative_box)
 
 
 class SignDetector:
@@ -161,19 +149,12 @@ class SignDetector:
 
         maxscore_index_per_class = [i for i in maxscore_index_per_class if i != -1]
         res = res[maxscore_index_per_class, :]
-        blow_center = 0
-        blow_center_index = -1
         results = []
-        results_index = 0
         for item in res:
             if is_sign_valid(item, frame.shape):
                 detect_res = res_to_detection(item, self.label_list, frame)
                 results.append(detect_res)
-                if detect_res.relative_center_y > blow_center:
-                    blow_center_index = results_index
-                    blow_center = detect_res.relative_center_y
-                results_index += 1
-        return results, blow_center_index
+        return results
 
 
 class TaskDetector:
@@ -185,10 +166,10 @@ class TaskDetector:
     # only one gt for one label
     def detect(self, frame):
         nmsed_out = infer_ssd(self.predictor, frame)
-        # print("nmsed_out=",nmsed_out)
+        # print('nmsed_out=',nmsed_out)
         max_indexes = [-1 for i in range(configs.MISSION_NUM)]
         max_scores = [-1 for i in range(configs.MISSION_NUM)]
-        # print("max_scores=",max_scores)
+        # print('max_scores=',max_scores)
         predict_label = nmsed_out[:, 0].tolist()
         predict_score = nmsed_out[:, 1].tolist()
         count = 0
