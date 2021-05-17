@@ -135,8 +135,12 @@ class SignDetector:
     def detect(self, frame):
         res = infer_ssd(self.predictor, frame)
         res = np.array(res)
-        labels = res[:, 0]
-        scores = res[:, 1]
+        print(res)
+        try:
+            labels = res[:, 0]
+            scores = res[:, 1]
+        except IndexError:
+            return []
         # only one box for one class
         maxscore_index_per_class = [-1 for i in range(self.class_num)]
         maxscore_per_class = [-1 for i in range(self.class_num)]
@@ -170,8 +174,11 @@ class TaskDetector:
         max_indexes = [-1 for i in range(configs.MISSION_NUM)]
         max_scores = [-1 for i in range(configs.MISSION_NUM)]
         # print('max_scores=',max_scores)
-        predict_label = nmsed_out[:, 0].tolist()
-        predict_score = nmsed_out[:, 1].tolist()
+        try:
+            predict_label = nmsed_out[:, 0].tolist()
+            predict_score = nmsed_out[:, 1].tolist()
+        except IndexError:
+            return []
         count = 0
         for label, score in zip(predict_label, predict_score):
             if score > max_scores[int(label)] and score > configs.TASK_MODEL['threshold']:
