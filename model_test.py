@@ -49,43 +49,33 @@ def draw_res(frame, results):
 
 
 def test_front_video():
-    #视频文件
-    cap=cv2.VideoCapture('run.avi')
-    cap.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
-    cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
-    time.sleep(1)
-    cruiser = Cruiser()
+    data_dir = 'data/20561025042130'
+    name_range = range(6087)
     sd = SignDetector()
-    time.sleep(1)
-    time_name = time.strftime('%Y-%m-%d-%H-%M-%S', time.localtime(time.time()))
     fourcc = cv2.VideoWriter_fourcc(*'XVID')
+    time_name = time.strftime('%Y-%m-%d-%H-%M-%S', time.localtime(time.time()))
     out = cv2.VideoWriter('./' + time_name + '.avi', fourcc, 6, (640, 480))
-    while True:
-        ret,front_image = cap.read()
-        cruise_result = cruiser.cruise(front_image )
-        frame = draw_cruise_result(front_image , cruise_result)
-        signs, index = sd.detect(frame)
-        draw_res(frame, signs)
-        # frame = cv2.flip(frame, 2)
-        out.write(frame)
-        cv2.imshow("Output", frame)
-        if cv2.waitKey(1) & 0xFF == ord('q'):
-            break
-    cap.release()
+    for name in name_range:
+        front_image = cv2.imread(data_dir + '/' + str(name) + '.jpg')
+        signs = sd.detect(front_image)
+        if signs:
+            front_image = draw_res(front_image, signs)
+        out.write(front_image)
+        print(name)
     out.release()
-    cv2.destroyAllWindows()
 
 
 if __name__ == "__main__":
-    directory = 'image/test_front_image_20561025015415'
-    sign_detector = SignDetector()
-    for entry in os.scandir(directory):
-        img = cv2.imread(entry.path)
-        results = sign_detector.detect(img)
-        if not results:
-            continue
-        print(entry.name, results[0].relative_center_x, results[0].relative_center_y)
-        cv2.imwrite(directory + '/' + entry.name.split('.')[0] + '.png', draw_res(img, results))
+    test_front_video()
+    # directory = 'image/test_front_image_20561025015415'
+    # sign_detector = SignDetector()
+    # for entry in os.scandir(directory):
+    #     img = cv2.imread(entry.path)
+    #     results = sign_detector.detect(img)
+    #     if not results:
+    #         continue
+    #     print(entry.name, results[0].relative_center_x, results[0].relative_center_y)
+    #     cv2.imwrite(directory + '/' + entry.name.split('.')[0] + '.png', draw_res(img, results))
         # print(results[blow_index].relative_center_y, results[blow_index].index)
     # directory = 'image/side_image_test'
     # task_detector = TaskDetector()

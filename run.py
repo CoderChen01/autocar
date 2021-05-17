@@ -107,8 +107,6 @@ def sign_sub_processor():
             continue
         if FRAME_QUEUE.qsize() == 0:
             continue
-        while FRAME_QUEUE.qsize() > 1:
-            FRAME_QUEUE.get()
         frame = FRAME_QUEUE.get()
         with LOCK:
             results = sign_detector.detect(frame)
@@ -118,6 +116,8 @@ def sign_sub_processor():
             continue
         TASK_ID.value = results[0].index
         STATE.value = 1
+        while FRAME_QUEUE.qsize() != 0:
+            FRAME_QUEUE.get()
 
 
 def run():
