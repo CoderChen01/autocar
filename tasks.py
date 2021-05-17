@@ -85,7 +85,7 @@ def transport_forage(motor_port):
     print("transport_forage start!")
     setmotor1 = MotorRotate(motor_port)
     setmotor1.motor_rotate(10)
-    time.sleep(1.5)
+    time.sleep(2.5)
     setmotor1.motor_rotate(0)
     time.sleep(0.2)
     setmotor1.motor_rotate(-30)

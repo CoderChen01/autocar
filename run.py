@@ -44,7 +44,6 @@ def task_processor():
     global STATE
     global RAISE_FLAG_RECORD
     global DRIVER
-    time.sleep(1)
     DRIVER.stop()
     grabbed, frame = SIDE_CAMERA.read()
     for _ in range(30):
@@ -93,7 +92,7 @@ def cruise_processor():
             exit(-1)
         with LOCK:
             DRIVER.go(frame)
-            FRAME_QUEUE.put(frame)
+        FRAME_QUEUE.put(frame)
         if STATE.value:
             break
 
@@ -105,7 +104,7 @@ def sign_sub_processor():
     while True:
         if STATE.value:
             continue
-        if FRAME_QUEUE.qsize() == 0:
+        if FRAME_QUEUE.empty():
             continue
         frame = FRAME_QUEUE.get()
         with LOCK:
@@ -116,7 +115,7 @@ def sign_sub_processor():
             continue
         TASK_ID.value = results[0].index
         STATE.value = 1
-        while FRAME_QUEUE.qsize() != 0:
+        while not FRAME_QUEUE.empty():
             FRAME_QUEUE.get()
 
 
