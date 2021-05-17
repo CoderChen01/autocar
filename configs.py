@@ -26,17 +26,18 @@ CRUISE_MODEL = {
 # sign model
 SIGN_LIST = {
 	0: 'background',
-	1: 'barracks',
-	2: 'fenglangjuxu',
-	3: 'fortress',
-	4: 'soldier',
-	5: 'target'
+	1: 'castle',
+	2: 'target',
+	3: 'stop',
+	4: 'spoil',
+	5: 'hay',
+	6: 'end'
 }
 SIGN_MODEL = {
 	'model': MODEL_DIR_PREFIX + 'models/sign',
 	'threshold': 0.6,
 	'label_list': SIGN_LIST,
-	'class_num': 10
+	'class_num': 7
 }
 MAX_SIGN_PER_FRAME = 2
 HAS_SIGN_THRESHOLD = 80

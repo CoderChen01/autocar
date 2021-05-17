@@ -91,105 +91,17 @@ def test_front_video():
     out.release()
     cv2.destroyAllWindows()
 
-#对前向摄像头拍摄图片进行动态识别，包括车道值，不同的车道值代表了不同的转弯强度
-def test_cruise():
-    front_camera = Camera(configs.front_cam)
-    front_camera.start()
-    time.sleep(1)
-    cruiser = Cruiser()
-    time.sleep(1)
-    for index in range(100):
-        front_image = front_camera.read()
-        cruise_result = cruiser.cruise(front_image )
-        frame = draw_cruise_result(front_image , cruise_result)
-        cv2.imwrite('test/cruise_res/' + str(index) + '.jpg', frame)
-        time.sleep(1)
-
-#前向车道地面标志动态识别
-def test_sign():
-    front_camera = Camera(configs.front_cam)
-    front_camera.start()
-    time.sleep(1)
-    cruiser = Cruiser()
-    sd = SignDetector()
-    time.sleep(1)
-    for index in range(100):
-        front_image = front_camera.read()
-        cruise_result = cruiser.cruise(front_image )
-        frame = draw_cruise_result(front_image , cruise_result)
-        signs, index = sd.detect(frame)
-        frame = draw_res(frame, signs)
-        cv2.imwrite('test/front_res/' + str(index) + '.jpg', frame)
-        time.sleep(1)
-
-#侧向任务动态识别
-def test_task():
-    side_camera = Camera(configs.side_cam)
-    side_camera.start()
-    time.sleep(1)
-    td = TaskDetector()
-    time.sleep(1)
-    while True:
-        side_image = side_camera.read()
-        tasks = td.detect(side_image)
-        draw_res(side_image, tasks)
-        cv2.imshow("Output", side_image)
-        if cv2.waitKey(1) & 0xFF == ord('q'):
-            break
-    side_camera.stop()
-    cv2.destroyAllWindows()
-
-#前向车道和地面标志图片识别
-def test_front():
-    cruiser = Cruiser()
-    sd = SignDetector()
-    files = read_dir(front_image_dir)
-    for filename in files:
-        file_path = os.path.join(front_image_dir, filename)
-        frame = cv2.imread(file_path)
-        cruise_result = cruiser.cruise(frame)
-        frame = draw_cruise_result(frame, cruise_result)
-        signs,index = sd.detect(frame)
-        save_path = os.path.join(front_result_dir, filename)
-        draw_res(frame, signs)
-        save_image(frame, save_path)
-
-#侧向任务模型图片识别
-def test_task_detector():
-    td = TaskDetector()
-    files = read_dir(task_images_dir)
-    for filename in files:
-        file_path = os.path.join(task_images_dir, filename)
-        frame = cv2.imread(file_path)
-        tasks = td.detect(frame)
-        save_path = os.path.join(task_result_dir, filename)
-        draw_res(frame, tasks)
-        save_path(frame, save_path)
-
-#前向车道地面标志识别
-def test_sign_detector():
-    sd = SignDetector()
-    files = read_dir(sign_images_dir)
-    for filename in files:
-        file_path = os.path.join(sign_images_dir, filename)
-        frame = cv2.imread(file_path)
-        tasks,index = sd.detect(frame)
-        save_path = os.path.join(sign_result_dir, filename)
-        draw_res(frame, tasks)
-        save_image(frame, save_path)
-
 
 if __name__ == "__main__":
-    directory = 'image/test_front_image_20561025013535'
+    directory = 'image/test_front_image_20561025013658'
     sign_detector = SignDetector()
     for entry in os.scandir(directory):
         img = cv2.imread(entry.path)
         results, blow_index = sign_detector.detect(img)
-        print(results, blow_index)
         if blow_index == -1:
             continue
-        print(results[blow_index].relative_center_x, results[blow_index].relative_center_y)
-        cv2.imwrite(directory + '/' + entry.name.split('.')[0] + '.jpg', draw_res(img, results))
+        print(entry.name, results[blow_index].relative_center_x, results[blow_index].relative_center_y)
+        # cv2.imwrite(directory + '/' + entry.name.split('.')[0] + '.png', draw_res(img, results))
         # print(results[blow_index].relative_center_y, results[blow_index].index)
     # directory = 'image/side_image_test'
     # task_detector = TaskDetector()
