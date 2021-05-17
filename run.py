@@ -55,22 +55,22 @@ def task_processor():
     if not grabbed:
         exit(-1)
     results = TASK_DETECTOR.detect(frame)
-    if TASK_ID.value == 3:  # raise flag
+    if TASK_ID.value == 1:  # raise flag
         if RAISE_FLAG_RECORD == 6:
             RAISE_FLAG_RECORD = 3
         raise_flag(RAISE_FLAG_RECORD)
         print('raise flag...')
         RAISE_FLAG_RECORD += 1
-    elif TASK_ID.value == 5:
+    elif TASK_ID.value == 2:
         shot_target(2)
         print('shot target...')
-    elif TASK_ID.value == 1:
+    elif TASK_ID.value == 3:
         take_barracks()
         print('take barracks...')
-    elif TASK_ID.value == 2:
+    elif TASK_ID.value == 4:
         capture_target(1, 2)
         print('capture target...')
-    elif TASK_ID.value == 4:
+    elif TASK_ID.value == 5:
         transport_forage(1)
         print('transport forage...')
     STATE.value = 0
