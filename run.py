@@ -93,7 +93,7 @@ def cruise_processor():
             exit(-1)
         with LOCK:
             DRIVER.go(frame)
-        FRAME_QUEUE.put(frame)
+            FRAME_QUEUE.put(frame)
         if STATE.value:
             break
 
