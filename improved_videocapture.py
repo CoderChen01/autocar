@@ -74,3 +74,6 @@ class BackgroundVideoCapture(object):
 
         with self._lock:
             return self._img is not None, self._img
+
+    def __del__(self):
+        self.close()

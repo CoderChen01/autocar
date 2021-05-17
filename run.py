@@ -46,11 +46,6 @@ def task_processor():
     global DRIVER
     DRIVER.stop()
     grabbed, frame = SIDE_CAMERA.read()
-    for _ in range(30):
-        if grabbed:
-            break
-        print('no frame, retrying...')
-        grabbed, frame = SIDE_CAMERA.read()
     if not grabbed:
         exit(-1)
     results = TASK_DETECTOR.detect(frame)
@@ -72,6 +67,7 @@ def task_processor():
     elif TASK_ID.value == 5:
         transport_forage(1)
         print('transport forage...')
+    time.sleep(1)
     STATE.value = 0
 
 
@@ -81,13 +77,8 @@ def cruise_processor():
     global SPEED
     global FRAME_QUEUE
     global LOCK
-    while not STOP_BUTTON.clicked():
+    while True:
         grabbed, frame = FRON_CAMERA.read()
-        for _ in range(30):
-            if grabbed:
-                break
-            print('no frame, retrying...')
-            grabbed, frame = FRON_CAMERA.read()
         if not grabbed:
             exit(-1)
         with LOCK:
@@ -129,11 +120,11 @@ def run():
     sign_sub = mp.Process(target=sign_sub_processor)
     sign_sub.daemon = True
     sign_sub.start()
-    while not STOP_BUTTON.clicked():
+    while True:
         # wait for stopping
         state_map[STATE.value]()
-    FRON_CAMERA.close()
-    SIDE_CAMERA.close()
+    # FRON_CAMERA.close()
+    # SIDE_CAMERA.close()
 
 
 if __name__=='__main__':

@@ -22,7 +22,6 @@ class Driver:
 
     def go(self, frame):
         angle = self.cruiser.cruise(frame)
-        print(angle)
         self.cart.steer(angle)
 
     def speed(self):
