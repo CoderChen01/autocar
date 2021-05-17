@@ -1,5 +1,6 @@
 import time
 
+import configs
 from widgets import *
 from driver import Driver
 

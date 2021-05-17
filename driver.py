@@ -74,4 +74,3 @@ class Driver:
 
     def driver_run(self, left, right):
         self.cart.move([left, right, left, right])
-

@@ -111,12 +111,12 @@ def sign_sub_processor():
             FRAME_QUEUE.get()
         frame = FRAME_QUEUE.get()
         with LOCK:
-            results, blow_index = sign_detector.detect(frame)
+            results = sign_detector.detect(frame)
         if not results:
             TASK_ID.value = 0
             STATE.value = 0
             continue
-        TASK_ID.value = results[blow_index].index
+        TASK_ID.value = results[0].index
         STATE.value = 1
 
 

@@ -81,10 +81,10 @@ if __name__ == "__main__":
     sign_detector = SignDetector()
     for entry in os.scandir(directory):
         img = cv2.imread(entry.path)
-        results, blow_index = sign_detector.detect(img)
-        if blow_index == -1:
+        results = sign_detector.detect(img)
+        if not results:
             continue
-        print(entry.name, results[blow_index].relative_center_x, results[blow_index].relative_center_y)
+        print(entry.name, results[0].relative_center_x, results[0].relative_center_y)
         cv2.imwrite(directory + '/' + entry.name.split('.')[0] + '.png', draw_res(img, results))
         # print(results[blow_index].relative_center_y, results[blow_index].index)
     # directory = 'image/side_image_test'

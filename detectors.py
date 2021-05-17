@@ -122,7 +122,7 @@ class DetectionResult:
         self.relative_center_x = -1
 
     def __repr__(self):
-        return '{name:{} scroe:{} relative_box: {}}'.format(self.name, self.score, self.relative_box)
+        return 'name:{} scroe:{} relative_box: {}'.format(self.name, self.score, self.relative_box)
 
 
 class SignDetector:
