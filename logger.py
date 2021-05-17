@@ -13,7 +13,7 @@ from improved_videocapture import BackgroundVideoCapture
 
 class Logger:
     def __init__(self, velocity=20):
-        self.camera = BackgroundVideoCapture(configs.FRONT_CAM, (160, 120))
+        self.camera = BackgroundVideoCapture(configs.FRONT_CAM)
         self.started = False
         self.stopped_ = False
         self.counter = 0

@@ -3,3 +3,4 @@ models
 test
 .idea
 __pycache__
+data

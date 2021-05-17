@@ -135,7 +135,6 @@ class SignDetector:
     def detect(self, frame):
         res = infer_ssd(self.predictor, frame)
         res = np.array(res)
-        print(res)
         try:
             labels = res[:, 0]
             scores = res[:, 1]

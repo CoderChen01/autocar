@@ -44,7 +44,7 @@ def task_processor():
     global STATE
     global RAISE_FLAG_RECORD
     global DRIVER
-    time.sleep(1.5)
+    time.sleep(1)
     DRIVER.stop()
     grabbed, frame = SIDE_CAMERA.read()
     for _ in range(30):
