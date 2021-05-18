@@ -8,7 +8,7 @@ COLLECTION_SPEED = 35
 
 
 ########################### run config ###########################
-RUN_SPEED = 25
+RUN_SPEED = 23
 RUN_KX = 0.85
 full_speed = 35
 turn_speed = full_speed * 0.8
