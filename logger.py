@@ -16,7 +16,7 @@ class Logger:
         self.camera = cv2.VideoCapture(configs.FRONT_CAM)
         self.camera.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
         self.camera.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
-        self.camera.set(cv2.CAP_PROP_FOURCC, cv.VideoWriter_fourcc('M', 'J', 'P', 'G'))
+        self.camera.set(cv2.CAP_PROP_FOURCC, cv2.VideoWriter_fourcc('M', 'J', 'P', 'G'))
         self.started = False
         self.stopped_ = False
         self.counter = 0
