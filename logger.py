@@ -13,7 +13,10 @@ from improved_videocapture import BackgroundVideoCapture
 
 class Logger:
     def __init__(self, velocity=20):
-        self.camera = BackgroundVideoCapture(configs.FRONT_CAM, (160,120))
+        self.camera = cv2.VideoCapture(configs.FRONT_CAM)
+        self.camera.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
+        self.camera.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
+        self.camera.set(cv.CAP_PROP_FOURCC, cv.VideoWriter_fourcc('M', 'J', 'P', 'G'))
         self.started = False
         self.stopped_ = False
         self.counter = 0
@@ -33,7 +36,7 @@ class Logger:
             return
         self.stopped_ = True
         self.cart.stop()
-        self.camera.close()
+        self.camera.release()
         path = "{}/result.json".format(self.result_dir)
         with open(path, 'w') as fp:
             json.dump(self.map.copy(), fp)
