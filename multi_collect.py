@@ -10,6 +10,7 @@ import configs
 from cart import Cart
 from joystick import JoyStick
 from logger import Logger
+from widgets import Buzzer
 
 
 
@@ -45,6 +46,8 @@ class Collector:
         t = multiprocessing.Process(target=self._controller)
         t.start()
         counter = 0
+        sum_circle = 0
+        buzzer = Buzzer()
         _logger = Logger(configs.COLLECTION_SPEED)
         _logger.counter = counter
         while self.is_restart.value:
@@ -54,6 +57,11 @@ class Collector:
             while self.is_start.value:
                 _logger.log(self.x_axis.value)
             _logger.stop()
+            sum_circle += 1
+            if sum_circle >= configs.SUM_CIRCLE:
+                for _ in range(3):
+                    buzzer.rings()
+                    time.sleep(1)
             counter = _logger.counter
             _logger = Logger(configs.COLLECTION_SPEED)
             _logger.counter = counter
