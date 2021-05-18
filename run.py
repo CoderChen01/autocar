@@ -76,7 +76,6 @@ def cruise_processor():
     global SPEED
     global TASK_ID
     global SIGN_DETECTOR
-    _has_sign = False
     while True:
         grabbed, frame = FRON_CAMERA.read()
         if not grabbed:
