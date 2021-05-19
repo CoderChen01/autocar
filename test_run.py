@@ -5,7 +5,7 @@ import cv2
 import configs
 from widgets import Button
 from tasks import light_work
-from camera import Camera
+from improved_videocapture import BackgroundVideoCapture
 from driver import Driver, SLOW_DOWN_RATE
 
 if __name__ == '__main__':
@@ -13,7 +13,7 @@ if __name__ == '__main__':
     #  模型返回结果为detectors.DetectionResult类
     start_button = Button(1, 'UP')
     stop_button = Button(1, 'DOWN')
-    front_camera = Camera(0)
+    front_camera = BackgroundVideoCapture(0)
     driver = Driver()
     front_camera.start()
     # 基准速度
@@ -28,7 +28,7 @@ if __name__ == '__main__':
             break
         print("Wait for start!")
     while True:
-        front_image = front_camera.read()
+        _, front_image = front_camera.read()
         driver.go(front_image)
         if stop_button.clicked():
             print("End of program!")
