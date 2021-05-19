@@ -130,5 +130,7 @@ def change_camera_direction(servo_485_port, direction):
 
 if __name__ == '__main__':
     time.sleep(4)
-    change_camera_direction(2, 0)
+    # change_camera_direction(2, 0)
+    # time.sleep(1)
+    shot_target(2)
     time.sleep(1)
