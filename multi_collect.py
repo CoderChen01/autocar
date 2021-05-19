@@ -40,8 +40,7 @@ class Collector:
                 print('axis:{} state: {}'.format(number, value))
                 if number == 2 or number == 6:
                     self.x_axis.value = value * 1.0 / 32767
-                else:
-                    self.x_axis.value = 0
+
     def run(self):
         t = multiprocessing.Process(target=self._controller)
         t.start()
