@@ -7,7 +7,7 @@ import configs
 from cart import Cart
 from joystick import JoyStick
 from serial_logger import Logger
-from widgets import Buzzer
+from widgets import Buzzer, Servo
 
 
 LOGGER = Logger(configs.COLLECTION_SPEED)
@@ -15,6 +15,11 @@ BUZZER = Buzzer()
 CONTROLLER = JoyStick()
 CONTROLLER.open()
 time.sleep(2)
+
+time.sleep(6)
+s = Servo(1)
+s.servocontrol(-80, 100)
+time.sleep(20)
 
 X_AXIS = 0
 COUNTER = 0
