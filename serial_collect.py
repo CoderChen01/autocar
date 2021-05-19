@@ -8,10 +8,8 @@ from cart import Cart
 from joystick import JoyStick
 from serial_logger import Logger
 from widgets import Buzzer
-from improved_videocapture import BackgroundVideoCapture
 
 
-CAMERA = BackgroundVideoCapture(configs.FRONT_CAM)
 LOGGER = Logger(configs.COLLECTION_SPEED)
 BUZZER = Buzzer()
 CONTROLLER = JoyStick()
