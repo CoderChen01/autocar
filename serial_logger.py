@@ -43,6 +43,7 @@ class Logger:
             self.cart.steer(axis)
             _, image = self.camera.read()
             path = "{}/{}.jpg".format(self.result_dir, self.counter)
+            print(path)
             self.map[self.counter] = axis
             threading.Thread(target=cv2.imwrite, args=(path, image)).start()
             self.counter = self.counter + 1

@@ -23,9 +23,7 @@ X_AXIS = 0
 COUNTER = 0
 SUM_CIRCLE = 0
 
-IS_FIRST = True
 IS_START = False
-IS_RESTART = False
 
 while True:
     _, value, type_, number = CONTROLLER.read()
@@ -33,15 +31,17 @@ while True:
         if number == 6 and value == 1:
             LOGGER.start()
             IS_START = True
-            IS_RESTART = True
-            IS_FIRST = False
         elif number == 7 and value == 1:
             IS_START = False
-            IS_RESTART = False
-            IS_FIRST = False
+            LOGGER.stop()
+            break
         elif number == 1 and value == 1:
             IS_START = False
-            IS_RESTART = True
+            COUNTER = LOGGER.counter
+            LOGGER.stop()
+            del LOGGER
+            LOGGER = Logger(configs.COLLECTION_SPEED)
+            LOGGER.counter = COUNTER
             SUM_CIRCLE += 1
             if SUM_CIRCLE == configs.SUM_CIRCLE:
                 for _ in range(3):
@@ -51,15 +51,5 @@ while True:
         if number == 6:
             X_AXIS = value / 32767
 
-    if not IS_FIRST and IS_RESTART and IS_START:
+    if IS_START:
         LOGGER.log(X_AXIS)
-    elif not IS_FIRST and IS_RESTART and not IS_START:
-        IS_FIRST = True
-        COUNTER = LOGGER.counter
-        LOGGER.stop()
-        del LOGGER
-        LOGGER = Logger(configs.COLLECTION_SPEED)
-        LOGGER.counter = COUNTER
-    elif not IS_FIRST and not IS_RESTART:
-        LOGGER.stop()
-        break
