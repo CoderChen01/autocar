@@ -45,7 +45,7 @@ while True:
                     BUZZER.rings()
                     time.sleep(1)
     elif CONTROLLER.type(type_) == 'axis':
-        if number == 2:
+        if number == 6:
             X_AXIS = value / 32767
 
     if not IS_FIRST and IS_RESTART and IS_START:
