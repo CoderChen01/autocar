@@ -16,9 +16,9 @@ if __name__ == '__main__':
     front_camera = BackgroundVideoCapture(0)
     driver = Driver()
     # 基准速度
-    driver.set_speed(35)
+    driver.set_speed(25)
     # 转弯系数
-    driver.cart.Kx = 0.95
+    driver.cart.Kx = 0.85
     # 延时
     time.sleep(0.5)
     while True:

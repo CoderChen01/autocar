@@ -2,7 +2,6 @@ import os
 import time
 from datetime import datetime
 import multiprocessing
-import json
 
 import cv2
 
@@ -28,20 +27,21 @@ class Collector:
             _, value, type_, number = self.js.read()
             if self.js.type(type_) == 'button':
                 print('button:{} state: {}'.format(number, value))
-                if number == 6 and value == 1:
+                if number == 6 and value == 1:  # start
                     self.is_start.value = 1
-                elif number == 7 and value == 1:
+                elif number == 7 and value == 1:  # stop
                     self.is_start.value = 0
                     self.is_restart.value = 0
                     self.stopped.value = 1
-                elif number == 1 and value == 1:
+                elif number == 1 and value == 1:  # restart
                     self.is_restart.value = 1
                     self.is_start.value = 0
             elif self.js.type(type_) == 'axis':
                 print('axis:{} state: {}'.format(number, value))
                 if number == 2 or number == 6:
                     self.x_axis.value = value * 1.0 / 32767
-
+                else:
+                    self.x_axis.value = 0
     def run(self):
         t = multiprocessing.Process(target=self._controller)
         t.start()
