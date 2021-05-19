@@ -15,7 +15,6 @@ if __name__ == '__main__':
     stop_button = Button(1, 'DOWN')
     front_camera = BackgroundVideoCapture(0)
     driver = Driver()
-    front_camera.start()
     # 基准速度
     driver.set_speed(35)
     # 转弯系数
