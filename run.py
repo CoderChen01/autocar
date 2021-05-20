@@ -40,6 +40,9 @@ SIGN_DETECTOR = SignDetector()
 
 
 def init():
+    """
+    Initialize operation, lock the servo
+    """
     time.sleep(4)
     vs1 = Servo(1)
     vs2 = Servo(2)
@@ -56,6 +59,14 @@ def init():
     time.sleep(1)
     s5.servocontrol(0, 100)
     time.sleep(1)
+
+
+def is_valid(x, y, threshold):
+    """
+    Determine whether the target meets the threshold
+    """
+    return threshold[0][0] < x < threshold[0][1] \
+           and threshold[1][0] < y < threshold[1][1]
 
 
 def _raise_flag():
@@ -76,7 +87,7 @@ def _raise_flag():
         'dxj': ((), ())
     }
     is_scan = False
-    DRIVER.driver_run(15, 15)
+    DRIVER.driver_run(10, 10)
     time.sleep(1)
     while True:
         distance = LEFT_ULTRASONICSENSOR.read()
@@ -107,8 +118,34 @@ def _raise_flag():
 
 
 def _shot_target():
-    shot_target(2)
     print('shot target...')
+    global DRIVER
+    global SIDE_CAMERA
+    global TASK_DETECTOR
+    target = 'target'
+    target_threshold = {
+        'target': ((0.25, 0.32), (0.35, 0.42))
+    }
+
+    DRIVER.driver_run(10, 10)
+    time.sleep(1)
+
+    while True:
+        grabbed, frame = SIDE_CAMERA.read()
+        if not grabbed:
+            exit(-1)
+        results = TASK_DETECTOR.detect(frame)
+        if not results:
+            continue
+        print(results[0].name)
+        if results[0].name == target \
+           and is_valid(results[0].relative_center_x,
+                        results[0].relative_center_y,
+                        target_threshold[results[0].name]):
+            DRIVER.stop()
+            time.sleep(1)
+            shot_target(2)
+            break
 
 
 def _take_barracks():

@@ -25,10 +25,7 @@ def draw_cruise_result(frame, res):
 
 def draw_res(frame, results):
     res = list(frame.shape)
-    print(results)
     for item in results:
-        print(item)
-        print(type(item))
         left = item.relative_box[0] * res[1]
         top = item.relative_box[1] * res[0]
         right = item.relative_box[2] * res[1]
@@ -67,7 +64,7 @@ def test_front_video():
 
 if __name__ == "__main__":
     # test_front_video()
-    directory = 'image/test_side_image_20561028054740'
+    directory = 'image/test_side_image_20561028055522'
     sign_detector = TaskDetector()
     for entry in os.scandir(directory):
         img = cv2.imread(entry.path)

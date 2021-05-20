@@ -133,8 +133,11 @@ if __name__ == '__main__':
     # time.sleep(2)
     # s.servocontrol(200, 100)
     # time.sleep(2)
-    ul = UltrasonicSensor(4)
-    while True:
-        start = time.time()
-        print(ul.read())
-        print(time.time() - start)
+    s = ServoPWM(6)
+    s.servocontrol(90, 100)
+    time.sleep(1)
+    # ul = UltrasonicSensor(4)
+    # while True:
+    #     start = time.time()
+    #     print(ul.read())
+    #     print(time.time() - start)
