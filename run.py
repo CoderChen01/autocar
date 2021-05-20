@@ -9,7 +9,8 @@ import configs
 from tasks import *
 from detectors import SignDetector
 from detectors import TaskDetector
-from widgets import Button
+from widgets import Button, UltrasonicSensor
+from widgets import Servo, ServoPWM
 from cruiser import Cruiser
 from driver import Driver
 from cart import Cart
@@ -21,12 +22,12 @@ SPEED = configs.RUN_SPEED
 KX = configs.RUN_KX
 STATE = 0
 TASK_ID = 0
-RAISE_FLAG_RECORD = 3
+IS_FIRST_FLAGE = True
 
 
 START_BUTTON = Button(1, 'UP')
 STOP_BUTTON = Button(1, 'DOWN')
-
+LEFT_ULTRASONICSENSOR = UltrasonicSensor(4)
 FRON_CAMERA = BackgroundVideoCapture(configs.FRONT_CAM)
 SIDE_CAMERA = BackgroundVideoCapture(configs.SIDE_CAM)
 
@@ -38,34 +39,111 @@ TASK_DETECTOR = TaskDetector()
 SIGN_DETECTOR = SignDetector()
 
 
+def init():
+    time.sleep(4)
+    vs1 = Servo(1)
+    vs2 = Servo(2)
+    s3 = ServoPWM(3)
+    s4 = ServoPWM(4)
+    s5 = ServoPWM(5)
+    vs1.servocontrol(-80, 100)
+    time.sleep(1)
+    vs2.servocontrol(40, 100)
+    time.sleep(1)
+    s3.servocontrol(0, 100)
+    time.sleep(1)
+    s4.servocontrol(0, 100)
+    time.sleep(1)
+    s5.servocontrol(0, 100)
+    time.sleep(1)
+
+
+def _raise_flag():
+    print('raise flag...')
+    global DRIVER
+    global SIDE_CAMERA
+    global TASK_DETECTOR
+    global IS_FIRST_FLAGE
+    flags = ['dh', 'dj', 'dxj']
+    flag_map = {
+        'dh': 3,
+        'dj': 4,
+        'dxj': 5
+    }
+    flag_threshold = {
+        'dh': ((), ()),
+        'dj': ((), ()),
+        'dxj': ((), ())
+    }
+    is_scan = False
+    DRIVER.driver_run(15, 15)
+    time.sleep(1)
+    while True:
+        distance = LEFT_ULTRASONICSENSOR.read()
+        if distance and distance < 30 \
+           and not is_scan:
+            is_scan = True
+        if not is_scan:
+            continue
+        grabbed, frame = SIDE_CAMERA.read()
+        if not grabbed:
+            exit(-1)
+        results = TASK_DETECTOR.detect(frame)
+        if not results:
+            distance = LEFT_ULTRASONICSENSOR.read()
+            if distance and distance > 30:
+                break
+            continue
+        if results[0].relative_center_x > 0.8 \
+           and results[0].name in flags:
+            DRIVER.stop()
+            time.sleep(1)
+            raise_flag(flag_map[results[0].name])
+            if IS_FIRST_FLAGE:
+                change_camera_direction(2, 'right')
+                time.sleep(1)
+                IS_FIRST_FLAGE = False
+            break
+
+
+def _shot_target():
+    shot_target(2)
+    print('shot target...')
+
+
+def _take_barracks():
+    take_barracks()
+    print('take barracks...')
+
+
+def _capture_target():
+    change_camera_direction(2, 'left')
+    time.sleep(1)
+    capture_target(1, 2)
+    change_camera_direction(2, 'right')
+    print('capture target...')
+
+
+def _transport_forage():
+    transport_forage(1)
+    change_camera_direction(2, 'left')
+    print('transport forage...')
+
+
 def task_processor():
     print('task...')
     global STATE
-    global RAISE_FLAG_RECORD
     global DRIVER
+    task_map = {
+        1: _raise_flag,
+        2: _shot_target,
+        3: _take_barracks,
+        4: _capture_target,
+        5: _transport_forage
+    }
     DRIVER.stop()
-    grabbed, frame = SIDE_CAMERA.read()
-    if not grabbed:
-        exit(-1)
-    results = TASK_DETECTOR.detect(frame)
-    if TASK_ID == 1:  # raise flag
-        if RAISE_FLAG_RECORD == 6:
-            RAISE_FLAG_RECORD = 3
-        raise_flag(RAISE_FLAG_RECORD)
-        print('raise flag...')
-        RAISE_FLAG_RECORD += 1
-    elif TASK_ID == 2:
-        shot_target(2)
-        print('shot target...')
-    elif TASK_ID == 3:
-        take_barracks()
-        print('take barracks...')
-    elif TASK_ID == 4:
-        capture_target(1, 2)
-        print('capture target...')
-    elif TASK_ID == 5:
-        transport_forage(1)
-        print('transport forage...')
+    time.sleep(1)
+    task_map[TASK_ID]()
     time.sleep(1)
     STATE = 0
 
@@ -94,6 +172,7 @@ def cruise_processor():
 def run():
     global FRON_CAMERA
     global SIDE_CAMERA
+    init()
     state_map = [cruise_processor, task_processor]
     while not START_BUTTON.clicked():  # wait for starting
         pass

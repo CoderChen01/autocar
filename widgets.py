@@ -128,8 +128,13 @@ if __name__ == '__main__':
     # b = Button(1, 'LEFT')
     # while True:
     #     print(b.clicked())
-    s = ServoPWM(6)
-    s.servocontrol(0, 100)
-    time.sleep(2)
-    s.servocontrol(200, 100)
-    time.sleep(2)
+    # s = ServoPWM(6)
+    # s.servocontrol(0, 100)
+    # time.sleep(2)
+    # s.servocontrol(200, 100)
+    # time.sleep(2)
+    ul = UltrasonicSensor(4)
+    while True:
+        start = time.time()
+        print(ul.read())
+        print(time.time() - start)

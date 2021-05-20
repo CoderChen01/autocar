@@ -15,7 +15,7 @@ BUZZER = Buzzer()
 CONTROLLER = JoyStick()
 CONTROLLER.open()
 
-time.sleep(6)
+time.sleep(4)
 s = Servo(1)
 s.servocontrol(-80, 100)
 

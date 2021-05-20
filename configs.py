@@ -46,11 +46,12 @@ HAS_SIGN_THRESHOLD = 80
 # task model
 TASK_LIST = {
 	0: 'background',
-	1: 'daijun',
-	2: 'dunhuang',
-	3: 'dingxiangjun',
+	1: 'dh',
+	2: 'dj',
+	3: 'dxj',
 	4: 'target',
-	5: 'trophies'
+	5: 'spoil',
+	6: 'hay'
 }
 TASK_MODEL = {
 	'model':MODEL_DIR_PREFIX + 'models/task',

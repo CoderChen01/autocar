@@ -122,15 +122,15 @@ def take_barracks():
 
 def change_camera_direction(servo_485_port, direction):
     servo = Servo(servo_485_port)
-    if direction:  # right
+    if direction == 'right':  # right
         servo.servocontrol(-125, 100)
-    else:
+    elif direction == 'left':
         servo.servocontrol(40, 100)
 
 
 if __name__ == '__main__':
     time.sleep(4)
-    # change_camera_direction(2, 0)
-    # time.sleep(1)
-    shot_target(2)
+    change_camera_direction(2, 1)
     time.sleep(1)
+    # shot_target(2)
+    # time.sleep(1)
