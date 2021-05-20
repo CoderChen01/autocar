@@ -101,31 +101,15 @@ class SignDetector:
         self.class_num = configs.SIGN_MODEL['class_num']
 
     def detect(self, frame):
-        res = infer_ssd(self.predictor, frame)
-        res = np.array(res)
+        nmsed_out = infer_ssd(self.predictor, frame)
         try:
-            labels = res[:, 0]
-            scores = res[:, 1]
+            predict_score = nmsed_out[:, 1].tolist()
         except IndexError:
-            return []
-        # only one box for one class
-        maxscore_index_per_class = [-1 for i in range(self.class_num)]
-        maxscore_per_class = [-1 for i in range(self.class_num)]
-        count = 0
-        for label, score in zip(labels, scores):
-            if score > maxscore_per_class[int(label)]:
-                maxscore_per_class[int(label)] = score
-                maxscore_index_per_class[int(label)] = count
-            count += 1
-
-        maxscore_index_per_class = [i for i in maxscore_index_per_class if i != -1]
-        res = res[maxscore_index_per_class, :]
-        results = []
-        for item in res:
-            if is_sign_valid(item, frame.shape):
-                detect_res = res_to_detection(item, self.label_list, frame)
-                results.append(detect_res)
-        return results
+            return
+        res = nmsed_out[predict_score.index(max(predict_score))]
+        if not is_sign_valid(res, frame.shape):
+            return
+        return res_to_detection(res, self.label_list, frame)
 
 
 class TaskDetector:
@@ -134,30 +118,13 @@ class TaskDetector:
         self.predictor.load(configs.TASK_MODEL['model'])
         self.label_list = configs.TASK_MODEL['label_list']
 
-    # only one gt for one label
     def detect(self, frame):
         nmsed_out = infer_ssd(self.predictor, frame)
-        # print('nmsed_out=',nmsed_out)
-        max_indexes = [-1 for i in range(configs.MISSION_NUM)]
-        max_scores = [-1 for i in range(configs.MISSION_NUM)]
-        # print('max_scores=',max_scores)
         try:
-            predict_label = nmsed_out[:, 0].tolist()
             predict_score = nmsed_out[:, 1].tolist()
         except IndexError:
-            return []
-        count = 0
-        for label, score in zip(predict_label, predict_score):
-            if score > max_scores[int(label)] and score > configs.TASK_MODEL['threshold']:
-                max_indexes[int(label)] = count
-                max_scores[int(label)] = score
-            count += 1
-
-        selected_indexes = [i for i in max_indexes if i != -1]
-        task_index = [i for i in selected_indexes if
-                      configs.TASK_LIST[predict_label[i]] != 'redball' or configs.TASK_LIST[
-                          predict_label[i]] != 'blueball']
-        res = nmsed_out[task_index, :]
-        res_threshold = [item[1] for item in res]
-        max_threshold_index = res_threshold.index(max(res_threshold))
-        return res_to_detection(res[max_threshold_index], self.label_list, frame)
+            return
+        res = nmsed_out[predict_score.index(max(predict_score))]
+        if not is_task_valid(res):
+            return
+        return res_to_detection(res, self.label_list, frame)
