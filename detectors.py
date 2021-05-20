@@ -13,38 +13,6 @@ ssd_args = {
 }
 
 
-def name_to_index(name, label_list):
-    for k, v in label_list.items():
-        if v == name:
-            return k
-    return None
-
-
-def clip_box(box):
-    xmin, ymin, xmax, ymax = box
-    x_center = (xmin + xmax) / 2
-    y_center = (ymin + ymax) / 2
-    h = ymax - ymin
-    w = xmax - xmin
-    scale = configs.EMLARGE_RATIO
-    return max(x_center - scale * w / 2, 0), max(y_center - scale * h / 2, 0), min(x_center + scale*w / 2, 1), min(y_center + scale * h / 2, 1)
-
-
-def in_centered_in_image(res):
-    for item in res:
-        # TODO
-        # if config.mission_label_list[int(item.index)] == 'redball' or config.mission_label_list[
-        #     int(item.index)] == 'blueball':
-        #     continue
-        relative_box = item.relative_box
-        relative_box = clip_box(relative_box)
-        relative_center_x = (relative_box[0] + relative_box[2]) / 2
-        print('>>>>>>>>>>>>>>>>>>>>>relative_center_x=',relative_center_x)
-        if configs.mission_high > relative_center_x > configs.mission_low:
-            return True
-    return False
-
-
 def calculate_area(relative_box, shape):
     left = relative_box[0] * shape[1]
     top = relative_box[1] * shape[0]
@@ -62,7 +30,7 @@ def is_sign_valid(res, shape):
     if res[1] > configs.SIGN_MODEL['threshold'] \
        and (3000 < area < 15000) \
        and (0.4 <= relative_center_x <= 0.6) \
-       and (0.2 <= relative_center_y <= 0.3):
+       and (0.65 <= relative_center_y <= 1):
         valid = True
     return valid
 
@@ -190,9 +158,6 @@ class TaskDetector:
                       configs.TASK_LIST[predict_label[i]] != 'redball' or configs.TASK_LIST[
                           predict_label[i]] != 'blueball']
         res = nmsed_out[task_index, :]
-        results = []
-        for item in res:
-            if is_task_valid(item):
-                # TODO
-                results.append(res_to_detection(item, self.label_list, frame))
-        return results
+        res_threshold = [item[1] for item in res]
+        max_threshold_index = res_threshold.index(max(res_threshold))
+        return res_to_detection(res[max_threshold_index], self.label_list, frame)
