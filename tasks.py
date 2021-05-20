@@ -51,7 +51,6 @@ def raise_flag(servo_port):
 
 
 def shot_target(motor_port):
-    print("shot_target start!")
     setmotor1 = MotorRotate(motor_port)
     time.sleep(0.5)
     for _ in range(2):
@@ -62,7 +61,6 @@ def shot_target(motor_port):
         setmotor1.motor_rotate(-70)
         time.sleep(1)
         setmotor1.motor_rotate(0)
-    print("shot_target stop!")
 
 
 def capture_target(servo_485_id, servo_pwm_id):
@@ -82,16 +80,19 @@ def capture_target(servo_485_id, servo_pwm_id):
 
 
 def transport_forage(motor_port):
-    print("transport_forage start!")
     setmotor1 = MotorRotate(motor_port)
-    setmotor1.motor_rotate(10)
+    servo = ServoPWM(6)
+    setmotor1.motor_rotate(15)
     time.sleep(2.5)
     setmotor1.motor_rotate(0)
+    time.sleep(0.2)
+    servo.servocontrol(90, 10)
+    time.sleep(0.2)
+    servo.servocontrol(0, 100)
     time.sleep(0.2)
     setmotor1.motor_rotate(-30)
     time.sleep(0.2)
     setmotor1.motor_rotate(0)
-    print("transport_forage stop!")
 
 
 def take_barracks():
