@@ -64,30 +64,20 @@ def _raise_flag():
         'dj': ((), ()),
         'dxj': ((), ())
     }
-    is_scan = False
     DRIVER.driver_run(10, 10)
     time.sleep(1)
     while True:
-        distance = LEFT_ULTRASONICSENSOR.read()
-        if distance and distance < 30 \
-           and not is_scan:
-            is_scan = True
-        if not is_scan:
-            continue
         grabbed, frame = SIDE_CAMERA.read()
         if not grabbed:
             exit(-1)
-        results = TASK_DETECTOR.detect(frame)
-        if not results:
-            distance = LEFT_ULTRASONICSENSOR.read()
-            if distance and distance > 30:
-                break
+        result = TASK_DETECTOR.detect(frame)
+        if not result:
             continue
-        if results[0].relative_center_x > 0.8 \
-           and results[0].name in flags:
+        if result.relative_center_x > 0.8 \
+           and result.name in flags:
             DRIVER.stop()
             time.sleep(1)
-            raise_flag(flag_map[results[0].name])
+            raise_flag(flag_map[result.name])
             if IS_FIRST_FLAGE:
                 change_camera_direction(2, 'right')
                 time.sleep(1)
@@ -112,14 +102,14 @@ def _shot_target():
         grabbed, frame = SIDE_CAMERA.read()
         if not grabbed:
             exit(-1)
-        results = TASK_DETECTOR.detect(frame)
-        if not results:
+        result = TASK_DETECTOR.detect(frame)
+        if not result:
             continue
-        print(results[0].name)
-        if results[0].name == target \
-           and is_valid(results[0].relative_center_x,
-                        results[0].relative_center_y,
-                        target_threshold[results[0].name]):
+        print(result.name)
+        if result.name == target \
+           and is_valid(result.relative_center_x,
+                        result.relative_center_y,
+                        target_threshold[result.name]):
             DRIVER.stop()
             time.sleep(1)
             shot_target(2)
