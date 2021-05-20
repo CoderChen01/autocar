@@ -158,9 +158,6 @@ class TaskDetector:
                       configs.TASK_LIST[predict_label[i]] != 'redball' or configs.TASK_LIST[
                           predict_label[i]] != 'blueball']
         res = nmsed_out[task_index, :]
-        results = []
-        for item in res:
-            if is_task_valid(item):
-                # TODO
-                results.append(res_to_detection(item, self.label_list, frame))
-        return results
+        res_threshold = [item[1] for item in res]
+        max_threshold_index = res_threshold.index(max(res_threshold))
+        return res_to_detection(res[max_threshold_index], self.label_list, frame)
