@@ -7,7 +7,7 @@ from driver import Driver
 
 def buzzing():
     buzzer = Buzzer()
-    for _ in range(10):
+    for _ in range(3):
         buzzer.rings()
         time.sleep(0.5)
 

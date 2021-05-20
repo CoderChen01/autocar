@@ -20,7 +20,7 @@ from god import God
 
 SPEED = configs.RUN_SPEED
 KX = configs.RUN_KX
-STATE = 0
+STATE = 2
 TASK_ID = 0
 IS_FIRST_FLAGE = True
 
@@ -37,28 +37,6 @@ DRIVER.set_Kx(KX)
 
 TASK_DETECTOR = TaskDetector()
 SIGN_DETECTOR = SignDetector()
-
-
-def init():
-    """
-    Initialize operation, lock the servo
-    """
-    time.sleep(4)
-    vs1 = Servo(1)
-    vs2 = Servo(2)
-    s3 = ServoPWM(3)
-    s4 = ServoPWM(4)
-    s5 = ServoPWM(5)
-    vs1.servocontrol(-80, 100)
-    time.sleep(1)
-    vs2.servocontrol(40, 100)
-    time.sleep(1)
-    s3.servocontrol(0, 100)
-    time.sleep(1)
-    s4.servocontrol(0, 100)
-    time.sleep(1)
-    s5.servocontrol(0, 100)
-    time.sleep(1)
 
 
 def is_valid(x, y, threshold):
@@ -167,6 +145,58 @@ def _transport_forage():
     print('transport forage...')
 
 
+def _end():
+    print('end...')
+    global IS_FIRST_FLAGE
+    global STATE
+    DRIVER.driver_run(20, 20)
+    time.sleep(0.5)
+
+    start = time.time()
+    while True:
+        if time.time() - start > 3:
+            break
+
+    DRIVER.stop()
+    time.sleep(1)
+
+    IS_FIRST_FLAGE = True
+    STATE = 2
+
+
+def init():
+    """
+    Initialize operation, lock the servo
+    """
+    time.sleep(4)
+    vs1 = Servo(1)
+    vs2 = Servo(2)
+    s3 = ServoPWM(3)
+    s4 = ServoPWM(4)
+    s5 = ServoPWM(5)
+    vs1.servocontrol(-80, 100)
+    time.sleep(1)
+    vs2.servocontrol(40, 100)
+    time.sleep(1)
+    s3.servocontrol(0, 100)
+    time.sleep(1)
+    s4.servocontrol(0, 100)
+    time.sleep(1)
+    s5.servocontrol(0, 100)
+    time.sleep(1)
+
+
+def wait_start():
+    global STATE
+    init()
+    print('loading finished...')
+    buzzing()
+    while not START_BUTTON.clicked():  # wait for starting
+        pass
+    print('start operation...')
+    STATE = 0
+
+
 def task_processor():
     print('task...')
     global STATE
@@ -176,7 +206,8 @@ def task_processor():
         2: _shot_target,
         3: _take_barracks,
         4: _capture_target,
-        5: _transport_forage
+        5: _transport_forage,
+        6: _end
     }
     DRIVER.stop()
     time.sleep(1)
@@ -196,29 +227,20 @@ def cruise_processor():
         if not grabbed:
             exit(-1)
         DRIVER.go(frame)
-        results = SIGN_DETECTOR.detect(frame)
-        if not results:
+        result = SIGN_DETECTOR.detect(frame)
+        if not result:
             STATE = 0
             TASK_ID = 0
             continue
         STATE = 1
-        TASK_ID = results[0].index
+        TASK_ID = result.index
         break
 
 
 def run():
-    global FRON_CAMERA
-    global SIDE_CAMERA
-    init()
-    state_map = [cruise_processor, task_processor]
-    while not START_BUTTON.clicked():  # wait for starting
-        pass
-    print('start operation...')
+    state_map = [cruise_processor, task_processor, wait_start]
     while True:
-        # wait for stopping
         state_map[STATE]()
-    # FRON_CAMERA.close()
-    # SIDE_CAMERA.close()
 
 
 if __name__=='__main__':
