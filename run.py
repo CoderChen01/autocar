@@ -117,22 +117,22 @@ def _shot_target():
 
 
 def _take_barracks():
-    take_barracks()
+    # take_barracks()
     print('take barracks...')
 
 
 def _capture_target():
+    print('capture target...')
     change_camera_direction(2, 'left')
     time.sleep(1)
-    capture_target(1, 2)
+    # capture_target(1, 2)
     change_camera_direction(2, 'right')
-    print('capture target...')
 
 
 def _transport_forage():
-    transport_forage(1)
-    change_camera_direction(2, 'left')
     print('transport forage...')
+    # transport_forage(1)
+    change_camera_direction(2, 'left')
 
 
 def _end():
