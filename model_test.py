@@ -64,15 +64,15 @@ def test_front_video():
 
 if __name__ == "__main__":
     # test_front_video()
-    directory = 'image/test_side_image_20561028055522'
-    sign_detector = TaskDetector()
+    directory = 'image/test_front_image_20561028200546'
+    sign_detector = SignDetector()
     for entry in os.scandir(directory):
         img = cv2.imread(entry.path)
-        results = sign_detector.detect(img)
-        if not results:
+        result = sign_detector.detect(img)
+        if not result:
             continue
-        print(entry.name, results[0].relative_center_x, results[0].relative_center_y)
-        cv2.imwrite(directory + '/' + entry.name.split('.')[0] + '.png', draw_res(img, results))
+        print(entry.name, result.relative_center_x, result.relative_center_y)
+        cv2.imwrite(directory + '/' + entry.name.split('.')[0] + '.png', draw_res(img, [result]))
     # directory = 'image/side_image_test'
     # task_detector = TaskDetector()
     # for entry in os.scandir(directory):

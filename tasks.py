@@ -55,12 +55,13 @@ def shot_target(motor_port):
     time.sleep(0.5)
     for _ in range(2):
         setmotor1.motor_rotate(70)
-        time.sleep(0.5)
+        time.sleep(0.6)
         setmotor1.motor_rotate(0)
         time.sleep(0.3)
         setmotor1.motor_rotate(-70)
-        time.sleep(1)
+        time.sleep(0.5)
         setmotor1.motor_rotate(0)
+        time.sleep(1)
 
 
 def capture_target(servo_485_id, servo_pwm_id):
@@ -82,17 +83,17 @@ def capture_target(servo_485_id, servo_pwm_id):
 def transport_forage(motor_port):
     setmotor1 = MotorRotate(motor_port)
     servo = ServoPWM(6)
-    setmotor1.motor_rotate(15)
-    time.sleep(2.5)
+    servo.servocontrol(180, 25)
+    time.sleep(1)
+    setmotor1.motor_rotate(100)
+    time.sleep(1)
     setmotor1.motor_rotate(0)
     time.sleep(0.2)
-    servo.servocontrol(90, 10)
-    time.sleep(0.2)
-    servo.servocontrol(0, 100)
-    time.sleep(0.2)
-    setmotor1.motor_rotate(-30)
-    time.sleep(0.2)
-    setmotor1.motor_rotate(0)
+
+    servo.servocontrol(70, 25)
+    time.sleep(3)
+    servo.servocontrol(200, 25)
+    time.sleep(3)
 
 
 def take_barracks():
@@ -131,7 +132,10 @@ def change_camera_direction(servo_485_port, direction):
 
 if __name__ == '__main__':
     time.sleep(4)
-    change_camera_direction(2, 1)
+    # s = ServoPWM(6)
+    # s.servocontrol(180, 100)
+    transport_forage(1)
+    # change_camera_direction(2, 1)
     time.sleep(1)
     # shot_target(2)
     # time.sleep(1)
