@@ -32,3 +32,10 @@ class JoyStick:
         if number == 1:
             fvalue = value / 32767
             return fvalue
+
+
+if __name__ == '__main__':
+    j = JoyStick()
+    j.open()
+    while True:
+        print(j.read())
