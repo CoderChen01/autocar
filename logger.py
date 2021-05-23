@@ -14,8 +14,8 @@ from improved_videocapture import BackgroundVideoCapture
 class Logger:
     def __init__(self, velocity=20):
         self.camera = cv2.VideoCapture(configs.FRONT_CAM)
-        self.camera.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
-        self.camera.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
+        self.camera.set(cv2.CAP_PROP_FRAME_WIDTH, 160)
+        self.camera.set(cv2.CAP_PROP_FRAME_HEIGHT, 120)
         self.camera.set(cv2.CAP_PROP_FOURCC, cv2.VideoWriter_fourcc('M', 'J', 'P', 'G'))
         self.started = False
         self.stopped_ = False
