@@ -64,8 +64,8 @@ def test_front_video():
 
 if __name__ == "__main__":
     # test_front_video()
-    directory = 'image/test_front_image_20561028200546'
-    sign_detector = SignDetector()
+    directory = 'image/test_side_image_20561028215811'
+    sign_detector = TaskDetector()
     for entry in os.scandir(directory):
         img = cv2.imread(entry.path)
         result = sign_detector.detect(img)

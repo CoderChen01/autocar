@@ -92,7 +92,7 @@ def _shot_target():
     global TASK_DETECTOR
     target = 'target'
     target_threshold = {
-        'target': ((0.25, 0.32), (0.35, 0.42))
+        'target': ((0.27, 0.36), (0.34, 0.55))
     }
 
     DRIVER.driver_run(10, 10)
