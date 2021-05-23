@@ -23,8 +23,6 @@ class Collector:
         self.x_axis = multiprocessing.Value('d', 0.0)
 
     def _controller(self):
-        # is_right_press = False
-        # is_left_press = False
         angle = 0.5
         while not self.stopped.value:
             _, value, type_, number = self.js.read()
@@ -41,7 +39,6 @@ class Collector:
                     self.is_start.value = 0
             elif self.js.type(type_) == 'axis':
                 print('axis:{} state: {}'.format(number, value))
-                # if number == 6 or is_left_press or is_left_press:
                 if number == 6:
                     if value == 0:
                         self.x_axis.value = 0

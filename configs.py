@@ -5,7 +5,7 @@ SIDE_CAM = 1
 
 ####################### collect dataset config ###################
 COLLECTION_SPEED = 25
-SUM_CIRCLE = 15
+SUM_CIRCLE = 25
 
 
 ########################### run config ###########################
