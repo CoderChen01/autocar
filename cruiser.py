@@ -4,8 +4,6 @@ import numpy as np
 import predictor_wrapper
 import configs
 
-from cart import Cart
-
 
 CNN_ARGS = {
     'shape': [1, 3, 128, 128],
@@ -43,7 +41,9 @@ def infer_cnn(predictor, buf, image):
     predictor.set_input(data, 0)
     predictor.run()
     out = predictor.get_output(0)
-    return np.array(out)[0][0]
+    # print(np.argmax(np.array(out)[0]))
+    # return np.array(out)[0][0]
+    return np.argmax(np.array(out)[0])
 
 
 class Cruiser:
@@ -55,5 +55,16 @@ class Cruiser:
         self.predictor.load(CRUISE_MODEL)
 
     def cruise(self, frame):
+        # infer_cnn(self.predictor, self.buf, frame)
+        angle_map = [0, 0.5, -0.5, 0.6, -0.6, 0.7, -0.7]
         res = infer_cnn(self.predictor, self.buf, frame)
-        return res
+        # print(angle_map[res])
+        return angle_map[res]
+        # pass
+        # return res
+
+
+if __name__ == '__main__':
+    i = cv2.imread('image/463.jpg')
+    c = Cruiser()
+    c.cruise(i)
