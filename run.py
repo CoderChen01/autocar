@@ -83,6 +83,7 @@ def _raise_flag():
                 time.sleep(1)
                 IS_FIRST_FLAGE = False
             break
+    return 0
 
 
 def _shot_target():
@@ -114,11 +115,13 @@ def _shot_target():
             time.sleep(1)
             shot_target(2)
             break
+    return 0
 
 
 def _take_barracks():
     # take_barracks()
     print('take barracks...')
+    return 0
 
 
 def _capture_target():
@@ -127,18 +130,19 @@ def _capture_target():
     time.sleep(1)
     # capture_target(1, 2)
     change_camera_direction(2, 'right')
+    return 0
 
 
 def _transport_forage():
     print('transport forage...')
     # transport_forage(1)
     change_camera_direction(2, 'left')
+    return 0
 
 
 def _end():
     print('end...')
     global IS_FIRST_FLAGE
-    global STATE
     DRIVER.driver_run(20, 20)
     time.sleep(0.5)
 
@@ -151,7 +155,7 @@ def _end():
     time.sleep(1)
 
     IS_FIRST_FLAGE = True
-    STATE = 2
+    return 2
 
 
 def init():
@@ -182,6 +186,7 @@ def wait_start():
     print('loading finished...')
     buzzing()
     while not START_BUTTON.clicked():  # wait for starting
+        print('wait...')
         pass
     print('start operation...')
     STATE = 0
@@ -201,9 +206,8 @@ def task_processor():
     }
     DRIVER.stop()
     time.sleep(1)
-    task_map[TASK_ID]()
-    time.sleep(1)
-    STATE = 0
+    STATE = task_map[TASK_ID]()
+
 
 
 def cruise_processor():
