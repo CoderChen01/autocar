@@ -40,8 +40,7 @@ SIGN_MODEL = {
 	'label_list': SIGN_LIST,
 	'class_num': 7
 }
-MAX_SIGN_PER_FRAME = 2
-HAS_SIGN_THRESHOLD = 80
+SIGN_THRESHOLD = ((0.41, 0.61), (0.51, 0.85))
 
 # task model
 TASK_LIST = {

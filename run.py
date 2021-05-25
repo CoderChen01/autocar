@@ -22,7 +22,8 @@ SPEED = configs.RUN_SPEED
 KX = configs.RUN_KX
 STATE = 2
 TASK_ID = 0
-IS_FIRST_FLAGE = True
+FLAG_NUM = 0
+IS_FIRST_FLAG = True
 
 
 START_BUTTON = Button(1, 'UP')
@@ -52,18 +53,21 @@ def _raise_flag():
     global DRIVER
     global SIDE_CAMERA
     global TASK_DETECTOR
-    global IS_FIRST_FLAGE
+    global IS_FIRST_FLAG
+    global FLAG_NUM
+    FLAG_NUM += 1
     flags = ['dh', 'dj', 'dxj']
     flag_map = {
         'dh': 3,
         'dj': 4,
         'dxj': 5
     }
-    flag_threshold = {
-        'dh': ((), ()),
-        'dj': ((), ()),
-        'dxj': ((), ())
-    }
+    flag_threshold = [
+        -1,
+        ((0.62, 0.88), (0.41, 0.67)),
+        ((0.50, 0.73), (0.16, 0.33)),
+        ((0.16, 0.46), (0.37, 0.57))
+    ]
     DRIVER.driver_run(10, 10)
     time.sleep(1)
     while True:
@@ -73,15 +77,17 @@ def _raise_flag():
         result = TASK_DETECTOR.detect(frame)
         if not result:
             continue
-        if result.relative_center_x > 0.8 \
+        if is_valid(result.relative_center_x,
+                    result.relative_center_y,
+                    flag_threshold[FLAG_NUM]) \
            and result.name in flags:
             DRIVER.stop()
             time.sleep(1)
             raise_flag(flag_map[result.name])
-            if IS_FIRST_FLAGE:
+            if IS_FIRST_FLAG:
                 change_camera_direction(2, 'right')
                 time.sleep(1)
-                IS_FIRST_FLAGE = False
+                IS_FIRST_FLAG = False
             break
     return 0
 
@@ -142,8 +148,9 @@ def _transport_forage():
 
 def _end():
     print('end...')
-    global IS_FIRST_FLAGE
-    DRIVER.driver_run(20, 20)
+    global IS_FIRST_FLAG
+    global FLAG_NUM
+    DRIVER.driver_run(10, 10)
     time.sleep(0.5)
 
     start = time.time()
@@ -154,7 +161,8 @@ def _end():
     DRIVER.stop()
     time.sleep(1)
 
-    IS_FIRST_FLAGE = True
+    IS_FIRST_FLAG = True
+    FLAG_NUM = 0
     return 2
 
 
@@ -188,8 +196,18 @@ def wait_start():
     buzzing()
     for _ in range(30):
         START_BUTTON.clicked()
-    while not START_BUTTON.clicked():  # wait for starting
-        pass
+        STOP_BUTTON.clicked()
+    while True:  # wait for starting
+        if START_BUTTON.clicked():
+            buzzing()
+            time.sleep(0.5)
+            break
+        if STOP_BUTTON.clicked():
+            SIDE_CAMERA.close()
+            FRON_CAMERA.close()
+            buzzing()
+            time.sleep(0.5)
+            exit(0)
     print('start operation...')
     STATE = 0
 
@@ -223,13 +241,17 @@ def cruise_processor():
             exit(-1)
         DRIVER.go(frame)
         result = SIGN_DETECTOR.detect(frame)
-        if not result:
+        if result \
+           and is_valid(result.relative_center_x,
+                        result.relative_center_y,
+                        configs.SIGN_THRESHOLD):
+            STATE = 1
+            TASK_ID = result.index
+            break
+        else:
             STATE = 0
             TASK_ID = 0
             continue
-        STATE = 1
-        TASK_ID = result.index
-        break
 
 
 def run():

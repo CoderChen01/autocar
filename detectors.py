@@ -22,16 +22,8 @@ def calculate_area(relative_box, shape):
 
 
 def is_sign_valid(res, shape):
-    box = res[2:6]
-    area = calculate_area(box, shape)
-    relative_center_x = (box[0] + box[2]) / 2
-    relative_center_y = (box[1] + box[3]) / 2
     valid = False
-    if res[1] > configs.SIGN_MODEL['threshold'] \
-       and (3000 < area < 15000) \
-       and (0.4 <= relative_center_x <= 0.64) \
-       and (0.67 <= relative_center_y <= 0.72):
-    # if res[1] > configs.SIGN_MODEL['threshold']:
+    if res[1] > configs.SIGN_MODEL['threshold']:
         valid = True
     return valid
 
