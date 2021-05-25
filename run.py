@@ -169,24 +169,26 @@ def init():
     s4 = ServoPWM(4)
     s5 = ServoPWM(5)
     vs1.servocontrol(-80, 100)
-    time.sleep(1)
+    time.sleep(0.3)
     vs2.servocontrol(40, 100)
-    time.sleep(1)
+    time.sleep(0.3)
     s3.servocontrol(0, 100)
-    time.sleep(1)
+    time.sleep(0.3)
     s4.servocontrol(0, 100)
-    time.sleep(1)
+    time.sleep(0.3)
     s5.servocontrol(0, 100)
-    time.sleep(1)
+    time.sleep(0.3)
 
 
 def wait_start():
     global STATE
+    print('init...')
     init()
     print('loading finished...')
     buzzing()
+    for _ in range(30):
+        START_BUTTON.clicked()
     while not START_BUTTON.clicked():  # wait for starting
-        print('wait...')
         pass
     print('start operation...')
     STATE = 0
@@ -207,7 +209,6 @@ def task_processor():
     DRIVER.stop()
     time.sleep(1)
     STATE = task_map[TASK_ID]()
-
 
 
 def cruise_processor():
