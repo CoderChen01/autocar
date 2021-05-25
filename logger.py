@@ -11,13 +11,13 @@ from cart import Cart
 from improved_videocapture import BackgroundVideoCapture
 
 
-axis_class_map = {
-    0: 0,
-    0.5: 1,
-    -0.5: 2,
-    0.7: 3,
-    -0.7: 4
-}
+# axis_class_map = {
+#     0: 0,
+#     0.5: 1,
+#     -0.5: 2,
+#     0.7: 3,
+#     -0.7: 4
+# }
 
 
 class Logger:
@@ -55,7 +55,7 @@ class Logger:
             self.cart.steer(axis)
             _, image = self.camera.read()
             path = "{}/{}.jpg".format(self.result_dir, self.counter)
-            self.map[self.counter] = axis_class_map[axis]
+            self.map[self.counter] = axis
             cv2.imwrite(path, image)
             self.counter = self.counter + 1
             time.sleep(0.08)
