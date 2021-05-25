@@ -151,12 +151,7 @@ def _end():
     global IS_FIRST_FLAG
     global FLAG_NUM
     DRIVER.driver_run(10, 10)
-    time.sleep(0.5)
-
-    start = time.time()
-    while True:
-        if time.time() - start > 3:
-            break
+    time.sleep(3)
 
     DRIVER.stop()
     time.sleep(1)
