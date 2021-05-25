@@ -29,6 +29,7 @@ if __name__ == '__main__':
     while True:
         _, front_image = front_camera.read()
         driver.go(front_image)
+        time.sleep(0.083)
         if stop_button.clicked():
             print("End of program!")
             break
