@@ -58,7 +58,7 @@ class Cruiser:
         # infer_cnn(self.predictor, self.buf, frame)
         # angle_map = [0, 0.5, -0.5, 0.7, -0.7]
         res = infer_cnn(self.predictor, self.buf, frame)
-        # print(res)
+        print(res)
         # print(angle_map[res])
         # return angle_map[res]
         # pass
