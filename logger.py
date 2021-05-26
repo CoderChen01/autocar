@@ -11,15 +11,6 @@ from cart import Cart
 from improved_videocapture import BackgroundVideoCapture
 
 
-# axis_class_map = {
-#     0: 0,
-#     0.5: 1,
-#     -0.5: 2,
-#     0.7: 3,
-#     -0.7: 4
-# }
-
-
 class Logger:
     def __init__(self, velocity=20):
         self.camera = cv2.VideoCapture(configs.FRONT_CAM)

@@ -41,9 +41,7 @@ def infer_cnn(predictor, buf, image):
     predictor.set_input(data, 0)
     predictor.run()
     out = predictor.get_output(0)
-    # print(np.argmax(np.array(out)[0]))
     return np.array(out)[0][0]
-    # return np.argmax(np.array(out)[0])
 
 
 class Cruiser:
@@ -55,13 +53,8 @@ class Cruiser:
         self.predictor.load(CRUISE_MODEL)
 
     def cruise(self, frame):
-        # infer_cnn(self.predictor, self.buf, frame)
-        # angle_map = [0, 0.5, -0.5, 0.7, -0.7]
         res = infer_cnn(self.predictor, self.buf, frame)
         print(res)
-        # print(angle_map[res])
-        # return angle_map[res]
-        # pass
         return res
 
 
