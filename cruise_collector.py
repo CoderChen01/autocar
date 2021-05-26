@@ -23,7 +23,6 @@ class Collector:
         self.x_axis = multiprocessing.Value('d', 0.0)
 
     def _controller(self):
-        angle = 0.5
         while not self.stopped.value:
             _, value, type_, number = self.js.read()
             if self.js.type(type_) == 'button':
