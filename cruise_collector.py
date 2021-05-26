@@ -40,25 +40,10 @@ class Collector:
                     self.is_start.value = 0
             elif self.js.type(type_) == 'axis':
                 print('axis:{} state: {}'.format(number, value))
-                if number == 6:
-                    if value == 0:
-                        self.x_axis.value = 0
-                    elif value > 0:
-                        is_right_press = True
-                        if self.x_axis.value + angle > 1:
-                            self.x_axis.value = 1
-                        else:
-                            self.x_axis.value += angle
-                    elif value < 0:
-                        if self.x_axis.value + angle < -1:
-                            self.x_axis.value = -1
-                        else:
-                            self.x_axis.value -= angle
-                elif number == 7:
-                    if value < 0:
-                        angle = 0.7
-                    elif value > 0:
-                        angle = 0.5
+                if number == 2:
+                    self.x_axis.value = value / 65534
+                elif number == 0:
+                    self.x_axis.value = value / 46810
 
     def run(self):
         t = multiprocessing.Process(target=self._controller)
