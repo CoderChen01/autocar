@@ -9,8 +9,6 @@ from improved_videocapture import BackgroundVideoCapture
 from driver import Driver, SLOW_DOWN_RATE
 
 if __name__ == '__main__':
-    # TODO 我打算先使用串行方式编码调试效果，
-    #  模型返回结果为detectors.DetectionResult类
     start_button = Button(1, 'UP')
     stop_button = Button(1, 'DOWN')
     front_camera = BackgroundVideoCapture(0)
@@ -29,7 +27,7 @@ if __name__ == '__main__':
     while True:
         _, front_image = front_camera.read()
         driver.go(front_image)
-        time.sleep(0.083)
+        time.sleep(0.05)
         if stop_button.clicked():
             print("End of program!")
             break

@@ -135,7 +135,7 @@ if __name__ == '__main__':
     # s = ServoPWM(6)
     # s.servocontrol(180, 100)
     # transport_forage(1)
-    change_camera_direction(2, 'right')
+    change_camera_direction(2, 'left')
     time.sleep(1)
     # shot_target(2)
     # time.sleep(1)
