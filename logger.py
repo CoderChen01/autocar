@@ -49,7 +49,6 @@ class Logger:
             self.map[self.counter] = axis
             cv2.imwrite(path, image)
             self.counter = self.counter + 1
-            time.sleep(0.08)
 
     def stopped(self):
         return self.stopped_
