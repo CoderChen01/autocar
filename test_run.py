@@ -32,4 +32,4 @@ if __name__ == '__main__':
             print("End of program!")
             break
     driver.stop()
-    front_camera.stop()
+    front_camera.close()
