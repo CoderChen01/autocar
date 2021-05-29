@@ -7,6 +7,10 @@ from widgets import Button
 from tasks import light_work
 from improved_videocapture import BackgroundVideoCapture
 from driver import Driver, SLOW_DOWN_RATE
+from detectors import SignDetector, TaskDetector
+SIGN_DETECTOR = SignDetector()
+TASK_DETECTOR = TaskDetector()
+
 
 if __name__ == '__main__':
     start_button = Button(1, 'UP')
@@ -25,7 +29,7 @@ if __name__ == '__main__':
     while True:
         _, front_image = front_camera.read()
         driver.go(front_image)
-        time.sleep(0.065)
+        SIGN_DETECTOR.detect(front_image)
         if stop_button.clicked():
             print("End of program!")
             break

@@ -230,9 +230,10 @@ def cruise_processor():
     global SIGN_DETECTOR
     while True:
         grabbed, frame = FRON_CAMERA.read()
+        DRIVER.go(frame)
+        start = time.time()
         if not grabbed:
             exit(-1)
-        DRIVER.go(frame)
         result = SIGN_DETECTOR.detect(frame)
         if result \
            and is_valid(result.relative_center_x,
@@ -241,7 +242,7 @@ def cruise_processor():
             STATE = 1
             TASK_ID = result.index
             break
-
+        print(time.time() - start)
 
 def run():
     state_map = [cruise_processor, task_processor, wait_start]
