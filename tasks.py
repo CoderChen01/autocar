@@ -116,7 +116,6 @@ def take_barracks():
     time.sleep(1)
 
 
-
 def change_camera_direction(servo_485_port, direction):
     servo = Servo(servo_485_port)
     if direction == 'right':  # right
