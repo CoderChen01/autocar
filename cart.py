@@ -13,34 +13,20 @@ comma_trail = bytes.fromhex('0A')
 class Cart:
     def __init__(self):
         self.velocity = 25
-        self.Kx=0.85
-        portx = "/dev/ttyUSB0"
-        bps = 115200
         self.serial = serial
-        self.p = 0.8
-        self.full_speed = self.velocity
-        self.slow_ratio = 0.97
-        self.min_speed = 20
 
     def steer(self, angle):
-        speed = int(self.velocity)
-        if abs(angle) > 0.12:
-            speed = int(self.velocity * self.slow_ratio)
-        # angle = angle * 0.9
-        angle = angle * self.Kx
-        delta = angle - 0
-
-        leftwheel = speed
-        rightwheel = speed
-
-        scale = 1
-        if delta < 0:
-            leftwheel = int((1 + delta * scale) * speed)
-        if delta > 0:
-            rightwheel = int((1 - delta * scale) * speed)
-        # leftwheel_back=int(leftwheel*1.1)
-        # rightwheel_back=int(rightwheel*1.1)
-        # print([leftwheel, rightwheel, leftwheel, rightwheel])
+        turn_speed = int(self.velocity)
+        leftwheel = int(self.velocity)
+        rightwheel = int(self.velocity)
+        if abs(angle) > 0.4:
+            turn_speed = int(self.velocity * 0.92)
+        elif 0.02 < abs(angle) < 0.05:
+            turn_speed = int(self.velocity * 0.8)
+        if angle < 0:
+            leftwheel = int((1 + angle) * turn_speed)
+        if angle > 0:
+            rightwheel = int((1 - angle) * turn_speed)
         self.move([leftwheel, rightwheel, leftwheel, rightwheel])
 
     def stop(self):
@@ -61,8 +47,6 @@ class Cart:
         right_front = -int(speeds[1])
         left_rear = int(speeds[2])
         right_rear = -int(speeds[3])
-        self.min_speed = int(min(speeds))
-        # print(speeds)
         left_front=self.exchange(left_front)
         right_front = self.exchange(right_front)
         left_rear=self.exchange(left_rear)

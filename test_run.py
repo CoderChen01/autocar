@@ -14,9 +14,7 @@ if __name__ == '__main__':
     front_camera = BackgroundVideoCapture(0)
     driver = Driver()
     # 基准速度
-    driver.set_speed(25)
-    # 转弯系数
-    driver.cart.Kx = 0.85
+    driver.set_speed(30)
     # 延时
     time.sleep(0.5)
     while True:
@@ -27,7 +25,7 @@ if __name__ == '__main__':
     while True:
         _, front_image = front_camera.read()
         driver.go(front_image)
-        time.sleep(0.05)
+        time.sleep(0.065)
         if stop_button.clicked():
             print("End of program!")
             break

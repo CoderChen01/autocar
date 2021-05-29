@@ -19,7 +19,6 @@ from god import God
 
 
 SPEED = configs.RUN_SPEED
-KX = configs.RUN_KX
 STATE = 2
 TASK_ID = 0
 FLAG_NUM = 0
@@ -34,7 +33,6 @@ SIDE_CAMERA = BackgroundVideoCapture(configs.SIDE_CAM)
 
 DRIVER = Driver()
 DRIVER.set_speed(SPEED)
-DRIVER.set_Kx(KX)
 
 TASK_DETECTOR = TaskDetector()
 SIGN_DETECTOR = SignDetector()
@@ -243,10 +241,6 @@ def cruise_processor():
             STATE = 1
             TASK_ID = result.index
             break
-        else:
-            STATE = 0
-            TASK_ID = 0
-            continue
 
 
 def run():
