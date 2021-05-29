@@ -98,28 +98,23 @@ def transport_forage(motor_port):
 
 def take_barracks():
     driver = Driver()
-    driver.set_Kx(configs.RUN_KX)
-    driver.set_speed(configs.RUN_SPEED)
+    driver.driver_run(5, 20)
+    time.sleep(2)
+    driver.driver_run(10, 10)
+    time.sleep(2.5)
+    driver.driver_run(20, 5)
+    time.sleep(2)
     driver.stop()
-    time.sleep(0.5)
-    driver.driver_run(20, 19)
-    time.sleep(3.4)
-    driver.driver_run(-8, -18)
-    time.sleep(3.4)
-    driver.driver_run(-18, -8)
-    time.sleep(3.0)
-    driver.stop()
-    for _ in range(4):
-        light_work(2, 'red')
-        time.sleep(0.2)
-        light_work(2, 'off')
-    driver.driver_run(18, 8)
-    time.sleep(2.8)
-    driver.driver_run(18, 18)
-    time.sleep(0.6)
-    driver.driver_run(8, 18)
-    time.sleep(2.8)
-    driver.stop()
+    time.sleep(3)
+    driver.driver_run(-10, -10)
+    time.sleep(2)
+    driver.driver_run(20, 5)
+    time.sleep(2)
+    driver.driver_run(10, 10)
+    time.sleep(2)
+    driver.driver_run(5, 20)
+    time.sleep(1)
+
 
 
 def change_camera_direction(servo_485_port, direction):
@@ -131,11 +126,12 @@ def change_camera_direction(servo_485_port, direction):
 
 
 if __name__ == '__main__':
-    time.sleep(4)
+    time.sleep(2)
     # s = ServoPWM(6)
     # s.servocontrol(180, 100)
     # transport_forage(1)
-    change_camera_direction(2, 'left')
+    # change_camera_direction(2, 'left')
+    take_barracks()
     time.sleep(1)
     # shot_target(2)
     # time.sleep(1)
