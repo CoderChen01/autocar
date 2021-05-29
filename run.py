@@ -38,10 +38,16 @@ TASK_DETECTOR = TaskDetector()
 SIGN_DETECTOR = SignDetector()
 
 
-def is_valid(x, y, threshold):
+def is_valid(result, threshold=None, is_sign=True):
     """
     Determine whether the target meets the threshold
     """
+    x = result.relative_center_x
+    y = result.relative_center_y
+    if is_sign:
+        threshold = configs.SIGN_THRESHOLD[result.name]
+    if not threshold:
+        return False
     return threshold[0][0] < x < threshold[0][1] \
            and threshold[1][0] < y < threshold[1][1]
 
@@ -75,9 +81,7 @@ def _raise_flag():
         result = TASK_DETECTOR.detect(frame)
         if not result:
             continue
-        if is_valid(result.relative_center_x,
-                    result.relative_center_y,
-                    flag_threshold[FLAG_NUM]) \
+        if is_valid(result, flag_threshold[FLAG_NUM]) \
            and result.name in flags:
             DRIVER.stop()
             time.sleep(1)
@@ -112,9 +116,7 @@ def _shot_target():
             continue
         print(result.name)
         if result.name == target \
-           and is_valid(result.relative_center_x,
-                        result.relative_center_y,
-                        target_threshold[result.name]):
+           and is_valid(result, target_threshold[result.name]):
             DRIVER.stop()
             time.sleep(1)
             shot_target(2)
@@ -236,9 +238,7 @@ def cruise_processor():
             exit(-1)
         result = SIGN_DETECTOR.detect(frame)
         if result \
-           and is_valid(result.relative_center_x,
-                        result.relative_center_y,
-                        configs.SIGN_THRESHOLD):
+           and is_valid(result):
             STATE = 1
             TASK_ID = result.index
             break
