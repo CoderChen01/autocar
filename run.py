@@ -18,40 +18,77 @@ from improved_videocapture import BackgroundVideoCapture
 from god import God
 
 
+################## public variables ##################
+# flags
 SPEED = configs.RUN_SPEED
 STATE = 2
 TASK_ID = 0
 FLAG_NUM = 0
 IS_FIRST_FLAG = True
 
-
+# buttons, ultrasonic, cameras
 START_BUTTON = Button(1, 'UP')
 STOP_BUTTON = Button(1, 'DOWN')
 LEFT_ULTRASONICSENSOR = UltrasonicSensor(4)
 FRON_CAMERA = BackgroundVideoCapture(configs.FRONT_CAM)
 SIDE_CAMERA = BackgroundVideoCapture(configs.SIDE_CAM)
 
+# driver
 DRIVER = Driver()
 DRIVER.set_speed(SPEED)
 
+# detectors
 TASK_DETECTOR = TaskDetector()
 SIGN_DETECTOR = SignDetector()
 
 
-def is_valid(result, threshold=None, is_sign=True):
+################## tools ##################
+def is_sign_valid(result):
     """
     Determine whether the target meets the threshold
     """
     x = result.relative_center_x
     y = result.relative_center_y
-    if is_sign:
-        threshold = configs.SIGN_THRESHOLD[result.name]
-    if not threshold:
-        return False
+    threshold = configs.SIGN_THRESHOLD[result.name]
     return threshold[0][0] < x < threshold[0][1] \
            and threshold[1][0] < y < threshold[1][1]
 
 
+################## stops ##################
+def _castle_stop():
+    DRIVER.stop()
+    time.sleep(1)
+    DRIVER.driver_run(10, 5)
+    time.sleep(1.5)
+    DRIVER.driver_run(5, 10)
+    while True:
+        grabbed, frame = FRON_CAMERA.read()
+        if not grabbed:
+            exit(-1)
+        result = SIGN_DETECTOR.detect(frame)
+        if not result:
+            DRIVER.stop()
+            time.sleep(1)
+            break
+
+
+def _shot_target_right_stop():
+    pass
+
+
+def _stop_stop():
+    pass
+
+
+def _spoil_left_stop():
+    pass
+
+
+def _hay_right_stop():
+    pass
+
+
+################## tasks ##################
 def _raise_flag():
     print('raise flag...')
     global DRIVER
@@ -59,7 +96,10 @@ def _raise_flag():
     global TASK_DETECTOR
     global IS_FIRST_FLAG
     global FLAG_NUM
+    _normal_stop()
     FLAG_NUM += 1
+    if FLAG_NUM > 3:
+        FLAG_NUM = 3
     flags = ['dh', 'dj', 'dxj']
     flag_map = {
         'dh': 3,
@@ -74,23 +114,24 @@ def _raise_flag():
     ]
     DRIVER.driver_run(10, 10)
     time.sleep(1)
-    while True:
-        grabbed, frame = SIDE_CAMERA.read()
-        if not grabbed:
-            exit(-1)
-        result = TASK_DETECTOR.detect(frame)
-        if not result:
-            continue
-        if is_valid(result, flag_threshold[FLAG_NUM]) \
-           and result.name in flags:
-            DRIVER.stop()
+    DRIVER.stop()
+    time.sleep(0.5)
+    grabbed, frame = SIDE_CAMERA.read()
+    if not grabbed:
+        exit(-1)
+    result = TASK_DETECTOR.detect(frame)
+    if result and result.name in flags:
+        raise_flag(flag_map[result.name])
+        if IS_FIRST_FLAG:
+            change_camera_direction(2, 'right')
             time.sleep(1)
-            raise_flag(flag_map[result.name])
-            if IS_FIRST_FLAG:
-                change_camera_direction(2, 'right')
-                time.sleep(1)
-                IS_FIRST_FLAG = False
-            break
+            IS_FIRST_FLAG = False
+    else:
+        raise_flag(flag_map[flags[FLAG_NUM]])
+        if IS_FIRST_FLAG:
+            change_camera_direction(2, 'right')
+            time.sleep(1)
+            IS_FIRST_FLAG = False
     return 0
 
 
@@ -99,34 +140,30 @@ def _shot_target():
     global DRIVER
     global SIDE_CAMERA
     global TASK_DETECTOR
+    _shot_target_right_stop()
     target = 'target'
     target_threshold = {
         'target': ((0.27, 0.36), (0.34, 0.55))
     }
-
     DRIVER.driver_run(10, 10)
     time.sleep(1)
-
-    while True:
-        grabbed, frame = SIDE_CAMERA.read()
-        if not grabbed:
-            exit(-1)
-        result = TASK_DETECTOR.detect(frame)
-        if not result:
-            continue
-        print(result.name)
-        if result.name == target \
-           and is_valid(result, target_threshold[result.name]):
-            DRIVER.stop()
-            time.sleep(1)
-            shot_target(2)
-            break
+    DRIVER.stop()
+    time.sleep(0.5)
+    grabbed, frame = SIDE_CAMERA.read()
+    shot_target(2)
+    # if result.name == target \
+    #    and is_sign_valid(result, target_threshold[result.name]):
+    #     DRIVER.stop()
+    #     time.sleep(1)
+    #     shot_target(2)
+    #     break
     return 0
 
 
 def _take_barracks():
     # take_barracks()
     print('take barracks...')
+    _normal_stop()
     return 0
 
 
@@ -161,6 +198,7 @@ def _end():
     return 2
 
 
+################## main ##################
 def init():
     """
     Initialize operation, lock the servo
@@ -185,23 +223,21 @@ def init():
 
 def wait_start():
     global STATE
-    print('init...')
-    init()
-    print('loading finished...')
-    buzzing()
+    buzzing(2)
     for _ in range(30):
         START_BUTTON.clicked()
         STOP_BUTTON.clicked()
     while True:  # wait for starting
         if START_BUTTON.clicked():
-            buzzing()
-            time.sleep(0.5)
+            buzzing(3)
+            print('init...')
+            init()
+            print('loading finished...')
             break
         if STOP_BUTTON.clicked():
             SIDE_CAMERA.close()
             FRON_CAMERA.close()
-            buzzing()
-            time.sleep(0.5)
+            buzzing(4)
             exit(0)
     print('start operation...')
     STATE = 0
@@ -219,8 +255,7 @@ def task_processor():
         5: _transport_forage,
         6: _end
     }
-    DRIVER.stop()
-    time.sleep(1)
+    sign_stop()
     STATE = task_map[TASK_ID]()
 
 
@@ -233,16 +268,14 @@ def cruise_processor():
     while True:
         grabbed, frame = FRON_CAMERA.read()
         DRIVER.go(frame)
-        start = time.time()
         if not grabbed:
             exit(-1)
         result = SIGN_DETECTOR.detect(frame)
-        if result \
-           and is_valid(result):
+        if result and is_sign_valid(result):
             STATE = 1
             TASK_ID = result.index
             break
-        print(time.time() - start)
+
 
 def run():
     state_map = [cruise_processor, task_processor, wait_start]
