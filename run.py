@@ -56,11 +56,82 @@ def is_sign_valid(result):
 
 ################## stops ##################
 def _castle_stop():
+    global DRIVER
+    DRIVER.stop()
+    time.sleep(1)
+    DRIVER.driver_run(10, 10)
+    time.sleep(1)
+    while True:
+        grabbed, frame = FRON_CAMERA.read()
+        if not grabbed:
+            exit(-1)
+        result = SIGN_DETECTOR.detect(frame)
+        if not result:
+            DRIVER.stop()
+            time.sleep(1)
+            break
+    DRIVER.driver_run(10, 10)
+    time.sleep(1)
+    DRIVER.stop()
+    time.sleep(1)
+
+
+def _shot_target_right_stop():
+    global DRIVER
     DRIVER.stop()
     time.sleep(1)
     DRIVER.driver_run(10, 5)
-    time.sleep(1.5)
+    time.sleep(1)
+    while True:
+        grabbed, frame = FRON_CAMERA.read()
+        if not grabbed:
+            exit(-1)
+        result = SIGN_DETECTOR.detect(frame)
+        if not result:
+            DRIVER.stop()
+            time.sleep(1)
+            break
     DRIVER.driver_run(5, 10)
+    time.sleep(2)
+    DRIVER.stop()
+    time.sleep(0.5)
+
+
+def _stop_stop():
+    global DRIVER
+    DRIVER.stop()
+    time.sleep(1)
+
+
+def _spoil_left_stop():
+    global DRIVER
+    DRIVER.stop()
+    time.sleep(1)
+    change_camera_direction(2, 'left')
+    time.sleep(1)
+    DRIVER.driver_run(5, 10)
+    time.sleep(1)
+    while True:
+        grabbed, frame = FRON_CAMERA.read()
+        if not grabbed:
+            exit(-1)
+        result = SIGN_DETECTOR.detect(frame)
+        if not result:
+            DRIVER.stop()
+            time.sleep(1)
+            break
+    DRIVER.driver_run(10, 5)
+    time.sleep(1)
+    DRIVER.stop()
+    time.sleep(1)
+
+
+def _hay_right_stop():
+    global DRIVER
+    DRIVER.stop()
+    time.sleep(1)
+    DRIVER.driver_run(10, 10)
+    time.sleep(1)
     while True:
         grabbed, frame = FRON_CAMERA.read()
         if not grabbed:
@@ -72,20 +143,25 @@ def _castle_stop():
             break
 
 
-def _shot_target_right_stop():
-    pass
-
-
-def _stop_stop():
-    pass
-
-
-def _spoil_left_stop():
-    pass
-
-
-def _hay_right_stop():
-    pass
+def _end_stop():
+    global DRIVER
+    DRIVER.stop()
+    time.sleep(1)
+    DRIVER.driver_run(10, 10)
+    time.sleep(1)
+    while True:
+        grabbed, frame = FRON_CAMERA.read()
+        if not grabbed:
+            exit(-1)
+        result = SIGN_DETECTOR.detect(frame)
+        if not result:
+            DRIVER.stop()
+            time.sleep(1)
+            break
+    DRIVER.driver_run(10, 10)
+    time.sleep(2)
+    DRIVER.stop()
+    time.sleep(1)
 
 
 ################## tasks ##################
@@ -96,7 +172,7 @@ def _raise_flag():
     global TASK_DETECTOR
     global IS_FIRST_FLAG
     global FLAG_NUM
-    _normal_stop()
+    _castle_stop()
     FLAG_NUM += 1
     if FLAG_NUM > 3:
         FLAG_NUM = 3
@@ -112,10 +188,6 @@ def _raise_flag():
         ((0.50, 0.73), (0.16, 0.33)),
         ((0.16, 0.46), (0.37, 0.57))
     ]
-    DRIVER.driver_run(10, 10)
-    time.sleep(1)
-    DRIVER.stop()
-    time.sleep(0.5)
     grabbed, frame = SIDE_CAMERA.read()
     if not grabbed:
         exit(-1)
@@ -145,10 +217,6 @@ def _shot_target():
     target_threshold = {
         'target': ((0.27, 0.36), (0.34, 0.55))
     }
-    DRIVER.driver_run(10, 10)
-    time.sleep(1)
-    DRIVER.stop()
-    time.sleep(0.5)
     grabbed, frame = SIDE_CAMERA.read()
     shot_target(2)
     # if result.name == target \
@@ -161,25 +229,27 @@ def _shot_target():
 
 
 def _take_barracks():
-    # take_barracks()
     print('take barracks...')
-    _normal_stop()
+    _stop_stop()
+    take_barracks()
     return 0
 
 
 def _capture_target():
     print('capture target...')
-    change_camera_direction(2, 'left')
-    time.sleep(1)
-    # capture_target(1, 2)
+    _spoil_left_stop()
+    capture_target(1, 2)
     change_camera_direction(2, 'right')
+    time.sleep(1)
     return 0
 
 
 def _transport_forage():
     print('transport forage...')
-    # transport_forage(1)
+    _hay_right_stop()
+    transport_forage(1)
     change_camera_direction(2, 'left')
+    time.sleep(1)
     return 0
 
 
@@ -187,12 +257,7 @@ def _end():
     print('end...')
     global IS_FIRST_FLAG
     global FLAG_NUM
-    DRIVER.driver_run(10, 10)
-    time.sleep(3)
-
-    DRIVER.stop()
-    time.sleep(1)
-
+    _end_stop()
     IS_FIRST_FLAG = True
     FLAG_NUM = 0
     return 2
@@ -203,7 +268,6 @@ def init():
     """
     Initialize operation, lock the servo
     """
-    time.sleep(4)
     vs1 = Servo(1)
     vs2 = Servo(2)
     s3 = ServoPWM(3)
@@ -255,7 +319,6 @@ def task_processor():
         5: _transport_forage,
         6: _end
     }
-    sign_stop()
     STATE = task_map[TASK_ID]()
 
 
