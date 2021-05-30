@@ -238,7 +238,8 @@ def _take_barracks():
 def _capture_target():
     print('capture target...')
     _spoil_left_stop()
-    capture_target(1, 2)
+    # capture_target(1, 2)
+    time.sleep(2)
     change_camera_direction(2, 'right')
     time.sleep(1)
     return 0
@@ -247,7 +248,8 @@ def _capture_target():
 def _transport_forage():
     print('transport forage...')
     _hay_right_stop()
-    transport_forage(1)
+    # transport_forage(1)
+    time.sleep(2)
     change_camera_direction(2, 'left')
     time.sleep(1)
     return 0
@@ -346,5 +348,31 @@ def run():
         state_map[STATE]()
 
 
+def test_front():
+    global FRON_CAMERA
+    global SIGN_DETECTOR
+
+    while True:
+        _, frame = FRON_CAMERA.read()
+        res = SIGN_DETECTOR.detect(frame)
+        if not res:
+            continue
+        print(res.index, res.name, res.relative_center_x, res.relative_center_y)
+
+
+def test_side():
+    global SIDE_CAMERA
+    global TASK_DETECTOR
+
+    while True:
+        _, frame = SIDE_CAMERA.read()
+        res = TASK_DETECTOR.detect(frame)
+        if not res:
+            continue
+        print(res.index, res.name, res.relative_center_x, res.relative_center_y)
+
+
 if __name__=='__main__':
     run()
+    # test_front()
+
