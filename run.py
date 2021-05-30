@@ -221,7 +221,7 @@ def init():
     time.sleep(0.3)
 
 
-def wait_start():
+def wait_start_processor():
     global STATE
     buzzing(2)
     for _ in range(30):
@@ -278,7 +278,7 @@ def cruise_processor():
 
 
 def run():
-    state_map = [cruise_processor, task_processor, wait_start]
+    state_map = [cruise_processor, task_processor, wait_start_processor]
     while True:
         state_map[STATE]()
 
