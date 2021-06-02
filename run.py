@@ -80,7 +80,7 @@ def _shot_target_right_stop():
     global DRIVER
     DRIVER.stop()
     time.sleep(1)
-    DRIVER.driver_run(10, 5)
+    DRIVER.driver_run(10, 8)
     time.sleep(1)
     while True:
         grabbed, frame = FRON_CAMERA.read()
@@ -91,7 +91,7 @@ def _shot_target_right_stop():
             DRIVER.stop()
             time.sleep(1)
             break
-    DRIVER.driver_run(5, 10)
+    DRIVER.driver_run(8, 10)
     time.sleep(2)
     DRIVER.stop()
     time.sleep(0.5)
@@ -109,7 +109,7 @@ def _spoil_left_stop():
     time.sleep(1)
     change_camera_direction(2, 'left')
     time.sleep(1)
-    DRIVER.driver_run(5, 10)
+    DRIVER.driver_run(8, 10)
     time.sleep(1)
     while True:
         grabbed, frame = FRON_CAMERA.read()
@@ -120,7 +120,7 @@ def _spoil_left_stop():
             DRIVER.stop()
             time.sleep(1)
             break
-    DRIVER.driver_run(10, 5)
+    DRIVER.driver_run(10, 8)
     time.sleep(1)
     DRIVER.stop()
     time.sleep(1)
@@ -195,13 +195,11 @@ def _raise_flag():
     if result and result.name in flags:
         raise_flag(flag_map[result.name])
         if IS_FIRST_FLAG:
-            change_camera_direction(2, 'right')
             time.sleep(1)
             IS_FIRST_FLAG = False
     else:
         raise_flag(flag_map[flags[FLAG_NUM]])
         if IS_FIRST_FLAG:
-            change_camera_direction(2, 'right')
             time.sleep(1)
             IS_FIRST_FLAG = False
     return 0
@@ -238,9 +236,7 @@ def _take_barracks():
 def _capture_target():
     print('capture target...')
     _spoil_left_stop()
-    # capture_target(1, 2)
-    time.sleep(2)
-    change_camera_direction(2, 'right')
+    capture_target(1, 2)
     time.sleep(1)
     return 0
 
@@ -250,7 +246,6 @@ def _transport_forage():
     _hay_right_stop()
     # transport_forage(1)
     time.sleep(2)
-    change_camera_direction(2, 'left')
     time.sleep(1)
     return 0
 
