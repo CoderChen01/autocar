@@ -55,8 +55,8 @@ def is_sign_valid(result):
 
 
 def lock_spoil():
-    s = ServoPWM(2)
-    servo2.servocontrol(180, 50)
+    servo = ServoPWM(2)
+    servo.servocontrol(180, 50)
     time.sleep(1)
 
 
