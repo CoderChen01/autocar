@@ -35,7 +35,7 @@ def raise_flag(servo_port):
     servo.servocontrol(120, 100)
     time.sleep(0.5)
     for _ in range(3):
-        light_work(2, 'red')
+        light_work(2, 'green')
         time.sleep(1)
         light_work(2, 'off')
         time.sleep(0.5)
@@ -80,7 +80,7 @@ def transport_forage(server485_id, servopwm_id):
     time.sleep(1)
     servo_485.servocontrol(-10, 50)
     time.sleep(1)
-    servo.servocontrol(70, 25)
+    servo.servocontrol(130, 100)
     time.sleep(3)
     servo.servocontrol(170, 25)
     time.sleep(3)

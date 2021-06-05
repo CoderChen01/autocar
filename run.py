@@ -1,9 +1,11 @@
+import os
 import sys
 import datetime
 import time
 import multiprocessing as mp
 
 import cv2
+import numpy as np
 
 import configs
 from tasks import *
@@ -65,7 +67,17 @@ def find_white_color(frame):
 
 
 def find_red_circle_dot(frame):
-    pass
+    hue_image = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
+    low_range = np.array([0, 123, 100])
+    high_range = np.array([5, 255, 255])
+    th = cv2.inRange(hue_image, low_range, high_range)
+    dilated = cv2.dilate(th, cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (3, 3)), iterations=2)
+    circles = cv2.HoughCircles(dilated, cv2.HOUGH_GRADIENT, 1, 100, param1=15, param2=7, minRadius=10, maxRadius=20)
+    if circles is not None:
+        x, y, radius = circles[0][0]
+        center = (x, y)
+        frame = cv2.circle(frame, center, int(radius), (0, 255, 0), 2)
+    return frame
 
 
 ################## stops ##################
@@ -75,37 +87,13 @@ def _castle_stop():
     time.sleep(1.5)
     DRIVER.stop()
     time.sleep(1)
-    # DRIVER.driver_run(10, 10)
-    # time.sleep(1)
-    # while True:
-    #     grabbed, frame = FRON_CAMERA.read()
-    #     if not grabbed:
-    #         exit(-1)
-    #     result = SIGN_DETECTOR.detect(frame)
-    #     if not result:
-    #         DRIVER.stop()
-    #         time.sleep(1)
-    #         break
-    # DRIVER.driver_run(10, 10)
-    # time.sleep(1)
-    # DRIVER.stop()
-    # time.sleep(1)
 
 
 def _shot_target_right_stop():
     global DRIVER
-    DRIVER.driver_run(10, 8)
+    DRIVER.driver_run(10, 5)
     time.sleep(1.5)
-    # while True:
-    #     grabbed, frame = FRON_CAMERA.read()
-    #     if not grabbed:
-    #         exit(-1)
-    #     result = SIGN_DETECTOR.detect(frame)
-    #     if not result:
-    #         DRIVER.stop()
-    #         time.sleep(1)
-    #         break
-    DRIVER.driver_run(8, 10)
+    DRIVER.driver_run(5, 10)
     time.sleep(1.5)
     DRIVER.stop()
     time.sleep(0.5)
@@ -115,68 +103,34 @@ def _stop_stop():
     global DRIVER
     DRIVER.driver_run(-10, -10)
     time.sleep(2)
-    DRIVER.driver_run(10, 5)
-    time.sleep(1)
     DRIVER.driver_run(5, 10)
     time.sleep(1)
+    DRIVER.driver_run(10, 5)
+    time.sleep(1.5)
     DRIVER.stop()
     time.sleep(1)
 
 
 def _spoil_left_stop():
     global DRIVER
+    DRIVER.driver_run(10, 10)
+    time.sleep(2)
     DRIVER.stop()
     time.sleep(1)
-    # change_camera_direction(2, 'left')
-    time.sleep(1)
-    DRIVER.driver_run(10, 10)
-    time.sleep(1)
-    while True:
-        grabbed, frame = FRON_CAMERA.read()
-        if not grabbed:
-            exit(-1)
-        result = SIGN_DETECTOR.detect(frame)
-        if not result:
-            DRIVER.stop()
-            time.sleep(1)
-            break
 
 
 def _hay_right_stop():
     global DRIVER
+    DRIVER.driver_run(10, 5)
+    time.sleep(0.5)
+    DRIVER.driver_run(5, 10)
+    time.sleep(0.5)
     DRIVER.stop()
     time.sleep(1)
-    DRIVER.driver_run(15, 6)
-    time.sleep(1)
-    DRIVER.driver_run(6, 15)
-    time.sleep(1)
-    DRIVER.driver_run(10, 10)
-    while True:
-        grabbed, frame = FRON_CAMERA.read()
-        if not grabbed:
-            exit(-1)
-        result = SIGN_DETECTOR.detect(frame)
-        if not result:
-            DRIVER.stop()
-            time.sleep(1)
-            break
 
 
 def _end_stop():
     global DRIVER
-    DRIVER.stop()
-    time.sleep(1)
-    DRIVER.driver_run(10, 10)
-    time.sleep(1)
-    while True:
-        grabbed, frame = FRON_CAMERA.read()
-        if not grabbed:
-            exit(-1)
-        result = SIGN_DETECTOR.detect(frame)
-        if not result:
-            DRIVER.stop()
-            time.sleep(1)
-            break
     DRIVER.driver_run(10, 10)
     time.sleep(2)
     DRIVER.stop()
@@ -203,7 +157,6 @@ def _raise_flag():
 def _shot_target():
     print('shot target...')
     global DRIVER
-    global TASK_DETECTOR
     _shot_target_right_stop()
     shot_target(2)
     return 0
@@ -271,7 +224,7 @@ def wait_start_processor():
             print('loading finished...')
             break
         if STOP_BUTTON.clicked():
-            SIDE_CAMERA.close()
+            # SIDE_CAMERA.close()
             FRON_CAMERA.close()
             buzzing(4)
             exit(0)
@@ -331,9 +284,6 @@ def test_front():
 
 
 def test_side():
-    # global SIDE_CAMERA
-    global TASK_DETECTOR
-
     while True:
         _, frame = SIDE_CAMERA.read()
         res = TASK_DETECTOR.detect(frame)
@@ -344,5 +294,3 @@ def test_side():
 
 if __name__=='__main__':
     run()
-    # test_front()
-
