@@ -64,8 +64,8 @@ def test_front_video():
 
 if __name__ == "__main__":
     # test_front_video()
-    directory = 'image/test_side_image_20561102075542'
-    detector = TaskDetector()
+    directory = 'image/test'
+    detector = SignDetector()
     x_result = []
     y_result = []
     for entry in os.scandir(directory):

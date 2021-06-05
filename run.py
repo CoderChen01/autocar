@@ -38,7 +38,7 @@ DRIVER = Driver()
 DRIVER.set_speed(SPEED)
 
 # detectors
-TASK_DETECTOR = TaskDetector()
+# TASK_DETECTOR = TaskDetector()
 SIGN_DETECTOR = SignDetector()
 
 
@@ -60,43 +60,51 @@ def lock_spoil():
     time.sleep(1)
 
 
+def find_white_color(frame):
+    pass
+
+
+def find_red_circle_dot(frame):
+    pass
+
+
 ################## stops ##################
 def _castle_stop():
     global DRIVER
+    DRIVER.driver_run(15, 15)
+    time.sleep(1.5)
     DRIVER.stop()
     time.sleep(1)
-    DRIVER.driver_run(10, 10)
-    time.sleep(1)
-    while True:
-        grabbed, frame = FRON_CAMERA.read()
-        if not grabbed:
-            exit(-1)
-        result = SIGN_DETECTOR.detect(frame)
-        if not result:
-            DRIVER.stop()
-            time.sleep(1)
-            break
-    DRIVER.driver_run(10, 10)
-    time.sleep(1)
-    DRIVER.stop()
-    time.sleep(1)
+    # DRIVER.driver_run(10, 10)
+    # time.sleep(1)
+    # while True:
+    #     grabbed, frame = FRON_CAMERA.read()
+    #     if not grabbed:
+    #         exit(-1)
+    #     result = SIGN_DETECTOR.detect(frame)
+    #     if not result:
+    #         DRIVER.stop()
+    #         time.sleep(1)
+    #         break
+    # DRIVER.driver_run(10, 10)
+    # time.sleep(1)
+    # DRIVER.stop()
+    # time.sleep(1)
 
 
 def _shot_target_right_stop():
     global DRIVER
-    DRIVER.stop()
-    time.sleep(1)
     DRIVER.driver_run(10, 8)
     time.sleep(1.5)
-    while True:
-        grabbed, frame = FRON_CAMERA.read()
-        if not grabbed:
-            exit(-1)
-        result = SIGN_DETECTOR.detect(frame)
-        if not result:
-            DRIVER.stop()
-            time.sleep(1)
-            break
+    # while True:
+    #     grabbed, frame = FRON_CAMERA.read()
+    #     if not grabbed:
+    #         exit(-1)
+    #     result = SIGN_DETECTOR.detect(frame)
+    #     if not result:
+    #         DRIVER.stop()
+    #         time.sleep(1)
+    #         break
     DRIVER.driver_run(8, 10)
     time.sleep(1.5)
     DRIVER.stop()
@@ -179,7 +187,6 @@ def _end_stop():
 def _raise_flag():
     print('raise flag...')
     global DRIVER
-    global TASK_DETECTOR
     global IS_FIRST_FLAG
     global FLAG_NUM
     _castle_stop()
