@@ -39,8 +39,25 @@ SIGN_MODEL = {
 SIGN_THRESHOLD = {
 	'castle': ((0.4374, 0.7216), (0.6417, 0.8955)),
 	'target': ((0.4416, 0.6316), (0.7645, 0.9114)),
-	'stop': ((0.4289, 0.6379), (0.2589, 0.3961)),
+	'stop': ((0.4289, 0.6379), (0.0589, 0.3961)),
 	'spoil': ((0.4478, 0.6571), (0.6297, 0.8975)),
 	'hay': ((0.4336, 0.5831), (0.6988, 0.8987)),
 	'end': ((0.3805, 0.6452), (0.7082, 0.9041))
+}
+
+# task model
+TASK_LIST = {
+	0: 'background',
+	1: 'dh',
+	2: 'dj',
+	3: 'dxj',
+	4: 'target',
+	5: 'spoil',
+	6: 'hay'
+}
+TASK_MODEL = {
+	'model': MODEL_DIR_PREFIX + 'models/task',
+	'threshold': 0.6,
+	'label_list': TASK_LIST,
+	'class_num': 7
 }

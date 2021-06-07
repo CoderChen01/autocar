@@ -33,15 +33,15 @@ START_BUTTON = Button(1, 'UP')
 STOP_BUTTON = Button(1, 'DOWN')
 LEFT_ULTRASONICSENSOR = UltrasonicSensor(4)
 FRON_CAMERA = BackgroundVideoCapture(configs.FRONT_CAM)
-# SIDE_CAMERA = BackgroundVideoCapture(configs.SIDE_CAM)
+SIDE_CAMERA = BackgroundVideoCapture(configs.SIDE_CAM)
 
 # driver
 DRIVER = Driver()
 DRIVER.set_speed(SPEED)
 
 # detectors
-# TASK_DETECTOR = TaskDetector()
 SIGN_DETECTOR = SignDetector()
+TASK_DETECTOR = TaskDetector()
 
 
 ################## tools ##################
@@ -62,27 +62,18 @@ def lock_spoil():
     time.sleep(1)
 
 
+def release_spoil():
+    servo = ServoPWM(3)
+    servo.servocontrol(10, 100)
+    time.sleep(1)
+
+
 def find_white_color(frame):
     pass
 
 
-def find_red_circle_dot(frame):
-    hue_image = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
-    low_range = np.array([0, 123, 100])
-    high_range = np.array([5, 255, 255])
-    th = cv2.inRange(hue_image, low_range, high_range)
-    dilated = cv2.dilate(th, cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (3, 3)), iterations=2)
-    circles = cv2.HoughCircles(dilated, cv2.HOUGH_GRADIENT, 1, 100, param1=15, param2=7, minRadius=10, maxRadius=20)
-    if circles is not None:
-        x, y, radius = circles[0][0]
-        center = (x, y)
-        frame = cv2.circle(frame, center, int(radius), (0, 255, 0), 2)
-    return frame
-
-
 ################## stops ##################
 def _castle_stop():
-    global DRIVER
     DRIVER.driver_run(15, 15)
     time.sleep(1.5)
     DRIVER.stop()
@@ -90,47 +81,52 @@ def _castle_stop():
 
 
 def _shot_target_right_stop():
-    global DRIVER
-    DRIVER.driver_run(10, 5)
-    time.sleep(1.5)
-    DRIVER.driver_run(5, 10)
-    time.sleep(1.5)
     DRIVER.stop()
-    time.sleep(0.5)
-
-
-def _stop_stop():
-    global DRIVER
-    DRIVER.driver_run(-10, -10)
-    time.sleep(2)
-    DRIVER.driver_run(5, 10)
     time.sleep(1)
     DRIVER.driver_run(10, 5)
     time.sleep(1.5)
+    DRIVER.driver_run(5, 10)
+    time.sleep(2.5)
+    DRIVER.stop()
+    time.sleep(1)
+
+
+def _stop_stop():
+    DRIVER.stop()
+    time.sleep(1)
+    DRIVER.driver_run(-15, -15)
+    time.sleep(1)
+    DRIVER.driver_run(15, 10)
+    time.sleep(1)
+    DRIVER.driver_run(10, 15)
+    time.sleep(1)
     DRIVER.stop()
     time.sleep(1)
 
 
 def _spoil_left_stop():
-    global DRIVER
-    DRIVER.driver_run(10, 10)
-    time.sleep(2)
+    DRIVER.stop()
+    time.sleep(1)
+    DRIVER.driver_run(15, 5)
+    time.sleep(1)
+    DRIVER.driver_run(5, 15)
+    time.sleep(1)
     DRIVER.stop()
     time.sleep(1)
 
 
 def _hay_right_stop():
-    global DRIVER
-    DRIVER.driver_run(10, 5)
-    time.sleep(0.5)
-    DRIVER.driver_run(5, 10)
-    time.sleep(0.5)
+    DRIVER.stop()
+    time.sleep(1)
+    DRIVER.driver_run(5, 15)
+    time.sleep(1)
+    DRIVER.driver_run(15, 5)
+    time.sleep(1)
     DRIVER.stop()
     time.sleep(1)
 
 
 def _end_stop():
-    global DRIVER
     DRIVER.driver_run(10, 10)
     time.sleep(2)
     DRIVER.stop()
@@ -140,7 +136,6 @@ def _end_stop():
 ################## tasks ##################
 def _raise_flag():
     print('raise flag...')
-    global DRIVER
     global IS_FIRST_FLAG
     global FLAG_NUM
     _castle_stop()
@@ -156,7 +151,6 @@ def _raise_flag():
 
 def _shot_target():
     print('shot target...')
-    global DRIVER
     _shot_target_right_stop()
     shot_target(2)
     return 0
@@ -192,6 +186,7 @@ def _end():
     global IS_FIRST_FLAG
     global FLAG_NUM
     _end_stop()
+    release_spoil()
     IS_FIRST_FLAG = True
     FLAG_NUM = 3
     return 2
@@ -224,8 +219,9 @@ def wait_start_processor():
             print('loading finished...')
             break
         if STOP_BUTTON.clicked():
-            # SIDE_CAMERA.close()
+            SIDE_CAMERA.close()
             FRON_CAMERA.close()
+            BOTTOM_CAMERA.close()
             buzzing(4)
             exit(0)
     print('start operation...')

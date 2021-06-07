@@ -36,10 +36,10 @@ def raise_flag(servo_port):
     time.sleep(0.5)
     for _ in range(3):
         light_work(2, 'green')
-        time.sleep(1)
+        time.sleep(2)
         light_work(2, 'off')
         time.sleep(0.5)
-    servo.servocontrol(0, 100)
+    servo.servocontrol(10, 100)
     time.sleep(0.5)
 
 
@@ -60,7 +60,7 @@ def shot_target(motor_port):
 def capture_target(servo_485_id, servo_pwm_id):
     servo1 = Servo(servo_485_id)
     servo2 = ServoPWM(servo_pwm_id)
-    servo1speed = 100
+    servo1speed = 50
     servo2speed = 50
     time.sleep(1)
     servo2.servocontrol(100, servo2speed)
@@ -99,7 +99,7 @@ def take_barracks():
     driver.stop()
     for _ in range(3):
         light_work(2, 'red')
-        time.sleep(1)
+        time.sleep(2)
         light_work(2, 'off')
         time.sleep(0.5)
     driver.driver_run(-10, -10)

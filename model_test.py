@@ -42,6 +42,7 @@ def draw_res(frame, results):
                            fontScale, color, thickness, cv2.LINE_AA)
         frame = cv2.putText(frame, str(round(item.relative_center_x, 2)) + ',' + str(round(item.relative_center_y, 2)),
                             (40, 40), font, fontScale, color, 1, cv2.LINE_AA)
+        frame = cv2.circle(frame, (int(item.relative_center_x) * item.shape[0], int(item.relative_center_y) * item.shape[1]), 1, (0, 0, 255), 4)
         return frame
 
 
@@ -64,8 +65,8 @@ def test_front_video():
 
 if __name__ == "__main__":
     # test_front_video()
-    directory = 'image/test'
-    detector = SignDetector()
+    directory = 'image/test_side_image_20561113193912'
+    detector = TaskDetector()
     x_result = []
     y_result = []
     for entry in os.scandir(directory):
