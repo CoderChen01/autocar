@@ -83,23 +83,10 @@ def _castle_stop():
 def _shot_target_right_stop():
     DRIVER.stop()
     time.sleep(1)
-    DRIVER.driver_run(10, 5)
-    time.sleep(1.5)
-    DRIVER.driver_run(5, 10)
-    time.sleep(2.5)
-    DRIVER.stop()
-    time.sleep(1)
+    DRIVER.change_posture(15)
 
 
 def _stop_stop():
-    DRIVER.stop()
-    time.sleep(1)
-    DRIVER.driver_run(-15, -15)
-    time.sleep(1)
-    DRIVER.driver_run(15, 10)
-    time.sleep(1)
-    DRIVER.driver_run(10, 15)
-    time.sleep(1)
     DRIVER.stop()
     time.sleep(1)
 
@@ -107,10 +94,8 @@ def _stop_stop():
 def _spoil_left_stop():
     DRIVER.stop()
     time.sleep(1)
-    DRIVER.driver_run(15, 5)
-    time.sleep(1)
-    DRIVER.driver_run(5, 15)
-    time.sleep(1)
+    DRIVER.driver_run(10, 10)
+    time.sleep(1.5)
     DRIVER.stop()
     time.sleep(1)
 
@@ -118,17 +103,12 @@ def _spoil_left_stop():
 def _hay_right_stop():
     DRIVER.stop()
     time.sleep(1)
-    DRIVER.driver_run(5, 15)
-    time.sleep(1)
-    DRIVER.driver_run(15, 5)
-    time.sleep(1)
-    DRIVER.stop()
-    time.sleep(1)
+    DRIVER.change_posture(15)
 
 
 def _end_stop():
     DRIVER.driver_run(10, 10)
-    time.sleep(2)
+    time.sleep(2.5)
     DRIVER.stop()
     time.sleep(1)
 
@@ -221,7 +201,6 @@ def wait_start_processor():
         if STOP_BUTTON.clicked():
             SIDE_CAMERA.close()
             FRON_CAMERA.close()
-            BOTTOM_CAMERA.close()
             buzzing(4)
             exit(0)
     print('start operation...')

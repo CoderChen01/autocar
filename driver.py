@@ -35,15 +35,14 @@ class Driver:
         return self.cart.min_speed
 
     def change_posture(self, basespeed):
-        # basespeed=15
         l_speed = basespeed
         r_speed = basespeed * 0.4
         self.cart.move([l_speed, r_speed, l_speed, r_speed])
-        time.sleep(1)
+        time.sleep(1.5)
         l_speed = basespeed * 0.4
         r_speed = basespeed
         self.cart.move([l_speed, r_speed, l_speed, r_speed])
-        time.sleep(1)
+        time.sleep(1.3)
         self.cart.stop()
 
     def change_posture_cm(self, distance):
