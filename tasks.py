@@ -63,13 +63,13 @@ def capture_target(servo_485_id, servo_pwm_id):
     servo1speed = 50
     servo2speed = 50
     time.sleep(1)
-    servo2.servocontrol(100, servo2speed)
+    servo2.servocontrol(90, 100)
     time.sleep(2)
-    servo1.servocontrol(10, 60)
+    servo1.servocontrol(10, 30)
     time.sleep(2)
-    servo2.servocontrol(180, servo2speed)
+    servo2.servocontrol(180, 100)
     time.sleep(2)
-    servo1.servocontrol(-80,servo1speed)
+    servo1.servocontrol(-80,100)
     time.sleep(2)
 
 
