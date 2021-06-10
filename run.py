@@ -83,7 +83,10 @@ def _castle_stop():
 def _shot_target_right_stop():
     DRIVER.stop()
     time.sleep(1)
-    DRIVER.change_posture(13)
+    DRIVER.driver_run(10, 10)
+    time.sleep(2)
+    DRIVER.stop()
+    time.sleep(1)
 
 
 def _stop_stop():

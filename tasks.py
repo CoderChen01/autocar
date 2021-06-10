@@ -70,22 +70,22 @@ def capture_target(servo_485_id, servo_pwm_id):
     servo2.servocontrol(180, 100)
     time.sleep(2)
     servo1.servocontrol(-80,100)
-    time.sleep(2)
+    time.sleep(3)
 
 
 def transport_forage(server485_id, servopwm_id):
     servo_485 = Servo(server485_id)
     servo = ServoPWM(servopwm_id)
-    servo.servocontrol(170, 25)
+    servo.servocontrol(130, 25)
     time.sleep(1)
     servo_485.servocontrol(-10, 50)
     time.sleep(1)
-    servo.servocontrol(130, 100)
+    servo.servocontrol(100, 100)
     time.sleep(3)
-    servo.servocontrol(170, 25)
+    servo.servocontrol(130, 25)
     time.sleep(3)
     servo_485.servocontrol(35, 35)
-    time.sleep(2)
+    time.sleep(3)
 
 
 def take_barracks():
@@ -93,7 +93,7 @@ def take_barracks():
     driver.driver_run(5, 20)
     time.sleep(2)
     driver.driver_run(10, 10)
-    time.sleep(2.5)
+    time.sleep(2)
     driver.driver_run(20, 5)
     time.sleep(2)
     driver.stop()
@@ -103,13 +103,13 @@ def take_barracks():
         light_work(2, 'off')
         time.sleep(0.5)
     driver.driver_run(-10, -10)
-    time.sleep(2)
+    time.sleep(3)
     driver.driver_run(20, 5)
     time.sleep(2)
     driver.driver_run(10, 10)
     time.sleep(2)
     driver.driver_run(5, 20)
-    time.sleep(1)
+    time.sleep(2)
 
 
 if __name__ == '__main__':
@@ -117,7 +117,8 @@ if __name__ == '__main__':
     # s = Servo(2)
     # s.servocontrol(35, 100)
     # time.sleep(5)
-    transport_forage(2, 6)
+    # transport_forage(2, 6)
+    take_barracks()
     # s = ServoPWM(6)
     # s.servocontrol(180, 100)
     # transport_forage(1)
