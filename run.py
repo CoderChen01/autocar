@@ -84,7 +84,7 @@ def _shot_target_right_stop():
     DRIVER.stop()
     time.sleep(1)
     DRIVER.driver_run(10, 10)
-    time.sleep(2)
+    time.sleep(2.5)
     DRIVER.stop()
     time.sleep(1)
 
@@ -106,8 +106,10 @@ def _spoil_left_stop():
 def _hay_right_stop():
     DRIVER.stop()
     time.sleep(1)
-    DRIVER.driver_run(10, 10)
-    time.sleep(1.5)
+    DRIVER.driver_run(10, 8)
+    time.sleep(1)
+    DRIVER.driver_run(8, 10)
+    time.sleep(1)
     DRIVER.stop()
     time.sleep(1)
 
