@@ -110,6 +110,8 @@ def _hay_right_stop():
     time.sleep(1)
     DRIVER.driver_run(8, 10)
     time.sleep(1)
+    DRIVER.driver_run(-10, -10)
+    time.sleep(1)
     DRIVER.stop()
     time.sleep(1)
 
@@ -140,7 +142,7 @@ def _raise_flag():
 def _shot_target():
     print('shot target...')
     _shot_target_right_stop()
-    shot_target(2)
+    shot_target()
     return 0
 
 
@@ -154,7 +156,7 @@ def _take_barracks():
 def _capture_target():
     print('capture target...')
     _spoil_left_stop()
-    capture_target(1, 2)
+    capture_target()
     time.sleep(1)
     return 0
 
@@ -162,7 +164,7 @@ def _capture_target():
 def _transport_forage():
     print('transport forage...')
     _hay_right_stop()
-    transport_forage(2, 6)
+    transport_forage()
     lock_spoil()
     time.sleep(2)
     time.sleep(1)

@@ -43,7 +43,7 @@ def raise_flag(servo_port):
     time.sleep(0.5)
 
 
-def shot_target(motor_port):
+def shot_target(motor_port=2):
     setmotor1 = MotorRotate(motor_port)
     time.sleep(0.5)
     for _ in range(2):
@@ -57,10 +57,10 @@ def shot_target(motor_port):
         time.sleep(1)
 
 
-def capture_target(servo_485_id, servo_pwm_id):
+def capture_target(servo_485_id=1, servo_pwm_id=2, motor_port=2):
     servo1 = Servo(servo_485_id)
     servo2 = ServoPWM(servo_pwm_id)
-    setmotor1 = MotorRotate(2)
+    setmotor1 = MotorRotate(motor_port)
     setmotor1.motor_rotate(70)
     time.sleep(0.6)
     setmotor1.motor_rotate(0)
@@ -79,7 +79,7 @@ def capture_target(servo_485_id, servo_pwm_id):
     time.sleep(1)
 
 
-def transport_forage(server485_id, servopwm_id):
+def transport_forage(server485_id=2, servopwm_id=6):
     servo_485 = Servo(server485_id)
     servo = ServoPWM(servopwm_id)
     servo.servocontrol(150, 25)
