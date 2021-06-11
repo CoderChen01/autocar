@@ -46,15 +46,14 @@ def raise_flag(servo_port):
 def shot_target(motor_port=2):
     setmotor1 = MotorRotate(motor_port)
     time.sleep(0.5)
-    for _ in range(2):
-        setmotor1.motor_rotate(70)
-        time.sleep(0.6)
-        setmotor1.motor_rotate(0)
-        time.sleep(0.3)
-        setmotor1.motor_rotate(-70)
-        time.sleep(0.5)
-        setmotor1.motor_rotate(0)
-        time.sleep(1)
+    setmotor1.motor_rotate(70)
+    time.sleep(0.6)
+    setmotor1.motor_rotate(0)
+    time.sleep(0.3)
+    setmotor1.motor_rotate(-70)
+    time.sleep(0.5)
+    setmotor1.motor_rotate(0)
+    time.sleep(1)
 
 
 def capture_target(servo_485_id=1, servo_pwm_id=2, motor_port=2):
@@ -71,7 +70,7 @@ def capture_target(servo_485_id=1, servo_pwm_id=2, motor_port=2):
     time.sleep(2)
     servo2.servocontrol(180, 100)
     time.sleep(2)
-    servo1.servocontrol(-80,70)
+    servo1.servocontrol(-80,100)
     time.sleep(3)
     setmotor1.motor_rotate(-70)
     time.sleep(0.5)
@@ -97,11 +96,11 @@ def transport_forage(server485_id=2, servopwm_id=6):
 def take_barracks():
     driver = Driver()
     driver.driver_run(5, 20)
-    time.sleep(2)
+    time.sleep(1.5)
     driver.driver_run(10, 10)
-    time.sleep(2)
+    time.sleep(4)
     driver.driver_run(20, 5)
-    time.sleep(2)
+    time.sleep(1.5)
     driver.stop()
     for _ in range(3):
         light_work(2, 'red')
@@ -109,7 +108,7 @@ def take_barracks():
         light_work(2, 'off')
         time.sleep(0.5)
     driver.driver_run(-10, -10)
-    time.sleep(3)
+    time.sleep(3.5)
     driver.driver_run(20, 5)
     time.sleep(2)
     driver.driver_run(10, 10)

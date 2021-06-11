@@ -21,11 +21,11 @@ class Cart:
         rightwheel = int(self.velocity)
         if abs(angle) > 0.4:
             turn_speed = int(self.velocity * 0.92)
-        elif 0.02 < abs(angle) < 0.05:
+        elif 0.015 < abs(angle) < 0.05:
             turn_speed = int(self.velocity * 0.8)
         if angle < 0:
             leftwheel = int((1 + angle) * turn_speed)
-        if angle > 0:
+        elif angle > 0:
             rightwheel = int((1 - angle) * turn_speed)
         self.move([leftwheel, rightwheel, leftwheel, rightwheel])
 
