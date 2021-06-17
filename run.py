@@ -11,7 +11,7 @@ import configs
 from tasks import *
 from detectors import SignDetector
 from detectors import TaskDetector
-from widgets import Button, UltrasonicSensor
+from widgets import Button
 from widgets import Servo, ServoPWM
 from cruiser import Cruiser
 from driver import Driver
@@ -31,7 +31,6 @@ IS_FIRST_FLAG = True
 # buttons, ultrasonic, cameras
 START_BUTTON = Button(1, 'UP')
 STOP_BUTTON = Button(1, 'DOWN')
-LEFT_ULTRASONICSENSOR = UltrasonicSensor(4)
 FRON_CAMERA = BackgroundVideoCapture(configs.FRONT_CAM)
 SIDE_CAMERA = BackgroundVideoCapture(configs.SIDE_CAM)
 
@@ -54,12 +53,6 @@ def is_sign_valid(result):
     threshold = configs.SIGN_THRESHOLD[result.name]
     return threshold[0][0] < x < threshold[0][1] \
            and threshold[1][0] < y < threshold[1][1]
-
-
-def lock_spoil():
-    servo = ServoPWM(2)
-    servo.servocontrol(180, 50)
-    time.sleep(1)
 
 
 def release_spoil():
@@ -132,7 +125,6 @@ def _raise_flag():
     if FLAG_NUM > 5:
         FLAG_NUM = 3
     raise_flag(FLAG_NUM)
-    lock_spoil()
     if IS_FIRST_FLAG:
         IS_FIRST_FLAG = False
     FLAG_NUM += 1
@@ -165,7 +157,6 @@ def _transport_forage():
     print('transport forage...')
     _hay_right_stop()
     transport_forage()
-    lock_spoil()
     time.sleep(2)
     time.sleep(1)
     return 0
