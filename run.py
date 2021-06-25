@@ -56,8 +56,14 @@ def is_sign_valid(result):
 
 
 def release_spoil():
+    servo = ServoPWM(3)
+    servo.servocontrol(10, 100)
+    time.sleep(1)
+
+
+def lock_spoil():
     servo = ServoPWM(2)
-    servo.servocontrol(130, 100)
+    servo.servocontrol(180, 100)
     time.sleep(1)
 
 
@@ -95,9 +101,9 @@ def _spoil_left_stop():
 def _hay_right_stop():
     DRIVER.stop()
     time.sleep(1)
-    DRIVER.driver_run(10, 8)
+    DRIVER.driver_run(10, 5)
     time.sleep(1)
-    DRIVER.driver_run(8, 10)
+    DRIVER.driver_run(5, 10)
     time.sleep(1)
     DRIVER.driver_run(-10, -10)
     time.sleep(1)
@@ -124,6 +130,7 @@ def _raise_flag():
     if IS_FIRST_FLAG:
         IS_FIRST_FLAG = False
     FLAG_NUM += 1
+    lock_spoil()
     return 0
 
 
@@ -154,7 +161,7 @@ def _transport_forage():
     _hay_right_stop()
     transport_forage()
     time.sleep(2)
-    time.sleep(1)
+    lock_spoil()
     return 0
 
 
@@ -265,5 +272,4 @@ def test_side():
 
 
 if __name__=='__main__':
-    # run()
-    release_spoil()
+    run()
