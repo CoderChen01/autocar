@@ -56,13 +56,9 @@ def is_sign_valid(result):
 
 
 def release_spoil():
-    servo = ServoPWM(3)
-    servo.servocontrol(10, 100)
+    servo = ServoPWM(2)
+    servo.servocontrol(130, 100)
     time.sleep(1)
-
-
-def find_white_color(frame):
-    pass
 
 
 ################## stops ##################
@@ -269,4 +265,5 @@ def test_side():
 
 
 if __name__=='__main__':
-    run()
+    # run()
+    release_spoil()
