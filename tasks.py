@@ -108,7 +108,7 @@ def take_barracks():
         light_work(2, 'off')
         time.sleep(0.5)
     driver.driver_run(-10, -10)
-    time.sleep(3.5)
+    time.sleep(3)
     driver.driver_run(20, 5)
     time.sleep(2)
     driver.driver_run(10, 10)
@@ -118,12 +118,12 @@ def take_barracks():
 
 
 if __name__ == '__main__':
-    time.sleep(4)
+    time.sleep(2)
     # s = Servo(2)
     # s.servocontrol(35, 100)
     # time.sleep(5)
-    capture_target()
-    # take_barracks()
+    # capture_target()
+    take_barracks()
     # s = ServoPWM(6)
     # s.servocontrol(180, 100)
     # transport_forage(1)

@@ -101,12 +101,16 @@ def _spoil_left_stop():
 def _hay_right_stop():
     DRIVER.stop()
     time.sleep(1)
-    DRIVER.driver_run(10, 5)
-    time.sleep(2)
-    DRIVER.driver_run(5, 10)
-    time.sleep(2)
-    DRIVER.driver_run(-10, -10)
+    DRIVER.driver_run(15, 5)
+    time.sleep(1.5)
+    DRIVER.stop()
     time.sleep(1)
+    DRIVER.driver_run(5, 15)
+    time.sleep(1.5)
+    DRIVER.stop()
+    time.sleep(1)
+    DRIVER.driver_run(-10, -10)
+    time.sleep(2)
     DRIVER.stop()
     time.sleep(1)
 
@@ -273,3 +277,4 @@ def test_side():
 
 if __name__=='__main__':
     run()
+    # _hay_right_stop()
