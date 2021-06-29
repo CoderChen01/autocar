@@ -110,7 +110,7 @@ def _hay_right_stop():
     DRIVER.stop()
     time.sleep(1)
     DRIVER.driver_run(-10, -10)
-    time.sleep(2)
+    time.sleep(3.5)
     DRIVER.stop()
     time.sleep(1)
 
