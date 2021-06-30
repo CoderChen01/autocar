@@ -8,7 +8,7 @@ import configs
 
 
 ssd_args = {
-    'shape': [1, 3, 480, 480],
+    'shape': [1, 3, 300, 300],
     'ms': [127.5, 0.007843]
 }
 
