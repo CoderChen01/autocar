@@ -77,8 +77,8 @@ def take_barracks():
     driver.driver_run(20, 5)
     time.sleep(2)
     driver.driver_run(10, 10)
-    time.sleep(2)
-    driver.driver_run(5, 20)
+    time.sleep(1.5)
+    driver.driver_run(5, 15)
     time.sleep(2)
 
 
