@@ -56,6 +56,30 @@ def shot_target(motor_port=2):
     time.sleep(1)
 
 
+def take_barracks():
+    driver = Driver()
+    driver.driver_run(5, 20)
+    time.sleep(1.5)
+    driver.driver_run(10, 10)
+    time.sleep(4)
+    driver.driver_run(20, 5)
+    time.sleep(1.5)
+    driver.stop()
+    for _ in range(3):
+        light_work(2, 'red')
+        time.sleep(2)
+        light_work(2, 'off')
+        time.sleep(0.5)
+    driver.driver_run(-10, -10)
+    time.sleep(3)
+    driver.driver_run(20, 5)
+    time.sleep(2)
+    driver.driver_run(10, 10)
+    time.sleep(2)
+    driver.driver_run(5, 20)
+    time.sleep(2)
+
+
 def capture_target(servo_485_id=1, servo_pwm_id=2, motor_port=2):
     servo1 = Servo(servo_485_id)
     servo2 = ServoPWM(servo_pwm_id)
@@ -91,30 +115,6 @@ def transport_forage(server485_id=2, servopwm_id=6):
     time.sleep(3)
     servo_485.servocontrol(35, 35)
     time.sleep(3)
-
-
-def take_barracks():
-    driver = Driver()
-    driver.driver_run(5, 20)
-    time.sleep(1.5)
-    driver.driver_run(10, 10)
-    time.sleep(4)
-    driver.driver_run(20, 5)
-    time.sleep(1.5)
-    driver.stop()
-    for _ in range(3):
-        light_work(2, 'red')
-        time.sleep(2)
-        light_work(2, 'off')
-        time.sleep(0.5)
-    driver.driver_run(-10, -10)
-    time.sleep(3)
-    driver.driver_run(20, 5)
-    time.sleep(2)
-    driver.driver_run(10, 10)
-    time.sleep(2)
-    driver.driver_run(5, 20)
-    time.sleep(2)
 
 
 if __name__ == '__main__':
