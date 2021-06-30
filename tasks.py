@@ -85,7 +85,7 @@ def transport_forage(server485_id=2, servopwm_id=6):
     time.sleep(1)
     servo_485.servocontrol(-10, 50)
     time.sleep(1)
-    servo.servocontrol(110, 100)
+    servo.servocontrol(120, 100)
     time.sleep(3)
     servo.servocontrol(180, 25)
     time.sleep(3)
@@ -118,10 +118,10 @@ def take_barracks():
 
 
 if __name__ == '__main__':
-    time.sleep(2)
-    servo = ServoPWM(6)
-    servo.servocontrol(115, 25)
-    time.sleep(1)
+    time.sleep(4)
+    # servo = ServoPWM(6)
+    # servo.servocontrol(115, 25)
+    # time.sleep(1)
     # s = Servo(2)
     # s.servocontrol(35, 100)
     # time.sleep(5)
@@ -129,7 +129,7 @@ if __name__ == '__main__':
     # take_barracks()
     # s = ServoPWM(6)
     # s.servocontrol(180, 100)
-    # transport_forage(1)
+    transport_forage()
     # change_camera_direction(2, 'left')
     # raise_flag(5)
     # time.sleep(1)
