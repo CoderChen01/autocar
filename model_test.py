@@ -65,10 +65,12 @@ def test_front_video():
 
 if __name__ == "__main__":
     # test_front_video()
-    directory = 'image/test_front_image_20561113062238'
+    # TODO 面积
+    directory = 'image/test_front_image_20561113061404'
     detector = SignDetector()
     x_result = []
     y_result = []
+    area_result = []
     for entry in os.scandir(directory):
         if entry.name.endswith('.png'):
             continue
@@ -79,7 +81,14 @@ if __name__ == "__main__":
         print(entry.name, result.relative_center_x, result.relative_center_y)
         x_result.append(result.relative_center_x)
         y_result.append(result.relative_center_y)
+        area_result.append(calculate_area(result.relative_box, result.shape))
         cv2.imwrite(directory + '/' + entry.name.split('.')[0] + '.png', draw_res(img, [result]))
-    print('x_min: {}, x_max: {}'.format(min(x_result), max(x_result)))
-    print('y_min: {}, y_max: {}'.format(min(y_result), max(y_result)))
-
+    x_min, x_max = min(x_result), max(x_result)
+    y_min, y_max = min(y_result), max(y_result)
+    area_min, area_max = min(area_result), max(area_result)
+    print('x_min: {}, x_max: {}'.format(x_min, x_max))
+    print('y_min: {}, y_max: {}'.format(y_min, y_max))
+    print('area_min: {}, area_max: {}'.format(area_min, area_max))
+    print(f'(({round(x_min, 4)}, {round(x_max, 4)}),'
+          f' ({round(y_min, 4)}, {round(y_max, 4)}),'
+          f' ({round(area_min, 4)}, {round(area_max, 4)}))')

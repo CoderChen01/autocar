@@ -11,6 +11,7 @@ import configs
 from tasks import *
 from detectors import SignDetector
 from detectors import TaskDetector
+from detectors import calculate_area
 from widgets import Button
 from widgets import Servo, ServoPWM
 from cruiser import Cruiser
@@ -50,9 +51,11 @@ def is_sign_valid(result):
     """
     x = result.relative_center_x
     y = result.relative_center_y
+    area = calculate_area(result.relative_box, result.shape)
     threshold = configs.SIGN_THRESHOLD[result.name]
     return threshold[0][0] < x < threshold[0][1] \
-           and threshold[1][0] < y < threshold[1][1]
+           and threshold[1][0] < y < threshold[1][1] \
+           and threshold[2][0] < area < threshold[2][0]
 
 
 def release_spoil():
