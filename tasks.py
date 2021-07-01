@@ -35,9 +35,9 @@ def raise_flag(servo_port):
     servo.servocontrol(120, 100)
     time.sleep(0.5)
     for _ in range(3):
-        buzzing(1)
         light_work(2, 'green')
-        time.sleep(2)
+        buzzing(1)
+        time.sleep(1)
         light_work(2, 'off')
         time.sleep(0.5)
     servo.servocontrol(10, 100)
@@ -67,9 +67,9 @@ def take_barracks():
     time.sleep(1.5)
     driver.stop()
     for _ in range(3):
-        buzzing(1)
         light_work(2, 'red')
-        time.sleep(2)
+        buzzing(1)
+        time.sleep(1)
         light_work(2, 'off')
         time.sleep(0.5)
     driver.driver_run(-10, -10)

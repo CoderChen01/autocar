@@ -55,7 +55,7 @@ def is_sign_valid(result):
     threshold = configs.SIGN_THRESHOLD[result.name]
     return threshold[0][0] < x < threshold[0][1] \
            and threshold[1][0] < y < threshold[1][1] \
-           and threshold[2][0] < area < threshold[2][0]
+           and threshold[2][0] < area < threshold[2][1]
 
 
 def release_spoil():

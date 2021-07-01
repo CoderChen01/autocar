@@ -65,7 +65,6 @@ def test_front_video():
 
 if __name__ == "__main__":
     # test_front_video()
-    # TODO 面积
     directory = 'image/test_front_image_20561113061404'
     detector = SignDetector()
     x_result = []
