@@ -10,7 +10,7 @@ from tasks import light_work
 from improved_videocapture import BackgroundVideoCapture
 
 CAM_ID = configs.FRONT_CAM
-IS_TEST = True
+IS_TEST = False
 
 start_button = Button(1, 'UP')
 stop_button = Button(1, 'DOWN')

@@ -81,7 +81,11 @@ def take_barracks():
     driver.driver_run(5, 15)
     time.sleep(2.5)
     driver.stop()
+    time.sleep(0.5)
+    driver.driver_run(0, 15)
     time.sleep(1)
+    driver.stop()
+    time.sleep(0.5)
 
 
 def capture_target(servo_485_id=1, servo_pwm_id=2, motor_port=2):
