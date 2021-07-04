@@ -32,7 +32,7 @@ SIGN_LIST = {
 }
 SIGN_MODEL = {
 	'model': MODEL_DIR_PREFIX + 'models/sign',
-	'threshold': 0.6,
+	'threshold': 0.75,
 	'label_list': SIGN_LIST,
 	'class_num': 7
 }
@@ -53,7 +53,12 @@ TASK_LIST = {
 }
 TASK_MODEL = {
 	'model': MODEL_DIR_PREFIX + 'models/task',
-	'threshold': 0.6,
+	'threshold': 0.75,
 	'label_list': TASK_LIST,
-	'class_num': 7
+	'class_num': 2
 }
+TASK_THRESHOLD = [
+	((0.3539, 0.646), (0.155, 0.4956)),
+	((0.4243, 0.6732), (0.0945, 0.4904)),
+	((0.4185, 0.5712), (0.1638, 0.5801))
+]

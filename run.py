@@ -59,14 +59,8 @@ def is_sign_valid(result):
 
 
 def release_spoil():
-    servo = ServoPWM(3)
-    servo.servocontrol(10, 100)
-    time.sleep(1)
-
-
-def lock_spoil():
     servo = ServoPWM(2)
-    servo.servocontrol(180, 100)
+    servo.servocontrol(90, 100)
     time.sleep(1)
 
 
@@ -84,7 +78,15 @@ def _shot_target_right_stop():
     DRIVER.driver_run(10, 10)
     time.sleep(2.5)
     DRIVER.stop()
-    time.sleep(1)
+    time.sleep(0.5)
+    for _ in range(30):
+        START_BUTTON.clicked()
+    while not START_BUTTON.clicked():
+        grapped, frame = SIDE_CAMERA.read()
+        if not grapped:
+            exit(-1)
+        result = SIGN_DETECTOR.detect(frame)
+        print(result.__dict__)
 
 
 def _stop_stop():
@@ -104,11 +106,11 @@ def _spoil_left_stop():
 def _hay_right_stop():
     DRIVER.stop()
     time.sleep(1)
-    DRIVER.driver_run(15, 8)
+    DRIVER.driver_run(15, 5)
     time.sleep(1.5)
     DRIVER.stop()
     time.sleep(1)
-    DRIVER.driver_run(8, 15)
+    DRIVER.driver_run(5, 15)
     time.sleep(1.5)
     DRIVER.stop()
     time.sleep(1)
@@ -137,7 +139,6 @@ def _raise_flag():
     if IS_FIRST_FLAG:
         IS_FIRST_FLAG = False
     FLAG_NUM += 1
-    lock_spoil()
     return 0
 
 
@@ -168,7 +169,6 @@ def _transport_forage():
     _hay_right_stop()
     transport_forage()
     time.sleep(2)
-    lock_spoil()
     return 0
 
 
