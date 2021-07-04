@@ -104,11 +104,11 @@ def _spoil_left_stop():
 def _hay_right_stop():
     DRIVER.stop()
     time.sleep(1)
-    DRIVER.driver_run(15, 5)
+    DRIVER.driver_run(15, 8)
     time.sleep(1.5)
     DRIVER.stop()
     time.sleep(1)
-    DRIVER.driver_run(5, 15)
+    DRIVER.driver_run(8, 15)
     time.sleep(1.5)
     DRIVER.stop()
     time.sleep(1)
