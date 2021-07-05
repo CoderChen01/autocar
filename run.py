@@ -24,9 +24,10 @@ from god import God
 ################## public variables ##################
 # flags
 SPEED = configs.RUN_SPEED
-STATE = 2
+STATE = 2  # 0 cruise 1 task 2 wait
 TASK_ID = 0
 FLAG_NUM = 3
+TARGET_NUM = 0
 IS_FIRST_FLAG = True
 
 # buttons, ultrasonic, cameras
@@ -86,7 +87,33 @@ def _shot_target_right_stop():
         if not grapped:
             exit(-1)
         result = SIGN_DETECTOR.detect(frame)
-        print(result.__dict__)
+        x = result.relative_center_x
+        y = result.relative_center_y
+        x_threshold, y_threshold = configs.TASK_THRESHOLD[TARGET_NUM]
+        if x < x_threshold[0]:
+            # go forward
+            DRIVER.driver_run(10, 10)
+            time.sleep(0.5)
+            DRIVER.stop()
+            time.sleep(0.5)
+        elif x > x_threshold[1]:
+            # back up
+            DRIVER.driver_run(-10, -10)
+            time.sleep(0.5)
+            DRIVER.stop()
+            time.sleep(0.5)
+        if y < y_threshold[0]:
+            # turn left
+            DRIVER.driver_run(0, 10)
+            time.sleep(0.5)
+            DRIVER.stop()
+            time.sleep(0.5)
+        elif y > y_threshold[1]:
+            # turn right
+            DRIVER.driver_run(10, 0)
+            time.sleep(0.5)
+            DRIVER.stop()
+            time.sleep(0.5)
 
 
 def _stop_stop():
@@ -144,8 +171,12 @@ def _raise_flag():
 
 def _shot_target():
     print('shot target...')
+    global TARGET_NUM
     _shot_target_right_stop()
     shot_target()
+    TARGET_NUM += 1
+    if TARGET_NUM > 2:
+        TARGET_NUM = 0
     return 0
 
 
