@@ -114,6 +114,9 @@ def _shot_target_right_stop():
             time.sleep(0.5)
             DRIVER.stop()
             time.sleep(0.5)
+        if x_threshold[0] <= x <= x_threshold[1] \
+           and y_threshold[0] <= y <= y_threshold[1]:
+           break
 
 
 def _stop_stop():
