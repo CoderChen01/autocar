@@ -80,9 +80,7 @@ def _shot_target_right_stop():
     time.sleep(2.5)
     DRIVER.stop()
     time.sleep(0.5)
-    for _ in range(30):
-        START_BUTTON.clicked()
-    while not START_BUTTON.clicked():
+    while True:
         grapped, frame = SIDE_CAMERA.read()
         if not grapped:
             exit(-1)
