@@ -17,6 +17,9 @@ class Driver:
         self.cart.velocity = self.full_speed
         self.cruiser = Cruiser()
 
+    def set_speed(self, speed):
+        self.cart.velocity = speed
+
     def driver_run(self, left, right):
         self.cart.move([left, right, left, right])
 

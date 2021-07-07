@@ -53,9 +53,16 @@ def is_sign_valid(result):
     y = result.relative_center_y
     area = calculate_area(result.relative_box, result.shape)
     threshold = configs.SIGN_THRESHOLD[result.name]
-    return threshold[0][0] < x < threshold[0][1] \
-           and threshold[1][0] < y < threshold[1][1] \
-           and threshold[2][0] < area < threshold[2][1]
+    x_is_legal = threshold[0][0] < x < threshold[0][1]
+    y_is_legal = threshold[1][0] < y < threshold[1][1]
+    area_is_legal = threshold[2][0] < area < threshold[2][1]
+    if not x_is_legal:
+        print('x is not legal')
+    if not y_is_legal:
+        print('y is not legal')
+    if not area_is_legal:
+        print('area is not legal')
+    return x_is_legal and y_is_legal and area_is_legal
 
 
 def release_spoil():
@@ -90,7 +97,7 @@ def _shot_target_right_stop():
         grapped, frame = SIDE_CAMERA.read()
         if not grapped:
             exit(-1)
-        result = SIGN_DETECTOR.detect(frame)
+        result = TASK_DETECTOR.detect(frame)
         x_threshold, y_threshold, area_threshold = configs.TASK_THRESHOLD[TARGET_NUM]
         if not result or \
            not area_threshold[0] < calculate_area(result.relative_box, result.shape) < area_threshold[1]:
@@ -361,18 +368,22 @@ def test_front():
         res = SIGN_DETECTOR.detect(frame)
         if not res:
             continue
-        print(res.index, res.name, res.relative_center_x, res.relative_center_y)
+        print(is_sign_valid(res), res.name, res.relative_center_x, res.relative_center_y)
 
 
 def test_side():
+    x_threshold, y_threshold, area_threshold = configs.TASK_THRESHOLD[TARGET_NUM]
     while True:
         _, frame = SIDE_CAMERA.read()
         res = TASK_DETECTOR.detect(frame)
         if not res:
             continue
-        print(res.index, res.name, res.relative_center_x, res.relative_center_y)
+        s = calculate_area(res.relative_box, res.shape)
+        print(res.index, res.name, res.score, s)
 
 
 if __name__=='__main__':
-    run()
+    # run()
+    # _shot_target_right_stop()
     # _hay_right_stop()
+    test_front()
