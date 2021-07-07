@@ -76,6 +76,12 @@ def _castle_stop():
 def _shot_target_right_stop():
     DRIVER.stop()
     time.sleep(1)
+    # TODO while True:
+    #     grabbed, frame = FRON_CAMERA.read()
+    #     if not grabbed:
+    #         exit(-1)
+    #     result = SIGN_DETECTOR.detect(frame)
+    #     pass
     DRIVER.driver_run(10, 10)
     time.sleep(2.5)
     DRIVER.stop()
@@ -88,8 +94,18 @@ def _shot_target_right_stop():
         none_count = 0
         if not result:
             none_count += 1
-            if none_count >= 10:
-                break
+            if  10 >= none_count >= 5:
+                # go forward
+                DRIVER.driver_run(10, 10)
+                time.sleep(1)
+                DRIVER.stop()
+                time.sleep(0.3)
+            elif none_count > 10:
+                # back up
+                DRIVER.driver_run(-10, -10)
+                time.sleep(0.5)
+                DRIVER.stop()
+                time.sleep(0.3)
             continue
         x = result.relative_center_x
         y = result.relative_center_y
@@ -97,27 +113,27 @@ def _shot_target_right_stop():
         if x < x_threshold[0]:
             # go forward
             DRIVER.driver_run(10, 10)
-            time.sleep(0.5)
-            DRIVER.stop()
             time.sleep(0.7)
+            DRIVER.stop()
+            time.sleep(0.3)
         elif x > x_threshold[1]:
             # back up
             DRIVER.driver_run(-10, -10)
             time.sleep(0.7)
             DRIVER.stop()
-            time.sleep(0.5)
+            time.sleep(0.3)
         if y < y_threshold[0]:
             # turn left
             DRIVER.driver_run(0, 10)
             time.sleep(0.3)
             DRIVER.stop()
-            time.sleep(0.5)
+            time.sleep(0.3)
         elif y > y_threshold[1]:
             # turn right
             DRIVER.driver_run(10, 0)
             time.sleep(0.3)
             DRIVER.stop()
-            time.sleep(0.5)
+            time.sleep(0.3)
         if x_threshold[0] <= x <= x_threshold[1] \
            and y_threshold[0] <= y <= y_threshold[1]:
            break
@@ -126,6 +142,12 @@ def _shot_target_right_stop():
 def _stop_stop():
     DRIVER.stop()
     time.sleep(0.5)
+    # TODO while True:
+    #     grabbed, frame = FRON_CAMERA.read()
+    #     if not grabbed:
+    #         exit(-1)
+    #     result = SIGN_DETECTOR.detect(frame)
+    #     pass
     DRIVER.driver_run(-10, -10)
     time.sleep(1)
     DRIVER.stop()
@@ -134,7 +156,13 @@ def _stop_stop():
 
 def _spoil_left_stop():
     DRIVER.stop()
-    time.sleep(1)
+    time.sleep(0.5)
+    # TODO while True:
+    #     grabbed, frame = FRON_CAMERA.read()
+    #     if not grabbed:
+    #         exit(-1)
+    #     result = SIGN_DETECTOR.detect(frame)
+    #     pass
     DRIVER.driver_run(10, 10)
     time.sleep(1.5)
     DRIVER.stop()
@@ -143,7 +171,13 @@ def _spoil_left_stop():
 
 def _hay_right_stop():
     DRIVER.stop()
-    time.sleep(1)
+    time.sleep(0.5)
+    # TODO while True:
+    #     grabbed, frame = FRON_CAMERA.read()
+    #     if not grabbed:
+    #         exit(-1)
+    #     result = SIGN_DETECTOR.detect(frame)
+    #     pass
     DRIVER.driver_run(15, 5)
     time.sleep(1.5)
     DRIVER.stop()
