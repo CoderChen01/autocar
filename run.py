@@ -85,6 +85,12 @@ def _shot_target_right_stop():
         if not grapped:
             exit(-1)
         result = SIGN_DETECTOR.detect(frame)
+        none_count = 0
+        if not result:
+            none_count += 1
+            if none_count >= 10:
+                break
+            continue
         x = result.relative_center_x
         y = result.relative_center_y
         x_threshold, y_threshold = configs.TASK_THRESHOLD[TARGET_NUM]
@@ -93,23 +99,23 @@ def _shot_target_right_stop():
             DRIVER.driver_run(10, 10)
             time.sleep(0.5)
             DRIVER.stop()
-            time.sleep(0.5)
+            time.sleep(0.7)
         elif x > x_threshold[1]:
             # back up
             DRIVER.driver_run(-10, -10)
-            time.sleep(0.5)
+            time.sleep(0.7)
             DRIVER.stop()
             time.sleep(0.5)
         if y < y_threshold[0]:
             # turn left
             DRIVER.driver_run(0, 10)
-            time.sleep(0.5)
+            time.sleep(0.3)
             DRIVER.stop()
             time.sleep(0.5)
         elif y > y_threshold[1]:
             # turn right
             DRIVER.driver_run(10, 0)
-            time.sleep(0.5)
+            time.sleep(0.3)
             DRIVER.stop()
             time.sleep(0.5)
         if x_threshold[0] <= x <= x_threshold[1] \
@@ -119,7 +125,11 @@ def _shot_target_right_stop():
 
 def _stop_stop():
     DRIVER.stop()
+    time.sleep(0.5)
+    DRIVER.driver_run(-10, -10)
     time.sleep(1)
+    DRIVER.stop()
+    time.sleep(0.5)
 
 
 def _spoil_left_stop():
@@ -173,10 +183,25 @@ def _raise_flag():
 def _shot_target():
     print('shot target...')
     global TARGET_NUM
+    global STATE
+    global TASK_ID
     _shot_target_right_stop()
     shot_target()
     TARGET_NUM += 1
-    if TARGET_NUM > 2:
+    if TARGET_NUM == 1:
+        DRIVER.set_speed(15)
+        while True:
+            grabbed, frame = FRON_CAMERA.read()
+            DRIVER.go(frame)
+            if not grabbed:
+                exit(-1)
+            result = SIGN_DETECTOR.detect(frame)
+            if result and is_sign_valid(result):
+                STATE = 1
+                TASK_ID = result.index
+                DRIVER.set_speed(configs.RUN_SPEED)
+                break
+    elif TARGET_NUM > 2:
         TARGET_NUM = 0
     return 0
 
@@ -222,9 +247,12 @@ def init():
     """
     vs1 = Servo(1)
     vs2 = Servo(2)
+    servo2 = ServoPWM(2)
     vs1.servocontrol(-80, 100)
     time.sleep(0.3)
     vs2.servocontrol(35, 100)
+    time.sleep(0.3)
+    servo2.servocontrol(180, 100)
     time.sleep(0.3)
 
 
@@ -268,7 +296,6 @@ def task_processor():
 def cruise_processor():
     print('cruise...')
     global STATE
-    global SPEED
     global TASK_ID
     global SIGN_DETECTOR
     while True:
