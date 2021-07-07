@@ -18,7 +18,6 @@ from cruiser import Cruiser
 from driver import Driver
 from cart import Cart
 from improved_videocapture import BackgroundVideoCapture
-from god import God
 
 
 ################## public variables ##################
@@ -86,40 +85,43 @@ def _shot_target_right_stop():
     time.sleep(2.5)
     DRIVER.stop()
     time.sleep(0.5)
+    none_count = 0
     while True:
         grapped, frame = SIDE_CAMERA.read()
         if not grapped:
             exit(-1)
         result = SIGN_DETECTOR.detect(frame)
-        none_count = 0
-        if not result:
+        x_threshold, y_threshold, area_threshold = configs.TASK_THRESHOLD[TARGET_NUM]
+        if not result or \
+           not area_threshold[0] < calculate_area(result.relative_box, result.shape) < area_threshold[1]:
             none_count += 1
-            if  10 >= none_count >= 5:
+            if  3 >= none_count >= 1:
                 # go forward
                 DRIVER.driver_run(10, 10)
                 time.sleep(1)
                 DRIVER.stop()
                 time.sleep(0.3)
-            elif none_count > 10:
+            elif 8 >= none_count > 3:
                 # back up
                 DRIVER.driver_run(-10, -10)
                 time.sleep(0.5)
                 DRIVER.stop()
                 time.sleep(0.3)
+            else:
+                break
             continue
         x = result.relative_center_x
         y = result.relative_center_y
-        x_threshold, y_threshold = configs.TASK_THRESHOLD[TARGET_NUM]
         if x < x_threshold[0]:
             # go forward
             DRIVER.driver_run(10, 10)
-            time.sleep(0.7)
+            time.sleep(0.3)
             DRIVER.stop()
             time.sleep(0.3)
         elif x > x_threshold[1]:
             # back up
             DRIVER.driver_run(-10, -10)
-            time.sleep(0.7)
+            time.sleep(0.3)
             DRIVER.stop()
             time.sleep(0.3)
         if y < y_threshold[0]:
@@ -149,7 +151,7 @@ def _stop_stop():
     #     result = SIGN_DETECTOR.detect(frame)
     #     pass
     DRIVER.driver_run(-10, -10)
-    time.sleep(1)
+    time.sleep(1.5)
     DRIVER.stop()
     time.sleep(0.5)
 
@@ -187,7 +189,7 @@ def _hay_right_stop():
     DRIVER.stop()
     time.sleep(1)
     DRIVER.driver_run(-10, -10)
-    time.sleep(2)
+    time.sleep(1)
     DRIVER.stop()
     time.sleep(1)
 

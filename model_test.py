@@ -38,7 +38,7 @@ def draw_res(frame, results):
         font = cv2.FONT_HERSHEY_SIMPLEX
         org = start_point[0], start_point[1] - 10
         fontScale = 1
-        frame = cv2.putText(frame, item.name, org, font,
+        frame = cv2.putText(frame, item.name + ' ' + str(round(float(item.score), 2)), org, font,
                            fontScale, color, thickness, cv2.LINE_AA)
         frame = cv2.putText(frame, str(round(item.relative_center_x, 2)) + ',' + str(round(item.relative_center_y, 2)),
                             (40, 40), font, fontScale, color, 1, cv2.LINE_AA)
