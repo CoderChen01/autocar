@@ -81,11 +81,12 @@ def finetune():
         if not result:
             DRIVER.driver_run(-10, -10, 0.2)
             continue
-        if result.relative_center_x - 0.5 >= 0.1:
+        differnce = result.relative_center_x - 0.5
+        if differnce >= 0.1:
             DRIVER.driver_run(15, 15 * 0.4, 0.3)
-        elif result.relative_center_x - 0.5 <= -0.1:
+        elif differnce <= -0.1:
             DRIVER.driver_run(15 * 0.4, 15, 0.3)
-        if -0.05 <= result.relative_center_x - mean_threshold <= 0.05:
+        if -0.05 <= differnce <= 0.05:
             break
 
 
@@ -99,6 +100,7 @@ def _shot_target_right_stop():
     finetune()
     DRIVER.driver_run(10, 10, 2.5)
     none_count = 0
+    last_action = None
     while True:
         grapped, frame = SIDE_CAMERA.read()
         if not grapped:
@@ -108,29 +110,37 @@ def _shot_target_right_stop():
         if not result or \
            not area_threshold[0] < calculate_area(result.relative_box, result.shape) < area_threshold[1]:
             none_count += 1
-            if  3 >= none_count >= 1:
-                # go forward
-                DRIVER.driver_run(10, 10, 1)
-            elif 8 >= none_count > 3:
-                # back up
-                DRIVER.driver_run(-10, -10, 0.5)
-            else:
+            if none_count >= 10:
                 break
+            if not last_action:
+                DRIVER.driver_run(10, 10, 0.3)
+            if last_action == 'forward':
+                DRIVER.driver_run(-10, -10, 0.2)
+            elif last_action == 'back':
+                DRIVER.driver_run(10, 10, 0.2)
+            elif last_action == 'left':
+                DRIVER.turn_right_cm(0.3)
+            elif last_action == 'right':
+                DRIVER.turn_left_cm(0.3)
             continue
         x = result.relative_center_x
         y = result.relative_center_y
         if x < x_threshold[0]:
             # go forward
-            DRIVER.driver_run(-10, -10, 0.3)
+            DRIVER.driver_run(10, 10, 0.3)
+            last_action = 'forward'
         elif x > x_threshold[1]:
             # back up
             DRIVER.driver_run(-10, -10, 0.3)
+            last_action = 'back'
         if y < y_threshold[0]:
             # turn left
             DRIVER.turn_left_cm(0.5)
+            last_action = 'left'
         elif y > y_threshold[1]:
             # turn right
             DRIVER.turn_right_cm(0.5)
+            last_action = 'right'
         if x_threshold[0] <= x <= x_threshold[1] \
            and y_threshold[0] <= y <= y_threshold[1]:
            break
