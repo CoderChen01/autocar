@@ -68,20 +68,3 @@ class Cart:
         self.serial.write_raw(send_data_02_motor)
         self.serial.write_raw(send_data_03_motor)
         self.serial.write_raw(send_data_04_motor)
-
-    def turn_left(self):
-        speed = self.velocity 
-        leftwheel = speed
-        rightwheel = -speed
-        self.move([leftwheel, rightwheel, leftwheel, rightwheel])
-
-    def turn_right(self):
-        speed = self.velocity 
-        leftwheel = -speed
-        rightwheel = speed
-        self.move([leftwheel, rightwheel, leftwheel, rightwheel])
-        print("L:{} R:{}".format(leftwheel, rightwheel))
-
-    def reverse(self):
-        speed = self.velocity 
-        self.move([-speed,-speed,-speed,-speed])

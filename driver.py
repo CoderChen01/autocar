@@ -28,7 +28,7 @@ class Driver:
 
     def stop(self):
         self.cart.stop()
-        time.sleep(0.3)
+        time.sleep(0.5)
 
     def turn_right_cm(self, distance):
         basespeed = 15

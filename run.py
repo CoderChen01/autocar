@@ -73,17 +73,22 @@ def finetune():
     """
     Fine tune the car to bring it back in the right direction
     """
-    grabbed, frame = FRON_CAMERA.read()
-    if not grabbed:
-        exit(-1)
-    result = SIGN_DETECTOR.detect(frame)
-    threshold = configs.SIGN_THRESHOLD[result.name]
-    mean_threshold = (threshold[0][0] + threshold[0][1]) / 2
-    if result.relative_center_x > mean_threshold:
-        DRIVER.driver_run(15 * 0.4, 15, 0.3)
-    elif result.relative_center_x < mean_threshold:
-        DRIVER.driver_run(15, 15 * 0.4, 0.3)
-    time.sleep(10)
+    while True:
+        grabbed, frame = FRON_CAMERA.read()
+        if not grabbed:
+            exit(-1)
+        result = SIGN_DETECTOR.detect(frame)
+        if not result:
+            DRIVER.driver_run(-10, -10, 0.2)
+            continue
+        threshold = configs.SIGN_THRESHOLD[result.name]
+        mean_threshold = (threshold[0][0] + threshold[0][1]) / 2
+        if result.relative_center_x - mean_threshold >= 0.2:
+            DRIVER.driver_run(15, 15 * 0.4, 0.3)
+        elif result.relative_center_x - mean_threshold <= -0.2:
+            DRIVER.driver_run(15 * 0.4, 15, 0.3)
+        if result.relative_center_x - mean_threshold <= 0.05:
+            break
 
 
 ################## stops ##################
@@ -207,7 +212,6 @@ def _capture_target():
     print('capture target...')
     _spoil_left_stop()
     capture_target()
-    time.sleep(1)
     return 0
 
 
@@ -215,7 +219,6 @@ def _transport_forage():
     print('transport forage...')
     _hay_right_stop()
     transport_forage()
-    time.sleep(2)
     return 0
 
 
@@ -332,5 +335,6 @@ def test_side():
 if __name__=='__main__':
     # run()
     # _shot_target_right_stop()
-    _hay_right_stop()
+    # _hay_right_stop()
     # test_front()
+    test_side()
