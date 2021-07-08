@@ -81,13 +81,11 @@ def finetune():
         if not result:
             DRIVER.driver_run(-10, -10, 0.2)
             continue
-        threshold = configs.SIGN_THRESHOLD[result.name]
-        mean_threshold = (threshold[0][0] + threshold[0][1]) / 2
-        if result.relative_center_x - mean_threshold >= 0.2:
+        if result.relative_center_x - 0.5 >= 0.1:
             DRIVER.driver_run(15, 15 * 0.4, 0.3)
-        elif result.relative_center_x - mean_threshold <= -0.2:
+        elif result.relative_center_x - 0.5 <= -0.1:
             DRIVER.driver_run(15 * 0.4, 15, 0.3)
-        if result.relative_center_x - mean_threshold <= 0.05:
+        if -0.05 <= result.relative_center_x - mean_threshold <= 0.05:
             break
 
 
@@ -184,7 +182,7 @@ def _shot_target():
     shot_target()
     TARGET_NUM += 1
     if TARGET_NUM == 1:
-        DRIVER.set_speed(15)
+        DRIVER.set_speed(25)
         while True:
             grabbed, frame = FRON_CAMERA.read()
             DRIVER.go(frame)
@@ -192,10 +190,9 @@ def _shot_target():
                 exit(-1)
             result = SIGN_DETECTOR.detect(frame)
             if result and is_sign_valid(result):
-                STATE = 1
                 TASK_ID = result.index
                 DRIVER.set_speed(configs.RUN_SPEED)
-                break
+                return 1
     elif TARGET_NUM > 2:
         TARGET_NUM = 0
     return 0
@@ -333,8 +330,9 @@ def test_side():
 
 
 if __name__=='__main__':
-    # run()
+    run()
+    # finetune()
     # _shot_target_right_stop()
     # _hay_right_stop()
     # test_front()
-    test_side()
+    # test_side()

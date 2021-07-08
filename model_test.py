@@ -65,8 +65,8 @@ def test_front_video():
 
 if __name__ == "__main__":
     # test_front_video()
-    directory = 'image/3'
-    detector = TaskDetector()
+    directory = 'image/test_front_image_20561216122950'
+    detector = SignDetector()
     x_result = []
     y_result = []
     area_result = []
