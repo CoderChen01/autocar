@@ -23,10 +23,15 @@ from improved_videocapture import BackgroundVideoCapture
 ################## public variables ##################
 # flags
 SPEED = configs.RUN_SPEED
-STATE = 2  # 0 cruise 1 task 2 wait
+# 0 cruise 1 task 2 wait
+STATE = 2
+# record task id
 TASK_ID = 0
+# record the next flag num
 FLAG_NUM = 3
+# record the target flag num
 TARGET_NUM = 0
+# record whether the flag is raised for the first time
 IS_FIRST_FLAG = True
 
 # buttons, ultrasonic, cameras
@@ -64,27 +69,32 @@ def release_spoil():
     time.sleep(1)
 
 
+def finetune():
+    """
+    Fine tune the car to bring it back in the right direction
+    """
+    grabbed, frame = FRON_CAMERA.read()
+    if not grabbed:
+        exit(-1)
+    result = SIGN_DETECTOR.detect(frame)
+    threshold = configs.SIGN_THRESHOLD[result.name]
+    mean_threshold = (threshold[0][0] + threshold[0][1]) / 2
+    if result.relative_center_x > mean_threshold:
+        DRIVER.driver_run(15 * 0.4, 15, 0.3)
+    elif result.relative_center_x < mean_threshold:
+        DRIVER.driver_run(15, 15 * 0.4, 0.3)
+    time.sleep(10)
+
+
 ################## stops ##################
 def _castle_stop():
-    DRIVER.driver_run(15, 15)
-    time.sleep(1.5)
-    DRIVER.stop()
-    time.sleep(1)
+    DRIVER.driver_run(15, 15, 1.5)
 
 
 def _shot_target_right_stop():
     DRIVER.stop()
-    time.sleep(1)
-    # TODO while True:
-    #     grabbed, frame = FRON_CAMERA.read()
-    #     if not grabbed:
-    #         exit(-1)
-    #     result = SIGN_DETECTOR.detect(frame)
-    #     pass
-    DRIVER.driver_run(10, 10)
-    time.sleep(2.5)
-    DRIVER.stop()
-    time.sleep(0.5)
+    finetune()
+    DRIVER.driver_run(10, 10, 2.5)
     none_count = 0
     while True:
         grapped, frame = SIDE_CAMERA.read()
@@ -97,16 +107,10 @@ def _shot_target_right_stop():
             none_count += 1
             if  3 >= none_count >= 1:
                 # go forward
-                DRIVER.driver_run(10, 10)
-                time.sleep(1)
-                DRIVER.stop()
-                time.sleep(0.3)
+                DRIVER.driver_run(10, 10, 1)
             elif 8 >= none_count > 3:
                 # back up
-                DRIVER.driver_run(-10, -10)
-                time.sleep(0.5)
-                DRIVER.stop()
-                time.sleep(0.3)
+                DRIVER.driver_run(-10, -10, 0.5)
             else:
                 break
             continue
@@ -114,28 +118,16 @@ def _shot_target_right_stop():
         y = result.relative_center_y
         if x < x_threshold[0]:
             # go forward
-            DRIVER.driver_run(10, 10)
-            time.sleep(0.3)
-            DRIVER.stop()
-            time.sleep(0.3)
+            DRIVER.driver_run(-10, -10, 0.3)
         elif x > x_threshold[1]:
             # back up
-            DRIVER.driver_run(-10, -10)
-            time.sleep(0.3)
-            DRIVER.stop()
-            time.sleep(0.3)
+            DRIVER.driver_run(-10, -10, 0.3)
         if y < y_threshold[0]:
             # turn left
-            DRIVER.driver_run(0, 10)
-            time.sleep(0.3)
-            DRIVER.stop()
-            time.sleep(0.3)
+            DRIVER.turn_left_cm(0.5)
         elif y > y_threshold[1]:
             # turn right
-            DRIVER.driver_run(10, 0)
-            time.sleep(0.3)
-            DRIVER.stop()
-            time.sleep(0.3)
+            DRIVER.turn_right_cm(0.5)
         if x_threshold[0] <= x <= x_threshold[1] \
            and y_threshold[0] <= y <= y_threshold[1]:
            break
@@ -143,62 +135,24 @@ def _shot_target_right_stop():
 
 def _stop_stop():
     DRIVER.stop()
-    time.sleep(0.5)
-    # TODO while True:
-    #     grabbed, frame = FRON_CAMERA.read()
-    #     if not grabbed:
-    #         exit(-1)
-    #     result = SIGN_DETECTOR.detect(frame)
-    #     pass
-    DRIVER.driver_run(-10, -10)
-    time.sleep(1.5)
-    DRIVER.stop()
-    time.sleep(0.5)
+    finetune()
+    DRIVER.driver_run(-10, -10, 1.5)
 
 
 def _spoil_left_stop():
     DRIVER.stop()
-    time.sleep(0.5)
-    # TODO while True:
-    #     grabbed, frame = FRON_CAMERA.read()
-    #     if not grabbed:
-    #         exit(-1)
-    #     result = SIGN_DETECTOR.detect(frame)
-    #     pass
-    DRIVER.driver_run(10, 10)
-    time.sleep(1.5)
-    DRIVER.stop()
-    time.sleep(1)
+    finetune()
+    DRIVER.driver_run(10, 10, 1.5)
 
 
 def _hay_right_stop():
     DRIVER.stop()
-    time.sleep(0.5)
-    # TODO while True:
-    #     grabbed, frame = FRON_CAMERA.read()
-    #     if not grabbed:
-    #         exit(-1)
-    #     result = SIGN_DETECTOR.detect(frame)
-    #     pass
-    DRIVER.driver_run(15, 5)
-    time.sleep(1.5)
-    DRIVER.stop()
-    time.sleep(1)
-    DRIVER.driver_run(5, 15)
-    time.sleep(1.5)
-    DRIVER.stop()
-    time.sleep(1)
-    DRIVER.driver_run(-10, -10)
-    time.sleep(1)
-    DRIVER.stop()
-    time.sleep(1)
+    finetune()
+    DRIVER.turn_right_cm(2)
 
 
 def _end_stop():
-    DRIVER.driver_run(10, 10)
-    time.sleep(2.5)
-    DRIVER.stop()
-    time.sleep(1)
+    DRIVER.driver_run(10, 10, 2.5)
 
 
 ################## tasks ##################
@@ -378,5 +332,5 @@ def test_side():
 if __name__=='__main__':
     # run()
     # _shot_target_right_stop()
-    # _hay_right_stop()
-    test_front()
+    _hay_right_stop()
+    # test_front()
