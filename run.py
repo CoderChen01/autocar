@@ -78,7 +78,6 @@ def _shot_target_right_stop():
     DRIVER.stop()
     DRIVER.driver_run(10, 10, 2.5)
     none_count = 0
-    last_action = None
     while True:
         grapped, frame = SIDE_CAMERA.read()
         if not grapped:
@@ -94,33 +93,21 @@ def _shot_target_right_stop():
                 DRIVER.driver_run(10, 10, 0.3)
             elif not last_action and none_count >= 5:
                 DRIVER.driver_run(-10, -10, 0.3)
-            if last_action == 'forward':
-                DRIVER.driver_run(-10, -10, 0.2)
-            elif last_action == 'back':
-                DRIVER.driver_run(10, 10, 0.2)
-            elif last_action == 'left':
-                DRIVER.turn_right_cm(0.3)
-            elif last_action == 'right':
-                DRIVER.turn_left_cm(0.3)
             continue
         x = result.relative_center_x
         y = result.relative_center_y
         if x < x_threshold[0]:
             # go forward
-            DRIVER.driver_run(10, 10, 0.3)
-            last_action = 'forward'
+            DRIVER.driver_run(10, 10, abs(x - x_threshold[0]))
         elif x > x_threshold[1]:
             # back up
-            DRIVER.driver_run(-10, -10, 0.3)
-            last_action = 'back'
+            DRIVER.driver_run(-10, -10, abs(x - x_threshold[1]))
         if y < y_threshold[0]:
-            # turn left
-            DRIVER.turn_left_cm(0.5)
-            last_action = 'left'
-        elif y > y_threshold[1]:
             # turn right
-            DRIVER.turn_right_cm(0.5)
-            last_action = 'right'
+            DRIVER.turn_right_cm(abs(y - y_threshold[0]))
+        elif y > y_threshold[1]:
+            # turn left
+            DRIVER.turn_left_cm(abs(y - y_threshold[1]))
         if x_threshold[0] <= x <= x_threshold[1] \
            and y_threshold[0] <= y <= y_threshold[1]:
            break
@@ -138,6 +125,7 @@ def _spoil_left_stop():
 
 def _hay_right_stop():
     DRIVER.stop()
+    # for _ in range(4):
     DRIVER.turn_right_cm(2)
 
 
@@ -168,19 +156,7 @@ def _shot_target():
     _shot_target_right_stop()
     shot_target()
     TARGET_NUM += 1
-    if TARGET_NUM == 1:
-        DRIVER.set_speed(25)
-        while True:
-            grabbed, frame = FRON_CAMERA.read()
-            if not grabbed:
-                exit(-1)
-            DRIVER.go(frame)
-            result = SIGN_DETECTOR.detect(frame)
-            if result and is_sign_valid(result):
-                TASK_ID = result.index
-                DRIVER.set_speed(configs.RUN_SPEED)
-                return 1
-    elif TARGET_NUM > 2:
+    if TARGET_NUM > 2:
         TARGET_NUM = 0
     return 0
 
@@ -203,7 +179,8 @@ def _transport_forage():
     print('transport forage...')
     _hay_right_stop()
     transport_forage()
-    DRIVER.turn_left_cm(2)
+    for _ in range(2):
+        DRIVER.turn_left_cm(0.5)
     return 0
 
 

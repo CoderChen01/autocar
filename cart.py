@@ -18,14 +18,8 @@ class Cart:
         turn_speed = int(self.velocity)
         leftwheel = int(self.velocity)
         rightwheel = int(self.velocity)
-        # if abs_angle < 0.015 or abs_angle > 0.05:
-        #     turn_speed = int(self.velocity * 0.89)
-        # elif 0.015 <= abs(angle) <= 0.05:
-        #     turn_speed = int(self.velocity * 0.8)
         abs_angle = abs(angle)
-        if abs_angle > 0.4:
-            turn_speed = int(self.velocity * 0.92)
-        elif abs_angle > 0.1:
+        if abs_angle > 0.1:
             turn_speed = int(self.velocity * 0.90)
         elif abs_angle > 0.05:
             turn_speed = int(self.velocity * 0.88)
