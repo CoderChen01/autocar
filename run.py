@@ -230,6 +230,7 @@ def _transport_forage():
     print('transport forage...')
     _hay_right_stop()
     transport_forage()
+    DRIVER.turn_left_cm(2)
     return 0
 
 
