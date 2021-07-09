@@ -1,5 +1,4 @@
 import time
-import math
 from ctypes import *
 
 from serial_port import _serial as serial
@@ -19,10 +18,19 @@ class Cart:
         turn_speed = int(self.velocity)
         leftwheel = int(self.velocity)
         rightwheel = int(self.velocity)
-        if abs(angle) > 0.4:
+        # if abs_angle < 0.015 or abs_angle > 0.05:
+        #     turn_speed = int(self.velocity * 0.89)
+        # elif 0.015 <= abs(angle) <= 0.05:
+        #     turn_speed = int(self.velocity * 0.8)
+        abs_angle = abs(angle)
+        if abs_angle > 0.4:
             turn_speed = int(self.velocity * 0.92)
-        elif 0.015 < abs(angle) < 0.05:
-            turn_speed = int(self.velocity * 0.8)
+        elif abs_angle > 0.1:
+            turn_speed = int(self.velocity * 0.90)
+        elif abs_angle > 0.05:
+            turn_speed = int(self.velocity * 0.88)
+        elif abs_angle > 0.01:
+            turn_speed = int(self.velocity * 0.86)
         if angle < 0:
             leftwheel = int((1 + angle) * turn_speed)
         elif angle > 0:

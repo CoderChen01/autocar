@@ -69,31 +69,6 @@ def release_spoil():
     time.sleep(1)
 
 
-def finetune():
-    """
-    Fine tune the car to bring it back in the right direction
-    """
-    while True:
-        grabbed, frame = FRON_CAMERA.read()
-        if not grabbed:
-            exit(-1)
-        result = SIGN_DETECTOR.detect(frame)
-        if not result:
-            DRIVER.driver_run(-10, -10, 0.2)
-            continue
-        differnce = result.relative_center_x - 0.5
-        if differnce >= 0.1:
-            DRIVER.driver_run(15, 15 * 0.4, 0.3)
-        elif differnce <= -0.1:
-            DRIVER.driver_run(15 * 0.4, 15, 0.3)
-        elif differnce > 0:
-            DRIVER.driver_run(15, 15 * 0.4, 0.2)
-        elif differnce < 0:
-            DRIVER.driver_run(15 * 0.4, 15, 0.2)
-        if -0.02 <= differnce <= 0.02:
-            break
-
-
 ################## stops ##################
 def _castle_stop():
     DRIVER.driver_run(15, 15, 1.5)
@@ -101,7 +76,6 @@ def _castle_stop():
 
 def _shot_target_right_stop():
     DRIVER.stop()
-    finetune()
     DRIVER.driver_run(10, 10, 2.5)
     none_count = 0
     last_action = None
@@ -116,8 +90,10 @@ def _shot_target_right_stop():
             none_count += 1
             if none_count >= 10:
                 break
-            if not last_action:
+            if not last_action and none_count < 5:
                 DRIVER.driver_run(10, 10, 0.3)
+            elif not last_action and none_count >= 5:
+                DRIVER.driver_run(-10, -10, 0.3)
             if last_action == 'forward':
                 DRIVER.driver_run(-10, -10, 0.2)
             elif last_action == 'back':
@@ -152,19 +128,16 @@ def _shot_target_right_stop():
 
 def _stop_stop():
     DRIVER.stop()
-    finetune()
     DRIVER.driver_run(-10, -10, 1.5)
 
 
 def _spoil_left_stop():
     DRIVER.stop()
-    finetune()
     DRIVER.driver_run(10, 10, 1.5)
 
 
 def _hay_right_stop():
     DRIVER.stop()
-    finetune()
     DRIVER.turn_right_cm(2)
 
 
@@ -199,9 +172,9 @@ def _shot_target():
         DRIVER.set_speed(25)
         while True:
             grabbed, frame = FRON_CAMERA.read()
-            DRIVER.go(frame)
             if not grabbed:
                 exit(-1)
+            DRIVER.go(frame)
             result = SIGN_DETECTOR.detect(frame)
             if result and is_sign_valid(result):
                 TASK_ID = result.index
@@ -305,9 +278,9 @@ def cruise_processor():
     global SIGN_DETECTOR
     while True:
         grabbed, frame = FRON_CAMERA.read()
-        DRIVER.go(frame)
         if not grabbed:
             exit(-1)
+        DRIVER.go(frame)
         result = SIGN_DETECTOR.detect(frame)
         if result and is_sign_valid(result):
             STATE = 1
