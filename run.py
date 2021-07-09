@@ -86,7 +86,11 @@ def finetune():
             DRIVER.driver_run(15, 15 * 0.4, 0.3)
         elif differnce <= -0.1:
             DRIVER.driver_run(15 * 0.4, 15, 0.3)
-        if -0.05 <= differnce <= 0.05:
+        elif differnce > 0:
+            DRIVER.driver_run(15, 15 * 0.4, 0.2)
+        elif differnce < 0:
+            DRIVER.driver_run(15 * 0.4, 15, 0.2)
+        if -0.02 <= differnce <= 0.02:
             break
 
 
