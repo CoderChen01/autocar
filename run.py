@@ -76,7 +76,7 @@ def _castle_stop():
 
 def _shot_target_right_stop():
     DRIVER.stop()
-    DRIVER.driver_run(10, 10, 2.5)
+    DRIVER.driver_run(10, 10, 1.5)
     none_count = 0
     while True:
         grapped, frame = SIDE_CAMERA.read()
@@ -89,9 +89,9 @@ def _shot_target_right_stop():
             none_count += 1
             if none_count >= 10:
                 break
-            if not last_action and none_count < 5:
+            if none_count < 5:
                 DRIVER.driver_run(10, 10, 0.3)
-            elif not last_action and none_count >= 5:
+            elif none_count >= 5:
                 DRIVER.driver_run(-10, -10, 0.3)
             continue
         x = result.relative_center_x
@@ -127,6 +127,7 @@ def _hay_right_stop():
     DRIVER.stop()
     # for _ in range(4):
     DRIVER.turn_right_cm(2)
+    DRIVER.driver_run(-10, -10, 1)
 
 
 def _end_stop():
