@@ -83,7 +83,7 @@ def _shot_target_right_stop():
         if not grapped:
             exit(-1)
         result = TASK_DETECTOR.detect(frame)
-        x_threshold, y_threshold, area_threshold = configs.TASK_THRESHOLD[TARGET_NUM]
+        x_threshold, area_threshold = configs.TASK_THRESHOLD[TARGET_NUM]
         if not result or \
            not area_threshold[0] < calculate_area(result.relative_box, result.shape) < area_threshold[1]:
             none_count += 1
@@ -102,23 +102,16 @@ def _shot_target_right_stop():
         elif x > x_threshold[1]:
             # back up
             DRIVER.driver_run(-10, -10, abs(x - x_threshold[1]))
-        if y < y_threshold[0]:
-            # turn right
-            DRIVER.turn_right_cm(abs(y - y_threshold[0]))
-        elif y > y_threshold[1]:
-            # turn left
-            DRIVER.turn_left_cm(abs(y - y_threshold[1]))
-        if x_threshold[0] <= x <= x_threshold[1] \
-           and y_threshold[0] <= y <= y_threshold[1]:
+        if x_threshold[0] <= x <= x_threshold[1]:
            break
 
 
 def _stop_stop():
     DRIVER.stop()
-    DRIVER.driver_run(-10, -10, 1.5)
+    DRIVER.driver_run(10, 10, 2.5)
 
 
-def _spoil_left_stop():
+def _spoil_stop():
     DRIVER.stop()
     DRIVER.driver_run(10, 10, 1.5)
 
@@ -164,14 +157,30 @@ def _shot_target():
 
 def _take_barracks():
     print('take barracks...')
+    _, _, area_threshold = configs.SIGN_THRESHOLD['stop']
     _stop_stop()
-    take_barracks()
+    take_barracks(DRIVER)
+    DRIVER.driver_run(-15, -15, 2)
+    DRIVER.driver_run(20, 0, 1.7)
+    DRIVER.driver_run(10, 10, is_stop=False)
+    while True:
+        grapped, frame = FRON_CAMERA.read()
+        if not grapped:
+            exit(-1)
+        result= SIGN_DETECTOR.detect(frame)
+        if not result \
+           or not area_threshold[0] < calculate_area(result.relative_box, result.shape) < area_threshold[1]:
+            break
+        if 0.8 <= result.relative_center_y <= 0.99:
+            break
+    DRIVER.stop()
+    DRIVER.driver_run(5, 20, 2)
     return 0
 
 
 def _capture_target():
     print('capture target...')
-    _spoil_left_stop()
+    _spoil_stop()
     capture_target()
     return 0
 
@@ -302,3 +311,4 @@ if __name__=='__main__':
     # _hay_right_stop()
     # test_front()
     # test_side()
+    # _take_barracks()

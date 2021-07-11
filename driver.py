@@ -16,10 +16,10 @@ class Driver:
     def set_speed(self, speed):
         self.cart.velocity = speed
 
-    def driver_run(self, left, right, interval, is_stop=True):
+    def driver_run(self, left, right, interval=1, is_stop=True):
         self.cart.move([left, right, left, right])
-        time.sleep(interval)
         if is_stop:
+            time.sleep(interval)
             self.stop()
 
     def go(self, frame):

@@ -1,4 +1,5 @@
 import time
+import math
 from ctypes import *
 
 from serial_port import _serial as serial
@@ -14,37 +15,27 @@ class Cart:
         self.velocity = 25
         self.serial = serial
 
+    def _coefficient(self, angle):
+        abs_angle = abs(angle)
+        if abs_angle > 0.05:
+            coefficient = (1 - abs_angle) * 0.92
+        elif abs_angle > 0.015:
+            coefficient = (1 - abs_angle) * 0.8
+        else:
+            coefficient = 1 - abs_angle
+        print(f'{abs_angle},{coefficient}')
+        return coefficient
+
+
     def steer(self, angle):
         turn_speed = int(self.velocity)
         leftwheel = int(self.velocity)
         rightwheel = int(self.velocity)
-        abs_angle = abs(angle)
-        # if abs_angle > 0.07:
-        #     turn_speed = int(self.velocity * 0.923)
-        # elif abs_angle > 0.06:
-        #     turn_speed = int(self.velocity * 0.922)
-        # elif abs_angle > 0.05:
-        #     turn_speed = int(self.velocity * 0.921)
-        if abs_angle > 0.03:
-            turn_speed = int(self.velocity * 0.921)
-        elif abs_angle > 0.01:
-            turn_speed = int(self.velocity * 0.917)
-        elif abs_angle > 0.009:
-            turn_speed = int(self.velocity * 0.91)
-        elif abs_angle > 0.007:
-            turn_speed = int(self.velocity * 0.908)
-        elif abs_angle > 0.005:
-            turn_speed = int(self.velocity * 0.90)
-        elif abs_angle > 0.003:
-            turn_speed = int(self.velocity * 0.89)
-        elif abs_angle > 0.002:
-            turn_speed = int(self.velocity * 0.888)
-        elif abs_angle > 0.001:
-            turn_speed = int(self.velocity * 0.88)
+        coefficient = self._coefficient(angle)
         if angle < 0:
-            leftwheel = int((1 + angle) * turn_speed)
+            leftwheel = turn_speed * coefficient
         elif angle > 0:
-            rightwheel = int((1 - angle) * turn_speed)
+            rightwheel = turn_speed * coefficient
         self.move([leftwheel, rightwheel, leftwheel, rightwheel])
 
     def stop(self):

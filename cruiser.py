@@ -54,7 +54,6 @@ class Cruiser:
 
     def cruise(self, frame):
         res = infer_cnn(self.predictor, self.buf, frame)
-        print(res)
         return res
 
 
