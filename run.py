@@ -69,7 +69,7 @@ def release_spoil():
     time.sleep(1)
 
 
-def finetune(threshold=0.0001):
+def finetune(threshold=0.0015):
     stash = []
     fintune_count = 0
     while True:
@@ -87,10 +87,10 @@ def finetune(threshold=0.0001):
             break
         if avg_result < 0:
             fintune_count += 0.3
-            DRIVER.driver_run(0, 10, 0.3)
+            DRIVER.driver_run(0, 12, 0.2)
         elif avg_result > 0:
             fintune_count += 0.3
-            DRIVER.driver_run(10, 0, 0.3)
+            DRIVER.driver_run(12, 0, 0.2)
         stash.clear()
     return fintune_count
 
@@ -145,15 +145,12 @@ def _stop_stop():
 
 def _spoil_stop():
     DRIVER.stop()
-    finetune_time = finetune()
-    interval = 1.5 - finetune_time
-    if interval > 0:
-        DRIVER.driver_run(10, 10, interval)
+    DRIVER.driver_run(10, 10, interval)
 
 
 def _hay_right_stop():
     DRIVER.stop()
-    finetune(0.0005)
+    finetune()
     DRIVER.driver_run(15, 0, 1)
     DRIVER.driver_run(0, 15, 1)
 
@@ -195,7 +192,7 @@ def _take_barracks():
     _, _, area_threshold = configs.SIGN_THRESHOLD['stop']
     _stop_stop()
     take_barracks(DRIVER)
-    DRIVER.driver_run(-15, -15, 2)
+    DRIVER.driver_run(-15, -15, 1)
     DRIVER.driver_run(20, 0, 1.7)
     DRIVER.driver_run(10, 10, is_stop=False)
     while True:
@@ -246,14 +243,12 @@ def init():
     vs1 = Servo(1)
     vs2 = Servo(2)
     servo2 = ServoPWM(2)
-    servo6 = ServoPWM(6)
     vs1.servocontrol(-80, 100)
     time.sleep(0.3)
     vs2.servocontrol(35, 100)
     time.sleep(0.3)
     servo2.servocontrol(180, 100)
     time.sleep(0.3)
-    servo6.servocontrol(90, 100)
 
 
 def wait_start_processor():
