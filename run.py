@@ -86,10 +86,10 @@ def finetune(threshold=0.0015):
         if abs_avg_result < threshold:
             break
         if avg_result < 0:
-            fintune_count += 0.3
+            fintune_count += 0.2
             DRIVER.driver_run(0, 12, 0.2)
         elif avg_result > 0:
-            fintune_count += 0.3
+            fintune_count += 0.2
             DRIVER.driver_run(12, 0, 0.2)
         stash.clear()
     return fintune_count
@@ -145,14 +145,42 @@ def _stop_stop():
 
 def _spoil_stop():
     DRIVER.stop()
-    DRIVER.driver_run(10, 10, interval)
+    DRIVER.driver_run(10, 10, 1.5)
 
 
 def _hay_right_stop():
     DRIVER.stop()
-    finetune()
-    DRIVER.driver_run(15, 0, 1)
-    DRIVER.driver_run(0, 15, 1)
+    stash = []
+    while True:
+        grapped, frame = FRON_CAMERA.read()
+        if not grapped:
+            exit(-1)
+        result = DRIVER.cruiser.cruise(frame)
+        if len(stash) != 30:
+            stash.append(result)
+            continue
+        break
+    avg_result= sum(stash) / len(stash)
+    if avg_result <= -0.02:
+        DRIVER.driver_run(10, 10, 1.5)
+    else:
+        finetune()
+        DRIVER.driver_run(15, 0, 1)
+        DRIVER.driver_run(0, 15, 1)
+    stash.clear()
+    while True:
+        grapped, frame = FRON_CAMERA.read()
+        if not grapped:
+            exit(-1)
+        result = DRIVER.cruiser.cruise(frame)
+        if len(stash) != 30:
+            stash.append(result)
+            continue
+        break
+    if avg_result > -0.02:
+        DRIVER.driver_run(10, 0, 1)
+        DRIVER.driver_run(0, 10, 1)
+        DRIVER.driver_run(-10, -10, 1)
 
 
 def _end_stop():
@@ -189,24 +217,8 @@ def _shot_target():
 
 def _take_barracks():
     print('take barracks...')
-    _, _, area_threshold = configs.SIGN_THRESHOLD['stop']
     _stop_stop()
     take_barracks(DRIVER)
-    DRIVER.driver_run(-15, -15, 1)
-    DRIVER.driver_run(20, 0, 1.7)
-    DRIVER.driver_run(10, 10, is_stop=False)
-    while True:
-        grapped, frame = FRON_CAMERA.read()
-        if not grapped:
-            exit(-1)
-        result= SIGN_DETECTOR.detect(frame)
-        if not result \
-           or not area_threshold[0] < calculate_area(result.relative_box, result.shape) < area_threshold[1]:
-            break
-        if 0.8 <= result.relative_center_y <= 0.99:
-            break
-    DRIVER.stop()
-    DRIVER.driver_run(5, 20, 2)
     return 0
 
 
@@ -334,8 +346,16 @@ def test_side():
         print(res.index, res.name, res.score, s)
 
 
+def test_cruise():
+    while True:
+        _, frame = FRON_CAMERA.read()
+        res = DRIVER.cruiser.cruise(frame)
+        print(res)
+
+
 if __name__=='__main__':
     run()
+    # test_cruise()
     # _transport_forage()
     # finetune()
     # _shot_target_right_stop()

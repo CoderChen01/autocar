@@ -66,6 +66,10 @@ def take_barracks(driver):
         buzzing(1)
         light_work(2, 'off')
         time.sleep(0.5)
+    driver.driver_run(-15, -15, 2.5)
+    driver.driver_run(20, 0, 1.7)
+    driver.driver_run(10, 10, 1.5)
+    driver.driver_run(5, 20, 2)
 
 
 def capture_target(servo_485_id=1, servo_pwm_id=2, motor_port=2):
@@ -93,8 +97,6 @@ def capture_target(servo_485_id=1, servo_pwm_id=2, motor_port=2):
 def transport_forage(server485_id=2, servopwm_id=6):
     servo_485 = Servo(server485_id)
     servo = ServoPWM(servopwm_id)
-    # servo.servocontrol(90, 100)
-    # time.sleep(1)
     servo_485.servocontrol(-10, 50)
     time.sleep(1)
     servo.servocontrol(145, 100)
