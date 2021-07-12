@@ -69,6 +69,32 @@ def release_spoil():
     time.sleep(1)
 
 
+def finetune(threshold=0.0001):
+    stash = []
+    fintune_count = 0
+    while True:
+        grapped, frame = FRON_CAMERA.read()
+        if not grapped:
+            exit(-1)
+        result = DRIVER.cruiser.cruise(frame)
+        if len(stash) != 30:
+            stash.append(result)
+            continue
+        avg_result= sum(stash) / len(stash)
+        print(avg_result)
+        abs_avg_result = abs(avg_result)
+        if abs_avg_result < threshold:
+            break
+        if avg_result < 0:
+            fintune_count += 0.3
+            DRIVER.driver_run(0, 10, 0.3)
+        elif avg_result > 0:
+            fintune_count += 0.3
+            DRIVER.driver_run(10, 0, 0.3)
+        stash.clear()
+    return fintune_count
+
+
 ################## stops ##################
 def _castle_stop():
     DRIVER.driver_run(15, 15, 1.5)
@@ -76,7 +102,10 @@ def _castle_stop():
 
 def _shot_target_right_stop():
     DRIVER.stop()
-    DRIVER.driver_run(10, 10, 1.5)
+    finetune_time = finetune()
+    interval = 1.5 - finetune_time
+    if interval > 0:
+        DRIVER.driver_run(10, 10, interval)
     none_count = 0
     while True:
         grapped, frame = SIDE_CAMERA.read()
@@ -108,19 +137,25 @@ def _shot_target_right_stop():
 
 def _stop_stop():
     DRIVER.stop()
-    DRIVER.driver_run(10, 10, 2.5)
+    finetune_time = finetune()
+    interval = 2.5 - finetune_time
+    if interval > 0:
+        DRIVER.driver_run(10, 10, interval)
 
 
 def _spoil_stop():
     DRIVER.stop()
-    DRIVER.driver_run(10, 10, 1.5)
+    finetune_time = finetune()
+    interval = 1.5 - finetune_time
+    if interval > 0:
+        DRIVER.driver_run(10, 10, interval)
 
 
 def _hay_right_stop():
     DRIVER.stop()
-    # for _ in range(4):
-    DRIVER.turn_right_cm(2)
-    DRIVER.driver_run(-10, -10, 1)
+    finetune(0.0005)
+    DRIVER.driver_run(15, 0, 1)
+    DRIVER.driver_run(0, 15, 1)
 
 
 def _end_stop():
@@ -189,8 +224,6 @@ def _transport_forage():
     print('transport forage...')
     _hay_right_stop()
     transport_forage()
-    for _ in range(2):
-        DRIVER.turn_left_cm(0.5)
     return 0
 
 
@@ -213,12 +246,14 @@ def init():
     vs1 = Servo(1)
     vs2 = Servo(2)
     servo2 = ServoPWM(2)
+    servo6 = ServoPWM(6)
     vs1.servocontrol(-80, 100)
     time.sleep(0.3)
     vs2.servocontrol(35, 100)
     time.sleep(0.3)
     servo2.servocontrol(180, 100)
     time.sleep(0.3)
+    servo6.servocontrol(90, 100)
 
 
 def wait_start_processor():
@@ -306,6 +341,7 @@ def test_side():
 
 if __name__=='__main__':
     run()
+    # _transport_forage()
     # finetune()
     # _shot_target_right_stop()
     # _hay_right_stop()

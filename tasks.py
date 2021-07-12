@@ -93,8 +93,8 @@ def capture_target(servo_485_id=1, servo_pwm_id=2, motor_port=2):
 def transport_forage(server485_id=2, servopwm_id=6):
     servo_485 = Servo(server485_id)
     servo = ServoPWM(servopwm_id)
-    servo.servocontrol(90, 25)
-    time.sleep(1)
+    # servo.servocontrol(90, 100)
+    # time.sleep(1)
     servo_485.servocontrol(-10, 50)
     time.sleep(1)
     servo.servocontrol(130, 100)
@@ -106,7 +106,7 @@ def transport_forage(server485_id=2, servopwm_id=6):
 
 
 if __name__ == '__main__':
-    time.sleep(2)
+    time.sleep(4)
     # servo = ServoPWM(6)
     # servo.servocontrol(115, 25)
     # time.sleep(1)
@@ -119,10 +119,13 @@ if __name__ == '__main__':
     # s.servocontrol(0, 100)
     # time.sleep(1)
     # s.servocontrol(70, 100)
-    # transport_forage()
+    transport_forage()
+    time.sleep(2)
+    transport_forage()
+    time.sleep(2)
+    transport_forage()
     # change_camera_direction(2, 'left')
     # raise_flag(5)
     # time.sleep(1)
     # shot_target(2)
     # time.sleep(1)
-    take_barracks()
