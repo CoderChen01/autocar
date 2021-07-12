@@ -119,9 +119,9 @@ def _shot_target_right_stop():
             if none_count >= 10:
                 break
             if none_count < 5:
-                DRIVER.driver_run(10, 10, 0.3)
+                DRIVER.driver_run(10, 10, 0.5)
             elif none_count >= 5:
-                DRIVER.driver_run(-10, -10, 0.3)
+                DRIVER.driver_run(-10, -10, 0.5)
             continue
         x = result.relative_center_x
         y = result.relative_center_y
@@ -180,7 +180,7 @@ def _hay_right_stop():
     if avg_result > -0.02:
         DRIVER.driver_run(10, 0, 1)
         DRIVER.driver_run(0, 10, 1)
-        DRIVER.driver_run(-10, -10, 1)
+        DRIVER.driver_run(-10, -10, 1.5)
 
 
 def _end_stop():
