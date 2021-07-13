@@ -232,7 +232,7 @@ def _shot_target():
 
 def _take_barracks():
     global HAS_STOPPED
-    if HAS_STOPPED or HAS_TRANSPOR \
+    if HAS_STOPPED or HAS_TRANSPORT \
             or HAS_CAPTURE or FINISH_FLAG:
         return 0
     print('take barracks...')
