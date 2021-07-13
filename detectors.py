@@ -30,7 +30,6 @@ def is_sign_valid(res, shape):
 
 def is_task_valid(o):
     valid = False
-    # for o in res:
     if o[1] > configs.TASK_MODEL['threshold']:
         valid = True
     return valid
@@ -55,7 +54,6 @@ def ssd_preprocess(args, src):
     img = img.astype(np.float32)
     img -= 127.5
     img *= 0.007843
-
     z = np.zeros((1, shape[2], shape[3], 3)).astype(np.float32)
     z[0, 0:img.shape[0], 0:img.shape[1] + 0, 0:img.shape[2]] = img
     z = z.reshape((1, 3, shape[3], shape[2]))
@@ -64,11 +62,9 @@ def ssd_preprocess(args, src):
 
 def infer_ssd(predictor, image):
     data = ssd_preprocess(ssd_args, image)
-    # print(data.shape)
     predictor.set_input(data, 0)
     predictor.run()
     out = predictor.get_output(0)
-    # print(out.shape())
     return np.array(out)
 
 

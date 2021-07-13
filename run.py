@@ -29,10 +29,11 @@ STATE = 2
 TASK_ID = 0
 # record the next flag num
 FLAG_NUM = 3
-# record the target flag num
-TARGET_NUM = 0
-# record whether the flag is raised for the first time
-IS_FIRST_FLAG = True
+# IS_FIRST_FLAG = True
+HAS_STOPPED = False
+HAS_CAPTURE = False
+HAS_TRANSPORT = False
+FINISH_FLAG = False
 
 # buttons, ultrasonic, cameras
 START_BUTTON = Button(1, 'UP')
@@ -58,8 +59,10 @@ def is_sign_valid(result):
     y = result.relative_center_y
     area = calculate_area(result.relative_box, result.shape)
     threshold = configs.SIGN_THRESHOLD[result.name]
-    return threshold[0][0] < x < threshold[0][1] \
-           and threshold[1][0] < y < threshold[1][1] \
+    # return threshold[0][0] < x < threshold[0][1] \
+    #        and threshold[1][0] < y < threshold[1][1] \
+    #        and threshold[2][0] < area < threshold[2][1]
+    return threshold[1][0] < y < threshold[1][1] \
            and threshold[2][0] < area < threshold[2][1]
 
 
@@ -116,12 +119,19 @@ def _shot_target_right_stop():
         if not result or \
            not area_threshold[0] < calculate_area(result.relative_box, result.shape) < area_threshold[1]:
             none_count += 1
-            if none_count >= 10:
+            if none_count >= 20:
                 break
             if none_count < 5:
                 DRIVER.driver_run(10, 10, 0.5)
-            elif none_count >= 5:
+            elif 10 >= none_count >= 5:
                 DRIVER.driver_run(-10, -10, 0.5)
+            elif 12 >= none_count > 10:
+                DRIVER.driver_run(0, 10, 1)
+                DRIVER.driver_run(10, 0, 1)
+            elif 15 >= none_count > 12:
+                DRIVER.driver_run(10, 10, 0.5)
+            else:
+                DRIVER.driver_run(-10, -10, 1)
             continue
         x = result.relative_center_x
         y = result.relative_center_y
@@ -180,7 +190,7 @@ def _hay_right_stop():
     if avg_result > -0.02:
         DRIVER.driver_run(10, 0, 1)
         DRIVER.driver_run(0, 10, 1)
-        DRIVER.driver_run(-10, -10, 1.5)
+        DRIVER.driver_run(-10, -10, 1.25)
 
 
 def _end_stop():
@@ -189,61 +199,78 @@ def _end_stop():
 
 ################## tasks ##################
 def _raise_flag():
-    print('raise flag...')
-    global IS_FIRST_FLAG
     global FLAG_NUM
+    global FINISH_FLAG
+    print('raise flag...')
     _castle_stop()
     if FLAG_NUM > 5:
         FLAG_NUM = 3
     raise_flag(FLAG_NUM)
-    if IS_FIRST_FLAG:
-        IS_FIRST_FLAG = False
+    if FLAG_NUM == 5:
+        FINISH_FLAG = True
     FLAG_NUM += 1
     return 0
 
 
 def _shot_target():
     print('shot target...')
-    global TARGET_NUM
     global STATE
     global TASK_ID
+    global FLAG_NUM
+    if FLAG_NUM != 5:
+        FLAG_NUM = 5
     _shot_target_right_stop()
     shot_target()
-    TARGET_NUM += 1
-    if TARGET_NUM > 2:
-        TARGET_NUM = 0
     return 0
 
 
 def _take_barracks():
+    global HAS_STOPPED
+    if HAS_STOPPED or HAS_TRANSPOR \
+            or HAS_CAPTURE or FINISH_FLAG:
+        return 0
     print('take barracks...')
     _stop_stop()
     take_barracks(DRIVER)
+    HAS_STOPPED = True
     return 0
 
 
 def _capture_target():
+    global HAS_CAPTURE
+    if HAS_CAPTURE or HAS_TRANSPORT or FINISH_FLAG:
+        return 0
     print('capture target...')
     _spoil_stop()
     capture_target()
+    HAS_CAPTURE = True
     return 0
 
 
 def _transport_forage():
+    global HAS_TRANSPORT
+    if HAS_TRANSPORT or FINISH_FLAG:
+        return 0
     print('transport forage...')
     _hay_right_stop()
     transport_forage()
+    HAS_TRANSPORT = True
     return 0
 
 
 def _end():
-    print('end...')
-    global IS_FIRST_FLAG
+    global HAS_STOPPED
+    global HAS_CAPTURE
+    global HAS_TRANSPORT
     global FLAG_NUM
+    global FINISH_FLAG
+    HAS_STOPPED = False
+    HAS_CAPTURE = False
+    HAS_TRANSPORT = False
+    FINISH_FLAG = False
+    FLAG_NUM = 3
     _end_stop()
     release_spoil()
-    IS_FIRST_FLAG = True
-    FLAG_NUM = 3
     return 2
 
 
