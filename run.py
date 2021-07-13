@@ -29,6 +29,8 @@ STATE = 2
 TASK_ID = 0
 # record the next flag num
 FLAG_NUM = 3
+# record the target flag num
+TARGET_NUM = 0
 # IS_FIRST_FLAG = True
 HAS_STOPPED = False
 HAS_CAPTURE = False
@@ -213,14 +215,18 @@ def _raise_flag():
 
 
 def _shot_target():
-    print('shot target...')
     global STATE
     global TASK_ID
     global FLAG_NUM
+    global TARGET_NUM
+    print('shot target...')
     if FLAG_NUM != 5:
         FLAG_NUM = 5
     _shot_target_right_stop()
     shot_target()
+    TARGET_NUM += 1
+    if TARGET_NUM > 2:
+        TARGET_NUM = 0
     return 0
 
 
