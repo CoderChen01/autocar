@@ -39,18 +39,18 @@ class Collector:
                 elif number == 1 and value == 1:  # restart
                     self.is_restart.value = 1
                     self.is_start.value = 0
-                elif number == 3 and value == 1:
+                elif number == 3 and value == 1: # save
                     self.is_save.value = 1
                     self.is_not_save.value = 0
-                elif number == 4 and value == 1:
+                elif number == 4 and value == 1: # don't save
                     self.is_not_save.value = 1
                     self.is_save.value = 0
             elif self.js.type(type_) == 'axis':
                 print('axis:{} state: {}'.format(number, value))
                 if number == 2:
-                    self.x_axis.value = value / 65534
+                    self.x_axis.value = value / 46810  # -0.5-0.5
                 elif number == 0:
-                    self.x_axis.value = value / 32767
+                    self.x_axis.value = value / 32767  # -1-1
 
     def run(self):
         t = multiprocessing.Process(target=self._controller)
@@ -70,6 +70,7 @@ class Collector:
                 print(self.x_axis.value)
                 _logger.log(self.x_axis.value)
             _logger.stop()
+            # wait to save
             while True:
                 if self.is_save.value and not self.is_not_save.value:
                     sum_circle += 1
