@@ -48,7 +48,7 @@ class Collector:
             elif self.js.type(type_) == 'axis':
                 print('axis:{} state: {}'.format(number, value))
                 if number == 2:
-                    self.x_axis.value = value / 46810  # -0.5-0.5
+                    self.x_axis.value = value / 46810  # -0.7-0.7
                 elif number == 0:
                     self.x_axis.value = value / 32767  # -1-1
 
