@@ -20,6 +20,8 @@ class Collector:
         self.is_start = multiprocessing.Value('i', 0)
         self.is_restart = multiprocessing.Value('i', 0)
         self.stopped = multiprocessing.Value('i', 0)
+        self.is_save = multiprocessing.Value('i', 1)
+        self.is_not_save = multiprocessing.Value('i', 1)
         self.x_axis = multiprocessing.Value('d', 0.0)
 
     def _controller(self):
@@ -37,12 +39,18 @@ class Collector:
                 elif number == 1 and value == 1:  # restart
                     self.is_restart.value = 1
                     self.is_start.value = 0
+                elif number == 3 and value == 1:
+                    self.is_save.value = 1
+                    self.is_not_save.value = 0
+                elif number == 4 and value == 1:
+                    self.is_not_save.value = 1
+                    self.is_save.value = 0
             elif self.js.type(type_) == 'axis':
                 print('axis:{} state: {}'.format(number, value))
                 if number == 2:
                     self.x_axis.value = value / 65534
                 elif number == 0:
-                    self.x_axis.value = value / 46810
+                    self.x_axis.value = value / 32767
 
     def run(self):
         t = multiprocessing.Process(target=self._controller)
@@ -62,12 +70,21 @@ class Collector:
                 print(self.x_axis.value)
                 _logger.log(self.x_axis.value)
             _logger.stop()
-            sum_circle += 1
-            if sum_circle >= configs.SUM_CIRCLE:
-                for _ in range(3):
+            while True:
+                if self.is_save.value and not self.is_not_save.value:
+                    sum_circle += 1
+                    if sum_circle >= configs.SUM_CIRCLE:
+                        for _ in range(3):
+                            buzzer.rings()
+                            time.sleep(1)
+                    counter = _logger.counter
+                    break
+                if self.is_not_save.value and not self.is_save.value:
+                    _logger.remove()
                     buzzer.rings()
-                    time.sleep(1)
-            counter = _logger.counter
+                    break
+            self.is_save.value = 1
+            self.is_not_save.value = 1
 
 
 if __name__ == "__main__":

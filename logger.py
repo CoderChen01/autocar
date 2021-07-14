@@ -1,4 +1,5 @@
 import os
+import shutil
 import time
 import threading
 from datetime import datetime
@@ -40,6 +41,9 @@ class Logger:
         path = "{}/result.json".format(self.result_dir)
         with open(path, 'w') as fp:
             json.dump(self.map.copy(), fp)
+
+    def remove(self):
+        shutil.rmtree(self.result_dir)
 
     def log(self, axis):
         if self.started:
