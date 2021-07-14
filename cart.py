@@ -17,7 +17,7 @@ class Cart:
 
     def _coefficient(self, angle):
         abs_angle = abs(angle)
-        coefficient = math.exp(-1.3 * abs_angle)
+        coefficient = 1 - 0.766 * abs_angle ** 2
         return coefficient
 
 

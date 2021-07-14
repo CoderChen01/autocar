@@ -385,8 +385,8 @@ def test_cruise():
 
 
 if __name__=='__main__':
-    run()
-    # test_cruise()
+    # run()
+    test_cruise()
     # _transport_forage()
     # finetune()
     # _shot_target_right_stop()

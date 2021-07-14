@@ -55,7 +55,7 @@ class Collector:
     def run(self):
         t = multiprocessing.Process(target=self._controller)
         t.start()
-        counter = 0
+        counter = 32045
         sum_circle = 0
         buzzer = Buzzer()
         while True:
