@@ -61,10 +61,8 @@ def is_sign_valid(result):
     y = result.relative_center_y
     area = calculate_area(result.relative_box, result.shape)
     threshold = configs.SIGN_THRESHOLD[result.name]
-    # return threshold[0][0] < x < threshold[0][1] \
-    #        and threshold[1][0] < y < threshold[1][1] \
-    #        and threshold[2][0] < area < threshold[2][1]
-    return threshold[1][0] < y < threshold[1][1] \
+    return threshold[0][0] < x < threshold[0][1] \
+           and threshold[1][0] < y < threshold[1][1] \
            and threshold[2][0] < area < threshold[2][1]
 
 
@@ -189,7 +187,7 @@ def _hay_right_stop():
             stash.append(result)
             continue
         break
-    if avg_result > -0.02:
+    if avg_result > -0.01:
         DRIVER.driver_run(10, 0, 1)
         DRIVER.driver_run(0, 10, 1)
         DRIVER.driver_run(-10, -10, 1.25)
