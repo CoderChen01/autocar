@@ -3,6 +3,7 @@ import math
 from ctypes import *
 
 from serial_port import _serial as serial
+from simple_pid import PID
 
 comma_head_01_motor = bytes.fromhex('77 68 06 00 02 0C 01 01')  # front-left
 comma_head_02_motor = bytes.fromhex('77 68 06 00 02 0C 01 02')  # front-right -
@@ -14,16 +15,25 @@ class Cart:
     def __init__(self):
         self.velocity = 25
         self.serial = serial
+        self.i = 0
+        self.p = 0
+        self.d = 0
 
     def _coefficient(self, angle):
-        abs_angle = abs(angle)
-        if abs_angle > 0.05:
-            coefficient = (1 - abs_angle) * 0.92
-        elif abs_angle > 0.015:
-            coefficient = (1 - abs_angle) * 0.8
-        else:
-            coefficient = 1 - abs_angle
-        print(f'{abs_angle},{coefficient}')
+        kp = 0.9
+        ki = 0.005
+        kd = 0.6
+        p = kp * angle
+        i = ki * self.i
+        d = kd * (angle - self.d)
+        coefficient = p + i + d
+        self.d = angle
+        self.i += angle
+        if coefficient > 1:
+            coefficient = 1
+        if self.i > 1:
+            self.i = 1
+        print(f'angle: {angle}, p: {p}, i: {i}, d: {d}, coefficient: {coefficient}')
         return coefficient
 
 
@@ -32,10 +42,18 @@ class Cart:
         leftwheel = int(self.velocity)
         rightwheel = int(self.velocity)
         coefficient = self._coefficient(angle)
+        abs_coefficient = abs(coefficient)
+        if 0.0001 < abs_coefficient < 0.1:
+            turn_speed = turn_speed * (1 - abs_coefficient) * 0.92
+        # elif 0.1 <= abs_angle < 0.2:
+        #     turn_speed = turn_speed * (1 - coefficient * 0.8)
+        else:
+            turn_speed = turn_speed * (1 - abs_coefficient)
         if angle < 0:
-            leftwheel = turn_speed * coefficient
+            leftwheel = turn_speed
         elif angle > 0:
-            rightwheel = turn_speed * coefficient
+            rightwheel = turn_speed
+        print(turn_speed)
         self.move([leftwheel, rightwheel, leftwheel, rightwheel])
 
     def stop(self):

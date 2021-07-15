@@ -122,9 +122,9 @@ def _shot_target_right_stop():
             if none_count >= 20:
                 break
             if none_count < 5:
-                DRIVER.driver_run(10, 10, 0.5)
+                DRIVER.driver_run(10, 10, 1)
             elif 10 >= none_count >= 5:
-                DRIVER.driver_run(-10, -10, 0.5)
+                DRIVER.driver_run(-10, -10, 1)
             elif 12 >= none_count > 10:
                 DRIVER.driver_run(0, 10, 1)
                 DRIVER.driver_run(10, 0, 1)
@@ -345,6 +345,8 @@ def cruise_processor():
         if result and is_sign_valid(result):
             STATE = 1
             TASK_ID = result.index
+            # if TASK_ID == 6:
+            #     STATE = 1
             break
 
 
