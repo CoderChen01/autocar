@@ -90,10 +90,10 @@ def finetune(threshold=0.0015):
             break
         if avg_result < 0:
             fintune_count += 0.2
-            DRIVER.driver_run(0, 12, 0.2)
+            DRIVER.driver_run(0, 15, 0.2)
         elif avg_result > 0:
             fintune_count += 0.2
-            DRIVER.driver_run(12, 0, 0.2)
+            DRIVER.driver_run(15, 0, 0.2)
         stash.clear()
     return fintune_count
 

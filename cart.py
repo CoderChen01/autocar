@@ -15,24 +15,35 @@ class Cart:
     def __init__(self):
         self.velocity = 25
         self.serial = serial
-        self.i = 0
-        self.p = 0
-        self.d = 0
+        # self.i = 0
+        # self.p = 0
+        # self.d = 0
+        # self.angles = [0, 0, 0, 0, 0]
+        self.pid = PID(1.15, 0.0, 0.05, setpoint=0, sample_time=0.00755)
+        self.pid.output_limits = [-1, 1]
 
     def _coefficient(self, angle):
-        kp = 0.9
-        ki = 0.005
-        kd = 0.6
-        p = kp * angle
-        i = ki * self.i
-        d = kd * (angle - self.d)
-        coefficient = p + i + d
-        self.d = angle
-        self.i += angle
-        if coefficient > 1:
-            coefficient = 1
-        if self.i > 1:
-            self.i = 1
+        # kp = 0.9
+        # ki = 0.005
+        # kd = 0.6
+        # p = kp * angle
+        # i = ki * self.i
+        # d = kd * (angle - self.d)
+        # coefficient = p + i + d
+        # self.d = angle
+        # self.i += angle
+        # if coefficient > 1:
+        #     coefficient = 1
+        # if self.i > 1:
+        #     self.i = 1
+        # print(f'angle: {angle}, p: {p}, i: {i}, d: {d}, coefficient: {coefficient}')
+        # angles_length = len(self.angles)
+        # for index in range(angles_length - 1):
+        #     self.angles[index] = self.angles[index + 1]
+        # self.angles[-1] = angle
+        # avg_angle = sum(sorted(self.angles)[1:-1]) / (angles_length - 2)
+        coefficient = self.pid(angle)
+        p, i, d = self.pid.components
         print(f'angle: {angle}, p: {p}, i: {i}, d: {d}, coefficient: {coefficient}')
         return coefficient
 
@@ -44,7 +55,7 @@ class Cart:
         coefficient = self._coefficient(angle)
         abs_coefficient = abs(coefficient)
         if 0.0001 < abs_coefficient < 0.1:
-            turn_speed = turn_speed * (1 - abs_coefficient) * 0.92
+            turn_speed = turn_speed * (1 - abs_coefficient) * 0.88
         # elif 0.1 <= abs_angle < 0.2:
         #     turn_speed = turn_speed * (1 - coefficient * 0.8)
         else:
