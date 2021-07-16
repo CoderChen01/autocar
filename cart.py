@@ -27,7 +27,7 @@ class Cart:
         elif 0.01 <= abs_angle < 0.1:
             coefficient = (1 - abs_angle) * 0.97
         else:
-            coefficient = 0.8 * math.exp(-1.5 * abs_angle)
+            coefficient = 0.85 * math.exp(-1.5 * abs_angle)
         print(f'{abs_angle},{coefficient}')
         return coefficient
 

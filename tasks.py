@@ -47,12 +47,12 @@ def raise_flag(servo_port):
 def shot_target(motor_port=2):
     setmotor1 = MotorRotate(motor_port)
     time.sleep(0.5)
-    setmotor1.motor_rotate(70)
+    setmotor1.motor_rotate(100)
     time.sleep(0.6)
     setmotor1.motor_rotate(0)
-    time.sleep(0.3)
-    setmotor1.motor_rotate(-70)
-    time.sleep(0.5)
+    time.sleep(1)
+    setmotor1.motor_rotate(-100)
+    time.sleep(0.6)
     setmotor1.motor_rotate(0)
     time.sleep(1)
 
@@ -108,7 +108,8 @@ def transport_forage(server485_id=2, servopwm_id=6):
 
 
 if __name__ == '__main__':
-    time.sleep(4)
+    # time.sleep(4)
+    shot_target()
     # servo = ServoPWM(6)
     # servo.servocontrol(115, 25)
     # time.sleep(1)
@@ -121,7 +122,7 @@ if __name__ == '__main__':
     # s.servocontrol(0, 100)
     # time.sleep(1)
     # s.servocontrol(70, 100)
-    transport_forage()
+    # transport_forage()
     # time.sleep(2)
     # transport_forage()
     # time.sleep(2)

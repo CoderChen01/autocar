@@ -343,10 +343,8 @@ def cruise_processor():
         DRIVER.go(frame)
         result = SIGN_DETECTOR.detect(frame)
         if result and is_sign_valid(result):
-            STATE = 0
+            STATE = 1
             TASK_ID = result.index
-            if TASK_ID == 6:
-                STATE = 1
             break
 
 
