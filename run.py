@@ -268,6 +268,8 @@ def _end():
     global HAS_TRANSPORT
     global FLAG_NUM
     global FINISH_FLAG
+    if not FINISH_FLAG:
+        return 0
     HAS_STOPPED = False
     HAS_CAPTURE = False
     HAS_TRANSPORT = False
