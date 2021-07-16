@@ -32,7 +32,7 @@ FLAG_NUM = 3
 # record the target flag num
 TARGET_NUM = 0
 # cruise predictor weights
-CRUISE_PREDICTOR_WEIGHTS = (1, 0)
+CRUISE_PREDICTOR_WEIGHTS = (0.5, 0.5)
 # IS_FIRST_FLAG = True
 HAS_STOPPED = False
 HAS_CAPTURE = False
@@ -378,8 +378,7 @@ def test_side():
         res = TASK_DETECTOR.detect(frame)
         if not res:
             continue
-        s = calculate_area(res.relative_box, res.shape)
-        print(res.index, res.name, res.score, s)
+        print(res.index, res.name, res.score)
 
 
 def test_cruise():
