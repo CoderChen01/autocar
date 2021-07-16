@@ -11,7 +11,7 @@ CNN_ARGS = {
 }
 
 
-CRUISE_MODEL = configs.CRUISE_MODEL['model']
+CRUISE_MODELS = configs.CRUISE_MODEL['models']
 
 
 def process_image(frame, size, ms):
@@ -49,11 +49,12 @@ class Cruiser:
         hwc_shape = list(CNN_ARGS['shape'])
         hwc_shape[3], hwc_shape[1] = hwc_shape[1], hwc_shape[3]
         self.buf = np.zeros(hwc_shape).astype('float32')
-        self.predictor = predictor_wrapper.PaddleLitePredictor()
-        self.predictor.load(CRUISE_MODEL)
+        self.predictors = [predictor_wrapper.PaddleLitePredictor()] * len(CRUISE_MODELS)
+        for index, predictor in enumerate(self.predictors):
+            predictor.load(CRUISE_MODELS[index])
 
-    def cruise(self, frame):
-        res = infer_cnn(self.predictor, self.buf, frame)
+    def cruise(self, frame, predictor_id=0):
+        res = infer_cnn(self.predictors[predictor_id], self.buf, frame)
         return res
 
 

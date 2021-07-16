@@ -72,7 +72,7 @@ def release_spoil():
     time.sleep(1)
 
 
-def finetune(threshold=0.0015):
+def finetune(threshold=configs.FINETUNE_THRESHOLD):
     stash = []
     fintune_count = 0
     while True:
@@ -382,7 +382,9 @@ def test_side():
 def test_cruise():
     while True:
         _, frame = FRON_CAMERA.read()
-        res = DRIVER.cruiser.cruise(frame)
+        start_time = time.time()
+        res = DRIVER.cruiser.cruise(frame, 1)
+        print(time.time() - start_time)
         print(res)
 
 

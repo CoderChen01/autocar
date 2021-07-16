@@ -22,8 +22,8 @@ class Driver:
             time.sleep(interval)
             self.stop()
 
-    def go(self, frame):
-        angle = self.cruiser.cruise(frame)
+    def go(self, frame, predictor_id=0):
+        angle = self.cruiser.cruise(frame, predictor_id)
         self.cart.steer(angle)
 
     def stop(self):

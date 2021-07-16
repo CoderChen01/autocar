@@ -125,7 +125,7 @@ class Servo:
 
 
 if __name__ == '__main__':
-    # b = Button(1, 'LEFT')
+    # b = Button(0, 'LEFT')
     # while True:
     #     print(b.clicked())
     # s = ServoPWM(6)

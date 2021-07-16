@@ -1,3 +1,6 @@
+########################### running configs #########################
+FINETUNE_THRESHOLD = 0.02
+
 ########################### camera configs #########################
 FRONT_CAM = 0
 SIDE_CAM = 1
@@ -17,7 +20,10 @@ MODEL_DIR_PREFIX='/home/root/workspace/autocar/'
 
 # cruise model
 CRUISE_MODEL = {
-	'model':MODEL_DIR_PREFIX + 'models/cruise'
+	'models':[
+		MODEL_DIR_PREFIX + 'models/cruise/0',
+		MODEL_DIR_PREFIX + 'models/cruise/1'
+	]
 }
 
 # sign model
@@ -43,7 +49,7 @@ SIGN_THRESHOLD = {
 	'stop': ((0.4109, 0.7663), (0.5004, 0.8969), (7680.4382, 23497.8017)),
 	'spoil': ((0.4328, 0.6257), (0.5031, 0.8997), (20536.7741, 40816.4628)),
 	'hay': ((0.4109, 0.7663), (0.5004, 0.8969), (8996.4269, 39298.1453)),
-	'end': ((0.0, 1), (0.6574, 0.8973), (22673.1957, 40265.9024))
+	'end': ((0, 1), (0.6574, 0.8973), (22673.1957, 40265.9024))
 }
 
 # task model
