@@ -5,11 +5,11 @@ from widgets import *
 from driver import Driver
 
 
-def buzzing(num=3):
+def buzzing(num=3, interval=1):
     buzzer = Buzzer()
     for _ in range(num):
         buzzer.rings()
-        time.sleep(1)
+        time.sleep(interval)
 
 
 def light_work(light_port, color):

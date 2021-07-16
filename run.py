@@ -301,13 +301,13 @@ def init():
 
 def wait_start_processor():
     global STATE
-    buzzing(2)
+    buzzing(2, 0.3)
     for _ in range(30):
         START_BUTTON.clicked()
         STOP_BUTTON.clicked()
     while True:  # wait for starting
         if START_BUTTON.clicked():
-            buzzing(3)
+            buzzing(3, 0.3)
             print('init...')
             init()
             print('loading finished...')
@@ -315,7 +315,7 @@ def wait_start_processor():
         if STOP_BUTTON.clicked():
             SIDE_CAMERA.close()
             FRON_CAMERA.close()
-            buzzing(4)
+            buzzing(4, 0.3)
             exit(0)
     print('start operation...')
     STATE = 0

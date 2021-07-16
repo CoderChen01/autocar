@@ -23,6 +23,9 @@ class Driver:
             self.stop()
 
     def go(self, frame, weights=None):
+        """
+        Multimodel fusion
+        """
         angle = 0
         if weights is None:
             weights = [0] * self.cruiser.predictors_num
