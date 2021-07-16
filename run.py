@@ -345,9 +345,7 @@ def cruise_processor():
         grabbed, frame = FRON_CAMERA.read()
         if not grabbed:
             exit(-1)
-        start = time.time()
         DRIVER.go(frame, CRUISE_PREDICTOR_WEIGHTS)
-        print(time.time() - start)
         result = SIGN_DETECTOR.detect(frame)
         if result and is_sign_valid(result):
             STATE = 1
@@ -395,8 +393,8 @@ def test_cruise():
 
 
 if __name__=='__main__':
-    # run()
-    cruise_processor()
+    run()
+    # cruise_processor()
     # DRIVER.cart.steer(0.3)
     # time.sleep(10)
     # test_cruise()

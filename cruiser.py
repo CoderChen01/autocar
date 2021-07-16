@@ -49,9 +49,11 @@ class Cruiser:
         hwc_shape = list(CNN_ARGS['shape'])
         hwc_shape[3], hwc_shape[1] = hwc_shape[1], hwc_shape[3]
         self.buf = np.zeros(hwc_shape).astype('float32')
-        self.predictors = [predictor_wrapper.PaddleLitePredictor()] * len(CRUISE_MODELS)
-        for index, predictor in enumerate(self.predictors):
-            predictor.load(CRUISE_MODELS[index])
+        self.predictors = []
+        for model in CRUISE_MODELS:
+            predictor = predictor_wrapper.PaddleLitePredictor()
+            predictor.load(model)
+            self.predictors.append(predictor)
 
     def cruise(self, frame, predictor_id=0):
         res = infer_cnn(self.predictors[predictor_id], self.buf, frame)
@@ -59,4 +61,4 @@ class Cruiser:
 
     @property
     def predictors_num(self):
-        return len(CRUISE_MODELS)
+        return len(self.predictors)

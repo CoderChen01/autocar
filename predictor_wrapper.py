@@ -12,8 +12,10 @@ class PaddleLitePredictor:
     """ PaddlePaddle interface wrapper """
     def __init__(self):
         self.predictor = None
+        self.model_dir = ''
 
     def load(self, model_dir):
+        self.model_dir = model_dir
         valid_places = (
             Place(TargetType.kFPGA, PrecisionType.kFP16, DataLayoutType.kNHWC),
             Place(TargetType.kHost, PrecisionType.kFloat),

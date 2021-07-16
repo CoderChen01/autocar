@@ -35,6 +35,7 @@ class Driver:
             if weight != 0:
                 angle += weight * self.cruiser.cruise(frame, index)
         self.cart.steer(angle)
+        return angle
 
     def stop(self):
         self.cart.stop()
