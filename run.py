@@ -121,15 +121,15 @@ def _shot_target_right_stop():
         if not result or \
            not area_threshold[0] < calculate_area(result.relative_box, result.shape) < area_threshold[1]:
             none_count += 1
-            if none_count >= 20:
+            if none_count >= 18:
                 break
             if none_count < 5:
                 DRIVER.driver_run(10, 10, 1)
             elif 10 >= none_count >= 5:
                 DRIVER.driver_run(-10, -10, 1)
             elif 12 >= none_count > 10:
-                DRIVER.driver_run(0, 10, 1)
-                DRIVER.driver_run(10, 0, 1)
+                DRIVER.driver_run(0, 10, 0.5)
+                DRIVER.driver_run(10, 0, 0.5)
             elif 15 >= none_count > 12:
                 DRIVER.driver_run(10, 10, 0.5)
             else:
