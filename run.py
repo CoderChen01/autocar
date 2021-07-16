@@ -343,10 +343,10 @@ def cruise_processor():
         DRIVER.go(frame)
         result = SIGN_DETECTOR.detect(frame)
         if result and is_sign_valid(result):
-            STATE = 1
+            STATE = 0
             TASK_ID = result.index
-            # if TASK_ID == 6:
-            #     STATE = 1
+            if TASK_ID == 6:
+                STATE = 1
             break
 
 
@@ -388,6 +388,8 @@ def test_cruise():
 
 if __name__=='__main__':
     run()
+    # DRIVER.cart.steer(0.3)
+    # time.sleep(10)
     # test_cruise()
     # _transport_forage()
     # finetune()
