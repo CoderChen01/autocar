@@ -1,5 +1,5 @@
 ########################### running configs #########################
-FINETUNE_THRESHOLD = 0.02
+FINETUNE_THRESHOLD = 0.015
 
 ########################### camera configs #########################
 FRONT_CAM = 0

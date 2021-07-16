@@ -3,7 +3,7 @@ import math
 from ctypes import *
 
 from serial_port import _serial as serial
-from simple_pid import PID
+
 
 comma_head_01_motor = bytes.fromhex('77 68 06 00 02 0C 01 01')  # front-left
 comma_head_02_motor = bytes.fromhex('77 68 06 00 02 0C 01 02')  # front-right -

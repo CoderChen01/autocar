@@ -394,6 +394,7 @@ def test_cruise():
 
 if __name__=='__main__':
     run()
+    # finetune()
     # cruise_processor()
     # DRIVER.cart.steer(0.3)
     # time.sleep(10)
