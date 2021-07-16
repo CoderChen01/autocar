@@ -31,6 +31,8 @@ TASK_ID = 0
 FLAG_NUM = 3
 # record the target flag num
 TARGET_NUM = 0
+# cruise predictor weights
+CRUISE_PREDICTOR_WEIGHTS = (1, 0)
 # IS_FIRST_FLAG = True
 HAS_STOPPED = False
 HAS_CAPTURE = False
@@ -175,8 +177,9 @@ def _hay_right_stop():
         DRIVER.driver_run(10, 10, 1.5)
     else:
         finetune()
-        DRIVER.driver_run(15, 0, 1)
-        DRIVER.driver_run(0, 15, 1)
+        for _ in range(2):
+            DRIVER.driver_run(15, 0, 0.5)
+            DRIVER.driver_run(0, 15, 0.5)
     stash.clear()
     while True:
         grapped, frame = FRON_CAMERA.read()
@@ -342,7 +345,9 @@ def cruise_processor():
         grabbed, frame = FRON_CAMERA.read()
         if not grabbed:
             exit(-1)
-        DRIVER.go(frame)
+        start = time.time()
+        DRIVER.go(frame, CRUISE_PREDICTOR_WEIGHTS)
+        print(time.time() - start)
         result = SIGN_DETECTOR.detect(frame)
         if result and is_sign_valid(result):
             STATE = 1
@@ -383,13 +388,15 @@ def test_cruise():
     while True:
         _, frame = FRON_CAMERA.read()
         start_time = time.time()
-        res = DRIVER.cruiser.cruise(frame, 1)
+        res1 = DRIVER.cruiser.cruise(frame, 0)
+        res2 = DRIVER.cruiser.cruise(frame, 1)
         print(time.time() - start_time)
-        print(res)
+        print(res1, res2)
 
 
 if __name__=='__main__':
-    run()
+    # run()
+    cruise_processor()
     # DRIVER.cart.steer(0.3)
     # time.sleep(10)
     # test_cruise()

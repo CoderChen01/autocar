@@ -18,7 +18,7 @@ class Cart:
 
     def _coefficient(self, angle):
         abs_angle = abs(angle)
-        if abs_angle <= 0.0005:
+        if abs_angle <= 0.005:
             coefficient = 1
         elif 0.0005 < abs_angle < 0.001:
             coefficient = (1 - abs_angle) * 0.93

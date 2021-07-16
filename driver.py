@@ -22,62 +22,17 @@ class Driver:
             time.sleep(interval)
             self.stop()
 
-    def go(self, frame, predictor_id=0):
-        angle = self.cruiser.cruise(frame, predictor_id)
+    def go(self, frame, weights=None):
+        angle = 0
+        if weights is None:
+            weights = [0] * self.cruiser.predictors_num
+            weights[0] = 1
+        for index in range(self.cruiser.predictors_num):
+            weight = weights[index]
+            if weight != 0:
+                angle += weight * self.cruiser.cruise(frame, index)
         self.cart.steer(angle)
 
     def stop(self):
         self.cart.stop()
         time.sleep(0.5)
-
-    def turn_right_cm(self, distance):
-        basespeed = 15
-        speed_ratio = 0.4
-        drivetime = distance * 0.9
-        if distance < 2:
-            speed_ratio = 0.2
-            drivetime = distance * 0.95
-        elif distance < 4:
-            speed_ratio = 0.15
-            drivetime = distance * 0.75
-        else:
-            speed_ratio = -0.05
-            drivetime = distance * 0.5
-        l_speed = basespeed
-        r_speed = basespeed * speed_ratio
-        self.cart.move([l_speed, r_speed, l_speed, r_speed])
-        time.sleep(drivetime)
-        l_speed = basespeed * speed_ratio
-        r_speed = basespeed
-        self.cart.move([l_speed, r_speed, l_speed, r_speed])
-        time.sleep(drivetime)
-        self.stop()
-
-    def turn_left_cm(self, distance):
-        basespeed = 15
-        speed_ratio = 0.4
-        drivetime = distance * 0.9
-        if distance < 2:
-            speed_ratio = 0.2
-            drivetime = distance * 0.95
-        elif distance < 4:
-            speed_ratio = 0.15
-            drivetime = distance * 0.75
-        else:
-            speed_ratio = -0.05
-            drivetime = distance * 0.5
-        l_speed = basespeed * speed_ratio
-        r_speed = basespeed
-        self.cart.move([l_speed, r_speed, l_speed, r_speed])
-        time.sleep(drivetime)
-        l_speed = basespeed
-        r_speed = basespeed * speed_ratio
-        self.cart.move([l_speed, r_speed, l_speed, r_speed])
-        time.sleep(drivetime)
-        self.stop()
-
-
-if __name__ == '__main__':
-    time.sleep(5)
-    driver = Driver()
-    driver.turn_left_cm(0.5)

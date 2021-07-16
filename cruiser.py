@@ -57,8 +57,6 @@ class Cruiser:
         res = infer_cnn(self.predictors[predictor_id], self.buf, frame)
         return res
 
-
-if __name__ == '__main__':
-    i = cv2.imread('image/463.jpg')
-    c = Cruiser()
-    c.cruise(i)
+    @property
+    def predictors_num(self):
+        return len(CRUISE_MODELS)
