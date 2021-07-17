@@ -18,8 +18,7 @@ class Serial:
                 time.sleep(1)
                 self.serial.write(bytes.fromhex('77 68 02 00 01 0A'))
                 res = self.serial.readline()
-                if res:
-                    print(portx)
+                if res == b'\x00\x00\r\n':
                     self.portx = portx
                     break
             except Exception as e:

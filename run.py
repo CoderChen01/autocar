@@ -18,6 +18,7 @@ from cruiser import Cruiser
 from driver import Driver
 from cart import Cart
 from improved_videocapture import BackgroundVideoCapture
+from distance import Distance
 
 
 ################## public variables ##################
@@ -42,6 +43,7 @@ FINISH_FLAG = False
 # buttons, ultrasonic, cameras
 START_BUTTON = Button(1, 'UP')
 STOP_BUTTON = Button(1, 'DOWN')
+ULTRASONICSENSOR = UltrasonicSensor(3)
 FRON_CAMERA = BackgroundVideoCapture(configs.FRONT_CAM)
 SIDE_CAMERA = BackgroundVideoCapture(configs.SIDE_CAM)
 
@@ -163,7 +165,10 @@ def _spoil_stop():
 def _hay_right_stop():
     DRIVER.stop()
     finetune()
-    time.sleep(60 * 10)
+    dis = Distance()
+    while True:
+        # print(dis.get_istance())
+        print(ULTRASONICSENSOR.read())
     # stash = []
     # while True:
     #     grapped, frame = FRON_CAMERA.read()
@@ -398,7 +403,7 @@ def test_cruise():
 
 
 if __name__=='__main__':
-    run()
+    # run()
     # finetune()
     # cruise_processor()
     # DRIVER.cart.steer(0.3)
@@ -407,7 +412,7 @@ if __name__=='__main__':
     # _transport_forage()
     # finetune()
     # _shot_target_right_stop()
-    # _hay_right_stop()
+    _hay_right_stop()
     # test_front()
     # test_side()
     # _take_barracks()
