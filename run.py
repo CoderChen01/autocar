@@ -43,7 +43,6 @@ FINISH_FLAG = False
 # buttons, ultrasonic, cameras
 START_BUTTON = Button(1, 'UP')
 STOP_BUTTON = Button(1, 'DOWN')
-ULTRASONICSENSOR = UltrasonicSensor(3)
 FRON_CAMERA = BackgroundVideoCapture(configs.FRONT_CAM)
 SIDE_CAMERA = BackgroundVideoCapture(configs.SIDE_CAM)
 
@@ -77,18 +76,16 @@ def release_spoil():
 
 
 def finetune(threshold=configs.FINETUNE_THRESHOLD):
-    stash = []
     fintune_count = 0
     while True:
-        grapped, frame = FRON_CAMERA.read()
-        if not grapped:
-            exit(-1)
-        result = DRIVER.cruiser.cruise(frame)
-        if len(stash) != 30:
-            stash.append(result)
-            continue
-        avg_result= sum(stash) / len(stash)
-        print(avg_result)
+        all_result = 0
+        for _ in range(10):
+            grapped, frame = FRON_CAMERA.read()
+            if not grapped:
+                exit(-1)
+            result = DRIVER.cruiser.cruise(frame)
+            all_result += result
+        avg_result= all_result / 10
         abs_avg_result = abs(avg_result)
         if abs_avg_result < threshold:
             break
@@ -98,7 +95,6 @@ def finetune(threshold=configs.FINETUNE_THRESHOLD):
         elif avg_result > 0:
             fintune_count += 0.2
             DRIVER.driver_run(15, 0, 0.2)
-        stash.clear()
     return fintune_count
 
 
@@ -165,42 +161,29 @@ def _spoil_stop():
 def _hay_right_stop():
     DRIVER.stop()
     finetune()
-    dis = Distance()
-    while True:
-        # print(dis.get_istance())
-        print(ULTRASONICSENSOR.read())
-    # stash = []
-    # while True:
-    #     grapped, frame = FRON_CAMERA.read()
-    #     if not grapped:
-    #         exit(-1)
-    #     result = DRIVER.cruiser.cruise(frame)
-    #     if len(stash) != 30:
-    #         stash.append(result)
-    #         continue
-    #     break
-    # avg_result= sum(stash) / len(stash)
-    # if avg_result <= -0.02:
-    #     DRIVER.driver_run(10, 10, 1.5)
-    # else:
-    #     finetune()
-    #     for _ in range(2):
-    #         DRIVER.driver_run(15, 0, 0.5)
-    #         DRIVER.driver_run(0, 15, 0.5)
-    # stash.clear()
-    # while True:
-    #     grapped, frame = FRON_CAMERA.read()
-    #     if not grapped:
-    #         exit(-1)
-    #     result = DRIVER.cruiser.cruise(frame)
-    #     if len(stash) != 30:
-    #         stash.append(result)
-    #         continue
-    #     break
-    # if avg_result > -0.01:
-    #     DRIVER.driver_run(10, 0, 1)
-    #     DRIVER.driver_run(0, 10, 1)
-    #     DRIVER.driver_run(-10, -10, 1.25)
+    # cruise finetune
+    all_result = 0
+    for _ in range(10):
+        grapped, frame = FRON_CAMERA.read()
+        if not grapped:
+            exit(-1)
+        result = DRIVER.cruiser.cruise(frame)
+        all_result += result
+    avg_result= all_result / 10
+    if avg_result > -0.035:
+        while True:
+            all_result = 0
+            DRIVER.driver_run(15, 15 * 0.3, 0.5)
+            DRIVER.driver_run(15 * 0.3, 15, 0.5)
+            for _ in range(10):
+                grapped, frame = FRON_CAMERA.read()
+                if not grapped:
+                    exit(-1)
+                result = DRIVER.cruiser.cruise(frame)
+                all_result += result
+            avg_result = all_result / 10
+            if avg_result <= -0.035:
+                break
 
 
 def _end_stop():

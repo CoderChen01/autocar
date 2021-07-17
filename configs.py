@@ -1,6 +1,3 @@
-########################### running configs #########################
-FINETUNE_THRESHOLD = 0.015
-
 ########################### camera configs #########################
 FRONT_CAM = 0
 SIDE_CAM = 1
@@ -13,6 +10,7 @@ SUM_CIRCLE = 30
 
 ########################### run config ###########################
 RUN_SPEED = 35
+FINETUNE_THRESHOLD = 0.015
 
 ########################### models configs ##########################
 # base config
