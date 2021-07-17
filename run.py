@@ -32,7 +32,7 @@ FLAG_NUM = 3
 # record the target flag num
 TARGET_NUM = 0
 # cruise predictor weights
-CRUISE_PREDICTOR_WEIGHTS = (0.5, 0.5)
+CRUISE_PREDICTOR_WEIGHTS = (0.6, 0.4)
 # IS_FIRST_FLAG = True
 HAS_STOPPED = False
 HAS_CAPTURE = False
@@ -150,7 +150,7 @@ def _shot_target_right_stop():
 def _stop_stop():
     DRIVER.stop()
     finetune_time = finetune()
-    interval = 2.5 - finetune_time
+    interval = 1.5 - finetune_time
     if interval > 0:
         DRIVER.driver_run(10, 10, interval)
 
@@ -162,38 +162,40 @@ def _spoil_stop():
 
 def _hay_right_stop():
     DRIVER.stop()
-    stash = []
-    while True:
-        grapped, frame = FRON_CAMERA.read()
-        if not grapped:
-            exit(-1)
-        result = DRIVER.cruiser.cruise(frame)
-        if len(stash) != 30:
-            stash.append(result)
-            continue
-        break
-    avg_result= sum(stash) / len(stash)
-    if avg_result <= -0.02:
-        DRIVER.driver_run(10, 10, 1.5)
-    else:
-        finetune()
-        for _ in range(2):
-            DRIVER.driver_run(15, 0, 0.5)
-            DRIVER.driver_run(0, 15, 0.5)
-    stash.clear()
-    while True:
-        grapped, frame = FRON_CAMERA.read()
-        if not grapped:
-            exit(-1)
-        result = DRIVER.cruiser.cruise(frame)
-        if len(stash) != 30:
-            stash.append(result)
-            continue
-        break
-    if avg_result > -0.01:
-        DRIVER.driver_run(10, 0, 1)
-        DRIVER.driver_run(0, 10, 1)
-        DRIVER.driver_run(-10, -10, 1.25)
+    finetune()
+    time.sleep(60 * 10)
+    # stash = []
+    # while True:
+    #     grapped, frame = FRON_CAMERA.read()
+    #     if not grapped:
+    #         exit(-1)
+    #     result = DRIVER.cruiser.cruise(frame)
+    #     if len(stash) != 30:
+    #         stash.append(result)
+    #         continue
+    #     break
+    # avg_result= sum(stash) / len(stash)
+    # if avg_result <= -0.02:
+    #     DRIVER.driver_run(10, 10, 1.5)
+    # else:
+    #     finetune()
+    #     for _ in range(2):
+    #         DRIVER.driver_run(15, 0, 0.5)
+    #         DRIVER.driver_run(0, 15, 0.5)
+    # stash.clear()
+    # while True:
+    #     grapped, frame = FRON_CAMERA.read()
+    #     if not grapped:
+    #         exit(-1)
+    #     result = DRIVER.cruiser.cruise(frame)
+    #     if len(stash) != 30:
+    #         stash.append(result)
+    #         continue
+    #     break
+    # if avg_result > -0.01:
+    #     DRIVER.driver_run(10, 0, 1)
+    #     DRIVER.driver_run(0, 10, 1)
+    #     DRIVER.driver_run(-10, -10, 1.25)
 
 
 def _end_stop():
@@ -245,6 +247,8 @@ def _take_barracks():
 
 def _capture_target():
     global HAS_CAPTURE
+    global CRUISE_PREDICTOR_WEIGHTS
+    CRUISE_PREDICTOR_WEIGHTS = (0.3, 0.7)
     if HAS_CAPTURE or HAS_TRANSPORT or FINISH_FLAG:
         return 0
     print('capture target...')
@@ -288,6 +292,8 @@ def init():
     """
     Initialize operation, lock the servo
     """
+    global CRUISE_PREDICTOR_WEIGHTS
+    CRUISE_PREDICTOR_WEIGHTS = (0.6, 0.4)
     vs1 = Servo(1)
     vs2 = Servo(2)
     servo2 = ServoPWM(2)

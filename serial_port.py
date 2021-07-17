@@ -1,19 +1,30 @@
-import serial
 import time
-
 from threading import Lock
+
+import serial
+
 
 class Serial:
     def __init__(self):
-        portx = "/dev/ttyUSB0"
+        portxs = [f"/dev/ttyUSB{i}" for i in range(3)]
         bps = 115200
+        for portx in portxs:
+            try:
+                self.serial = serial.Serial(portx,
+                                            bps,
+                                            timeout=1,
+                                            parity=serial.PARITY_NONE,
+                                            stopbits=1)
+                time.sleep(1)
+                self.serial.write(bytes.fromhex('77 68 02 00 01 0A'))
+                res = self.serial.readline()
+                if res:
+                    print(portx)
+                    self.portx = portx
+                    break
+            except Exception as e:
+                continue
         self.res = None
-        self.serial = serial.Serial(portx,
-                                    bps,
-                                    timeout=1,
-                                    parity=serial.PARITY_NONE,
-                                    stopbits=1)
-        time.sleep(1)
 
     def write(self, data):
         lock = Lock()
