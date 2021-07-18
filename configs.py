@@ -54,6 +54,7 @@ SIGN_THRESHOLD = {
 }
 
 # task model
+# shot target task
 SHOT_TARGET_TASK_LIST = {
 	0: 'background',
 	1: 'target'
@@ -64,6 +65,7 @@ SHOT_TARGET_TASK_THRESHOLD = [
 	((0.5229, 0.5419), (1835.9532, 7374.0838)),
 	((0.5257, 0.5473), (1835.0574, 7092.9603))
 ]
+# hay task list
 HAY_TASK_LIST = {
 	0: 'background',
 	1: 'hay'

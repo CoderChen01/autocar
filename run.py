@@ -105,9 +105,6 @@ def _castle_stop():
 def _shot_target_right_stop():
     DRIVER.stop()
     finetune_time = finetune()
-    interval = 2 - finetune_time
-    if interval > 0:
-        DRIVER.driver_run(12, 12, interval)
     none_count = 0
     while True:
         grapped, frame = SIDE_CAMERA.read()
@@ -368,7 +365,7 @@ def wait_start_processor():
         CRUISE_BUTTON.clicked()
         HIGH_SPEED_START_BUTTON.clicked()
     while True:  # wait for starting
-        if START_BUTTON.clicked():
+        if START_BUTTON.clicked():  # low speed start
             buzzing(3, 0.5)
             print('init...')
             init(configs.LOW_RUN_CRUISER_WEIGHTS)
@@ -376,7 +373,7 @@ def wait_start_processor():
             print('loading finished...')
             STATE = 0
             break
-        if HIGH_SPEED_START_BUTTON.clicked():
+        if HIGH_SPEED_START_BUTTON.clicked():  # high speed start
             buzzing(3, 0.3)
             print('init...')
             init(configs.HIGH_RUN_CRUISE_WEIGHTS)
@@ -384,12 +381,12 @@ def wait_start_processor():
             print('loading finished...')
             STATE = 0
             break
-        if CRUISE_BUTTON.clicked():
+        if CRUISE_BUTTON.clicked():  # only cruise
             buzzing(4, 0.3)
             init((1, 0))
             STATE = 3
             break
-        if STOP_BUTTON.clicked():
+        if STOP_BUTTON.clicked():  # stop program
             SIDE_CAMERA.close()
             FRON_CAMERA.close()
             buzzing(5, 0.3)
@@ -465,7 +462,7 @@ def test_cruise():
 
 
 if __name__=='__main__':
-    # run()
+    run()
     # finetune()
     # cruise_processor()
     # DRIVER.cart.steer(0.3)
@@ -474,8 +471,8 @@ if __name__=='__main__':
     # _transport_forage()
     # finetune()
     # _shot_target_right_stop()
-    time.sleep(4)
-    _transport_forage()
+    # time.sleep(4)
+    # _transport_forage()
     # test_front()
     # test_side()
     # _take_barracks()
