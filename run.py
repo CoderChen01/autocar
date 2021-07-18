@@ -160,24 +160,40 @@ def _spoil_stop():
 def _hay_right_stop():
     DRIVER.stop()
     finetune()
-    DRIVER.driver_run(15, 15 * 0.4, 0.5)
-    DRIVER.driver_run(15 * 0.4, 15, 0.5)
-    # stop finetune
     x_threshold, y_threshold, _ = configs.HAY_TASK_THRESHOLD
-    # horizontal
+    # check side
     while True:
         grapped, frame = SIDE_CAMERA.read()
         if not grapped:
             exit(-1)
         result = TASK_DETECTOR.detect(frame, 1)
-        if not result:
+        if not result \
+                or result.relative_center_x < x_threshold[0]:
+            DRIVER.driver_run(15, 15, 1)
+            continue
+        if result.relative_center_y < 0.65:
+            DRIVER.driver_run(-15, 0, 1)
+            DRIVER.driver_run(0, -15, 1)
+            continue
+        break
+    # stop finetune
+    # horizontal
+    y_finetune_count = 0
+    while True:
+        if y_finetune_count == 8:
+            break
+        grapped, frame = SIDE_CAMERA.read()
+        if not grapped:
+            exit(-1)
+        result = TASK_DETECTOR.detect(frame, 1)
+        if not result \
+                or result.relative_center_x > x_threshold[1]:
             DRIVER.driver_run(-15, -15, 1)
-        if result.relative_center_y > y_threshold[1]:
-            DRIVER.driver_run(0, 15, 0.5)
-            DRIVER.driver_run(15, 0, 0.5)
-        elif result.relative_center_y < x_threshold[0]:
-            DRIVER.driver_run(15, 0, 0.5)
-            DRIVER.driver_run(0, 15, 0.5)
+            continue
+        if result.relative_center_y < y_threshold[0]:
+            DRIVER.driver_run(15, 0, 0.66)
+            DRIVER.driver_run(0, 15, 0.66)
+            y_finetune_count += 1
         else:
             break
     # vertical
@@ -188,11 +204,13 @@ def _hay_right_stop():
         result = TASK_DETECTOR.detect(frame, 1)
         if not result:
             DRIVER.driver_run(-15, -15, 1)
+            continue
         if result.relative_center_x > x_threshold[1]:
-            DRIVER.driver_run(-15, -15, result.relative_center_x - x_threshold[1])
+            DRIVER.driver_run(-10, -10, is_stop=False)
         elif result.relative_center_x < x_threshold[0]:
-            DRIVER.driver_run(15, 15, x_threshold[0] - result.relative_center_x)
+            DRIVER.driver_run(10, 10, is_stop=False)
         else:
+            DRIVER.stop()
             break
 
 
@@ -266,6 +284,9 @@ def _transport_forage():
     _hay_right_stop()
     transport_forage()
     HAS_TRANSPORT = True
+    # straighten the steering wheel
+    DRIVER.driver_run(0, -15, 0.88)
+    DRIVER.driver_run(-15, 0, 0.88)
     return 0
 
 
@@ -423,23 +444,23 @@ def test_side():
     while True:
         _, frame = SIDE_CAMERA.read()
         res = TASK_DETECTOR.detect(frame, 1)
+        print()
         if not res:
             continue
         print(f"""
         index: {res.index},
         name: {res.name},
         score: {res.score},
-        center: ({res.relative_center_x}, {res.relative_center_y})
+        center: ({res.relative_center_x}, {res.relative_center_y}),
+        area: {calculate_area(res.relative_box, res.shape)}
         """)
 
 
 def test_cruise():
     while True:
         _, frame = FRON_CAMERA.read()
-        start_time = time.time()
         res1 = DRIVER.cruiser.cruise(frame, 0)
         res2 = DRIVER.cruiser.cruise(frame, 1)
-        print(time.time() - start_time)
         print(res1, res2)
 
 
@@ -453,7 +474,7 @@ if __name__=='__main__':
     # _transport_forage()
     # finetune()
     # _shot_target_right_stop()
-    time.sleep(10)
+    time.sleep(4)
     _transport_forage()
     # test_front()
     # test_side()

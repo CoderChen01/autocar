@@ -65,7 +65,7 @@ def test_front_video():
 
 if __name__ == "__main__":
     # test_front_video()
-    directory = 'image/test_side_image_20561225184429'
+    directory = 'image/test_side_image_20561226082213'
     detector = TaskDetector()
     x_result = []
     y_result = []

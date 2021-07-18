@@ -90,7 +90,7 @@ def capture_target(servo_485_id=1, servo_pwm_id=2):
 def transport_forage(server485_id=2, servopwm_id=6):
     servo_485 = Servo(server485_id)
     servo = ServoPWM(servopwm_id)
-    servo_485.servocontrol(-10, 50)
+    servo_485.servocontrol(-20, 50)
     time.sleep(1)
     servo.servocontrol(145, 100)
     time.sleep(3)
@@ -102,7 +102,8 @@ def transport_forage(server485_id=2, servopwm_id=6):
 
 if __name__ == '__main__':
     time.sleep(4)
-    raise_flag(3)
+    transport_forage()
+    # raise_flag(3)
     # shot_target()
     # servo = ServoPWM(6)
     # servo.servocontrol(115, 25)
