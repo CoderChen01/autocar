@@ -9,9 +9,9 @@ SUM_CIRCLE = 30
 
 
 ########################### run config ###########################
-LOW_RUN_SPEED = 35
+LOW_RUN_SPEED = 45  # 35
 LOW_RUN_CRUISER_WEIGHTS = (0.6, 0.4)
-HIGH_RUN_SPEED = 55
+HIGH_RUN_SPEED = 60  # 55
 HIGH_RUN_CRUISE_WEIGHTS = (0.6, 0.4)
 FINETUNE_THRESHOLD = 0.015
 
