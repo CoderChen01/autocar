@@ -32,7 +32,7 @@ def light_work(light_port, color):
 
 def raise_flag(servo_port):
     servo = ServoPWM(servo_port)
-    servo.servocontrol(120, 100)
+    servo.servocontrol(100, 100)
     time.sleep(0.5)
     for _ in range(3):
         light_work(2, 'green')
@@ -79,7 +79,7 @@ def capture_target(servo_485_id=1, servo_pwm_id=2):
     time.sleep(1)
     servo2.servocontrol(90, 100)
     time.sleep(2)
-    servo1.servocontrol(-15, 50)
+    servo1.servocontrol(-12, 50)
     time.sleep(1)
     servo2.servocontrol(180, 100)
     time.sleep(2)
@@ -102,8 +102,11 @@ def transport_forage(server485_id=2, servopwm_id=6):
 
 if __name__ == '__main__':
     time.sleep(4)
-    transport_forage()
+    # transport_forage()
     # raise_flag(3)
+    # raise_flag(4)
+    # raise_flag(5)
+
     # shot_target()
     # servo = ServoPWM(6)
     # servo.servocontrol(115, 25)
@@ -111,7 +114,8 @@ if __name__ == '__main__':
     # s = Servo(2)
     # s.servocontrol(35, 100)
     # time.sleep(5)
-    # capture_target()
+    capture_target()
+    time.sleep(100)
     # take_barracks()
     # s = ServoPWM(6)
     # s.servocontrol(0, 100)

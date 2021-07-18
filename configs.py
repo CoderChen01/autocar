@@ -70,11 +70,11 @@ HAY_TASK_LIST = {
 	0: 'background',
 	1: 'hay'
 }
-HAY_TASK_THRESHOLD = ((0.26, 0.3009), (0.82, 0.8709), (39637.873, 52778.0546))
+HAY_TASK_THRESHOLD = ((0.26, 0.3009), (0.82, 0.8709), (19637.873, 52778.0546))
 TASK_MODELS = [
 	{
 		'model': MODEL_DIR_PREFIX + 'models/task/0',
-		'threshold': 0,
+		'threshold': 0.15,
 		'label_list': SHOT_TARGET_TASK_LIST,
 		'class_num': 2
 	},

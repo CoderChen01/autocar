@@ -104,7 +104,7 @@ def _castle_stop():
 
 def _shot_target_right_stop():
     DRIVER.stop()
-    finetune_time = finetune()
+    finetune()
     none_count = 0
     while True:
         grapped, frame = SIDE_CAMERA.read()
@@ -157,7 +157,7 @@ def _spoil_stop():
 def _hay_right_stop():
     DRIVER.stop()
     finetune()
-    x_threshold, y_threshold, _ = configs.HAY_TASK_THRESHOLD
+    x_threshold, y_threshold, area_threshold = configs.HAY_TASK_THRESHOLD
     # check side
     while True:
         grapped, frame = SIDE_CAMERA.read()
@@ -165,7 +165,8 @@ def _hay_right_stop():
             exit(-1)
         result = TASK_DETECTOR.detect(frame, 1)
         if not result \
-                or result.relative_center_x < x_threshold[0]:
+            or calculate_area(result.relative_box, result.shape) > area_threshold[1] \
+            or result.relative_center_x < x_threshold[0]:
             DRIVER.driver_run(15, 15, 1)
             continue
         if result.relative_center_y < 0.65:
@@ -184,7 +185,7 @@ def _hay_right_stop():
             exit(-1)
         result = TASK_DETECTOR.detect(frame, 1)
         if not result \
-                or result.relative_center_x > x_threshold[1]:
+            or result.relative_center_x > x_threshold[1]:
             DRIVER.driver_run(-15, -15, 1)
             continue
         if result.relative_center_y < y_threshold[0]:
