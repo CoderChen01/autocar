@@ -22,8 +22,7 @@ from improved_videocapture import BackgroundVideoCapture
 
 ################## public variables ##################
 # flags
-SPEED = configs.RUN_SPEED
-# 0 cruise 1 task 2 wait
+# 0 cruise 1 task 2 wait 3 cruise only
 STATE = 2
 # record task id
 TASK_ID = 0
@@ -32,7 +31,7 @@ FLAG_NUM = 3
 # record the target flag num
 TARGET_NUM = 0
 # cruise predictor weights
-CRUISE_PREDICTOR_WEIGHTS = (0.6, 0.4)
+CRUISE_PREDICTOR_WEIGHTS = (1, 0)
 # IS_FIRST_FLAG = True
 HAS_STOPPED = False
 HAS_CAPTURE = False
@@ -42,12 +41,13 @@ FINISH_FLAG = False
 # buttons, ultrasonic, cameras
 START_BUTTON = Button(1, 'UP')
 STOP_BUTTON = Button(1, 'DOWN')
+CRUISE_BUTTON = Button(1, 'LEFT')
+HIGH_SPEED_START_BUTTON = Button(1, 'RIGHT')
 FRON_CAMERA = BackgroundVideoCapture(configs.FRONT_CAM)
 SIDE_CAMERA = BackgroundVideoCapture(configs.SIDE_CAM)
 
 # driver
 DRIVER = Driver()
-DRIVER.set_speed(SPEED)
 
 # detectors
 SIGN_DETECTOR = SignDetector()
@@ -242,6 +242,8 @@ def _take_barracks():
     _stop_stop()
     take_barracks(DRIVER)
     HAS_STOPPED = True
+    if DRIVER.get_speed() >= 50:
+        DRIVER.set_speed(configs.LOW_RUN_SPEED)
     return 0
 
 
@@ -288,12 +290,12 @@ def _end():
 
 
 ################## main ##################
-def init():
+def init(cruise_weights):
     """
     Initialize operation, lock the servo
     """
     global CRUISE_PREDICTOR_WEIGHTS
-    CRUISE_PREDICTOR_WEIGHTS = (0.6, 0.4)
+    CRUISE_PREDICTOR_WEIGHTS = cruise_weights
     vs1 = Servo(1)
     vs2 = Servo(2)
     servo2 = ServoPWM(2)
@@ -303,43 +305,6 @@ def init():
     time.sleep(0.3)
     servo2.servocontrol(180, 100)
     time.sleep(0.3)
-
-
-def wait_start_processor():
-    global STATE
-    buzzing(2, 0.3)
-    for _ in range(30):
-        START_BUTTON.clicked()
-        STOP_BUTTON.clicked()
-    while True:  # wait for starting
-        if START_BUTTON.clicked():
-            buzzing(3, 0.3)
-            print('init...')
-            init()
-            print('loading finished...')
-            break
-        if STOP_BUTTON.clicked():
-            SIDE_CAMERA.close()
-            FRON_CAMERA.close()
-            buzzing(4, 0.3)
-            exit(0)
-    print('start operation...')
-    STATE = 0
-
-
-def task_processor():
-    print('task...')
-    global STATE
-    global DRIVER
-    task_map = {
-        1: _raise_flag,
-        2: _shot_target,
-        3: _take_barracks,
-        4: _capture_target,
-        5: _transport_forage,
-        6: _end
-    }
-    STATE = task_map[TASK_ID]()
 
 
 def cruise_processor():
@@ -359,8 +324,87 @@ def cruise_processor():
             break
 
 
+def task_processor():
+    print('task...')
+    global STATE
+    global DRIVER
+    task_map = {
+        1: _raise_flag,
+        2: _shot_target,
+        3: _take_barracks,
+        4: _capture_target,
+        5: _transport_forage,
+        6: _end
+    }
+    STATE = task_map[TASK_ID]()
+
+
+def wait_start_processor():
+    global STATE
+    global CRUISE_PREDICTOR_WEIGHTS
+    buzzing(2, 0.3)
+    for _ in range(30):
+        START_BUTTON.clicked()
+        STOP_BUTTON.clicked()
+        CRUISE_BUTTON.clicked()
+        HIGH_SPEED_START_BUTTON.clicked()
+    while True:  # wait for starting
+        if START_BUTTON.clicked():
+            buzzing(3, 0.5)
+            print('init...')
+            init(configs.LOW_RUN_CRUISER_WEIGHTS)
+            DRIVER.set_speed(configs.LOW_RUN_SPEED)
+            print('loading finished...')
+            STATE = 0
+            break
+        if HIGH_SPEED_START_BUTTON.clicked():
+            buzzing(3, 0.3)
+            print('init...')
+            init(configs.HIGH_RUN_CRUISE_WEIGHTS)
+            DRIVER.set_speed(configs.HIGH_RUN_SPEED)
+            print('loading finished...')
+            STATE = 0
+            break
+        if CRUISE_BUTTON.clicked():
+            buzzing(4, 0.3)
+            init((1, 0))
+            STATE = 3
+            break
+        if STOP_BUTTON.clicked():
+            SIDE_CAMERA.close()
+            FRON_CAMERA.close()
+            buzzing(5, 0.3)
+            exit(0)
+    print('start operation...')
+    for _ in range(30):
+        START_BUTTON.clicked()
+        STOP_BUTTON.clicked()
+        CRUISE_BUTTON.clicked()
+        HIGH_SPEED_START_BUTTON.clicked()
+
+
+def cruise_only_processor():
+    global STATE
+    weight = (1, 0)
+    DRIVER.set_speed(70)
+    start_time = time.time()
+    while True:
+        grabbed, frame = FRON_CAMERA.read()
+        if not grabbed:
+            exit(-1)
+        DRIVER.go(frame, weight)
+        if STOP_BUTTON.clicked():
+            DRIVER.stop()
+            DRIVER.set_speed(configs.LOW_RUN_SPEED)
+            STATE = 2
+            break
+
+
 def run():
-    state_map = [cruise_processor, task_processor, wait_start_processor]
+    state_map = [cruise_processor,
+                 task_processor,
+                 wait_start_processor,
+                 cruise_only_processor]
     while True:
         state_map[STATE]()
 
