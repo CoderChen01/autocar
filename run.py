@@ -463,7 +463,7 @@ def test_cruise():
 
 
 if __name__=='__main__':
-    run()
+    # run()
     # finetune()
     # cruise_processor()
     # DRIVER.cart.steer(0.3)
@@ -472,8 +472,8 @@ if __name__=='__main__':
     # _transport_forage()
     # finetune()
     # _shot_target_right_stop()
-    # time.sleep(4)
-    # _transport_forage()
+    time.sleep(4)
+    _transport_forage()
     # test_front()
     # test_side()
     # _take_barracks()
