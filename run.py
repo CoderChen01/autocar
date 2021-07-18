@@ -136,10 +136,10 @@ def _shot_target_right_stop():
         y = result.relative_center_y
         if x < x_threshold[0]:
             # go forward
-            DRIVER.driver_run(10, 10, abs(x - x_threshold[0]))
+            DRIVER.driver_run(10, 10, x_threshold[0] - x)
         elif x > x_threshold[1]:
             # back up
-            DRIVER.driver_run(-10, -10, abs(x - x_threshold[1]))
+            DRIVER.driver_run(-10, -10, x - x_threshold[1])
         if x_threshold[0] <= x <= x_threshold[1]:
            break
 
@@ -250,13 +250,13 @@ def _take_barracks():
 def _capture_target():
     global HAS_CAPTURE
     global CRUISE_PREDICTOR_WEIGHTS
-    CRUISE_PREDICTOR_WEIGHTS = (0.3, 0.7)
     if HAS_CAPTURE or HAS_TRANSPORT or FINISH_FLAG:
         return 0
     print('capture target...')
     _spoil_stop()
     capture_target()
     HAS_CAPTURE = True
+    CRUISE_PREDICTOR_WEIGHTS = (0.3, 0.7)
     return 0
 
 
