@@ -18,7 +18,6 @@ from cruiser import Cruiser
 from driver import Driver
 from cart import Cart
 from improved_videocapture import BackgroundVideoCapture
-from distance import Distance
 
 
 ################## public variables ##################
@@ -106,16 +105,16 @@ def _castle_stop():
 def _shot_target_right_stop():
     DRIVER.stop()
     finetune_time = finetune()
-    interval = 1.5 - finetune_time
+    interval = 2 - finetune_time
     if interval > 0:
-        DRIVER.driver_run(10, 10, interval)
+        DRIVER.driver_run(12, 12, interval)
     none_count = 0
     while True:
         grapped, frame = SIDE_CAMERA.read()
         if not grapped:
             exit(-1)
-        result = TASK_DETECTOR.detect(frame)
-        x_threshold, area_threshold = configs.TASK_THRESHOLD[TARGET_NUM]
+        result = TASK_DETECTOR.detect(frame, 0)
+        x_threshold, area_threshold = configs.SHOT_TARGET_TASK_THRESHOLD[TARGET_NUM]
         if not result or \
            not area_threshold[0] < calculate_area(result.relative_box, result.shape) < area_threshold[1]:
             none_count += 1
@@ -150,7 +149,7 @@ def _stop_stop():
     finetune_time = finetune()
     interval = 1.5 - finetune_time
     if interval > 0:
-        DRIVER.driver_run(10, 10, interval)
+        DRIVER.driver_run(15, 15, interval)
 
 
 def _spoil_stop():
@@ -173,8 +172,8 @@ def _hay_right_stop():
     if avg_result > -0.035:
         while True:
             all_result = 0
-            DRIVER.driver_run(15, 15 * 0.3, 0.5)
-            DRIVER.driver_run(15 * 0.3, 15, 0.5)
+            DRIVER.driver_run(15, 15 * 0.4, 1)
+            DRIVER.driver_run(15 * 0.4, 15, 1)
             for _ in range(10):
                 grapped, frame = FRON_CAMERA.read()
                 if not grapped:
@@ -184,10 +183,23 @@ def _hay_right_stop():
             avg_result = all_result / 10
             if avg_result <= -0.035:
                 break
+    # stop finetune
+    x_threshold, y_threshold, _ = configs.HAY_TASK_THRESHOLD
+    while True:
+        grapped, frame = SIDE_CAMERA.read()
+        if not grapped:
+            exit(-1)
+        result = TASK_DETECTOR.detect(frame, 1)
+        if result.relative_center_x > x_threshold[1]:
+            DRIVER.driver_run(-15, -15, result.relative_center_x - x_threshold[1])
+        elif result.relative_center_x < x_threshold[0]:
+            DRIVER.driver_run(15, 15, x_threshold[0] - result.relative_center_x)
+        else:
+            break
 
 
 def _end_stop():
-    DRIVER.driver_run(10, 10, 2.5)
+    DRIVER.driver_run(15, 15, 2)
 
 
 ################## tasks ##################
@@ -366,13 +378,17 @@ def test_front():
 
 
 def test_side():
-    x_threshold, y_threshold, area_threshold = configs.TASK_THRESHOLD[TARGET_NUM]
     while True:
         _, frame = SIDE_CAMERA.read()
-        res = TASK_DETECTOR.detect(frame)
+        res = TASK_DETECTOR.detect(frame, 1)
         if not res:
             continue
-        print(res.index, res.name, res.score)
+        print(f"""
+        index: {res.index},
+        name: {res.name},
+        score: {res.score},
+        center: ({res.relative_center_x}, {res.relative_center_y})
+        """)
 
 
 def test_cruise():
@@ -386,7 +402,7 @@ def test_cruise():
 
 
 if __name__=='__main__':
-    # run()
+    run()
     # finetune()
     # cruise_processor()
     # DRIVER.cart.steer(0.3)
@@ -395,7 +411,8 @@ if __name__=='__main__':
     # _transport_forage()
     # finetune()
     # _shot_target_right_stop()
-    _hay_right_stop()
+    # time.sleep(10)
+    # _transport_forage()
     # test_front()
     # test_side()
     # _take_barracks()

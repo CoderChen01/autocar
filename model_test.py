@@ -47,7 +47,7 @@ def draw_res(frame, results):
 
 
 def test_front_video():
-    data_dir = 'data/20561025042130'
+    data_dir = 'data/test_side_image_20561225184429'
     name_range = range(6087)
     sd = SignDetector()
     fourcc = cv2.VideoWriter_fourcc(*'XVID')
@@ -65,8 +65,8 @@ def test_front_video():
 
 if __name__ == "__main__":
     # test_front_video()
-    directory = 'image/test_front_image_20561219025249'
-    detector = SignDetector()
+    directory = 'image/test_side_image_20561225184429'
+    detector = TaskDetector()
     x_result = []
     y_result = []
     area_result = []
@@ -74,7 +74,7 @@ if __name__ == "__main__":
         if entry.name.endswith('.png'):
             continue
         img = cv2.imread(entry.path)
-        result = detector.detect(img)
+        result = detector.detect(img, 1)
         if not result:
             continue
         print(entry.name, result.relative_center_x, result.relative_center_y)

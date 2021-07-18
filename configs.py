@@ -47,23 +47,36 @@ SIGN_THRESHOLD = {
 	'stop': ((0.4109, 0.7663), (0.5004, 0.8969), (7680.4382, 23497.8017)),
 	'spoil': ((0.4328, 0.6257), (0.5031, 0.8997), (20536.7741, 40816.4628)),
 	'hay': ((0.4109, 0.7663), (0.5004, 0.8969), (8996.4269, 39298.1453)),
-	'end': ((0, 1), (0.6574, 0.8973), (22673.1957, 40265.9024))
+	'end': ((0, 1), (0.4574, 0.8973), (12673.1957, 50265.9024))
 }
 
 # task model
-TASK_LIST = {
+SHOT_TARGET_TASK_LIST = {
 	0: 'background',
 	1: 'target'
 }
-TASK_MODEL = {
-	'model': MODEL_DIR_PREFIX + 'models/task',
-	'threshold': 0,
-	'label_list': TASK_LIST,
-	'class_num': 2
-}
-TASK_THRESHOLD = [
+SHOT_TARGET_TASK_THRESHOLD = [
 	# (x_min, x_max), (area_min, area_max),
 	((0.5203, 0.5526), (2643.8867, 7603.7098)),
 	((0.5229, 0.5419), (1835.9532, 7374.0838)),
 	((0.5257, 0.5473), (2392.0574, 7092.9603))
+]
+HAY_TASK_LIST = {
+	0: 'background',
+	1: 'hay'
+}
+HAY_TASK_THRESHOLD = ((0.2004, 0.23), (0.7705, 0.8396), (52626.1661, 97798.3933))
+TASK_MODELS = [
+	{
+		'model': MODEL_DIR_PREFIX + 'models/task/0',
+		'threshold': 0,
+		'label_list': SHOT_TARGET_TASK_LIST,
+		'class_num': 2
+	},
+	{
+		'model': MODEL_DIR_PREFIX + 'models/task/1',
+		'threshold': 0,
+		'label_list': HAY_TASK_LIST,
+		'class_num': 2
+	},
 ]

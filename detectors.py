@@ -28,9 +28,9 @@ def is_sign_valid(res, shape):
     return valid
 
 
-def is_task_valid(o):
+def is_task_valid(o, threshlod):
     valid = False
-    if o[1] > configs.TASK_MODEL['threshold']:
+    if o[1] > threshlod:
         valid = True
     return valid
 
@@ -103,17 +103,19 @@ class SignDetector:
 
 class TaskDetector:
     def __init__(self):
-        self.predictor = predictor_wrapper.PaddleLitePredictor()
-        self.predictor.load(configs.TASK_MODEL['model'])
-        self.label_list = configs.TASK_MODEL['label_list']
+        self.predictors = []
+        for task_model in configs.TASK_MODELS:
+            predictor = predictor_wrapper.PaddleLitePredictor()
+            predictor.load(task_model['model'])
+            self.predictors.append(predictor)
 
-    def detect(self, frame):
-        nmsed_out = infer_ssd(self.predictor, frame)
+    def detect(self, frame, predictor_id=0):
+        nmsed_out = infer_ssd(self.predictors[predictor_id], frame)
         try:
             predict_score = nmsed_out[:, 1].tolist()
         except IndexError:
             return
         res = nmsed_out[predict_score.index(max(predict_score))]
-        if not is_task_valid(res):
+        if not is_task_valid(res, configs.TASK_MODELS[predictor_id]['threshold']):
             return
-        return res_to_detection(res, self.label_list, frame)
+        return res_to_detection(res, configs.TASK_MODELS[predictor_id]['label_list'], frame)
