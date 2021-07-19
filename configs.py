@@ -61,15 +61,17 @@ SHOT_TARGET_TASK_LIST = {
 }
 SHOT_TARGET_TASK_THRESHOLD = [
 	# (x_min, x_max), (area_min, area_max),
-	((0.5203, 0.5526), (1835.8867, 7603.7098)),
-	((0.5229, 0.5419), (1835.9532, 7374.0838)),
-	((0.5257, 0.5473), (1835.0574, 7092.9603))
+	((0.5203, 0.5526), (0, 9603.7098)),
+	((0.5229, 0.5419), (0, 9374.0838)),
+	((0.5257, 0.5473), (0, 9992.9603))
 ]
 # hay task list
 HAY_TASK_LIST = {
 	0: 'background',
 	1: 'hay'
 }
+# Parking forward requires a high basket threshold
+# Parking backward requires setting the rim threshold low
 HAY_TASK_THRESHOLD = ((0.2333, 0.2688), (0.82, 0.8709), (19637.873, 102778.0546))
 TASK_MODELS = [
 	{
