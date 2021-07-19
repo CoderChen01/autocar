@@ -78,13 +78,13 @@ def capture_target(servo_485_id=1, servo_pwm_id=2):
     servo1.servocontrol(-45, 50)
     time.sleep(1)
     servo2.servocontrol(90, 100)
-    time.sleep(2)
+    time.sleep(0.88)
     servo1.servocontrol(-12, 50)
     time.sleep(1)
     servo2.servocontrol(180, 100)
-    time.sleep(2)
-    servo1.servocontrol(-80,60)
-    time.sleep(2)
+    time.sleep(0.88)
+    servo1.servocontrol(-80,88)
+    time.sleep(1)
 
 
 def transport_forage(server485_id=2, servopwm_id=6):
@@ -116,7 +116,7 @@ def test_shot_target():
 def test_capture_target():
     time.sleep(4)
     capture_target()
-    time.sleep(1)
+    time.sleep(3)
 
 
 def test_transport_forage():
@@ -126,8 +126,8 @@ def test_transport_forage():
 
 
 if __name__ == '__main__':
-    test_transport_forage()
-    # test_capture_target()
+    # test_transport_forage()
+    test_capture_target()
     # test_shot_target()
     # test_raise_flag()
     # driver = Driver()
