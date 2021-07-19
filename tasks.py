@@ -33,7 +33,7 @@ def light_work(light_port, color):
 def raise_flag(servo_port):
     servo = ServoPWM(servo_port)
     servo.servocontrol(100, 100)
-    time.sleep(0.5)
+    time.sleep(0.2)
     for _ in range(3):
         light_work(2, 'green')
         buzzing(1)
@@ -47,11 +47,11 @@ def raise_flag(servo_port):
 def shot_target(motor_port=2):
     setmotor1 = MotorRotate(motor_port)
     time.sleep(0.5)
-    setmotor1.motor_rotate(100)
+    setmotor1.motor_rotate(30)
     time.sleep(1.66)
     setmotor1.motor_rotate(0)
     time.sleep(0.5)
-    setmotor1.motor_rotate(-100)
+    setmotor1.motor_rotate(-50)
     time.sleep(1.66)
     setmotor1.motor_rotate(0)
     time.sleep(1)
@@ -100,17 +100,45 @@ def transport_forage(server485_id=2, servopwm_id=6):
     time.sleep(1)
 
 
-if __name__ == '__main__':
+def test_raise_flag():
     time.sleep(2)
+    for _id in range(3, 6):
+        raise_flag(_id)
+        time.sleep(1)
+
+
+def test_shot_target():
+    time.sleep(1)
+    for _ in range(10):
+        shot_target()
+
+
+def test_capture_target():
+    time.sleep(4)
+    capture_target()
+    time.sleep(1)
+
+
+def test_transport_forage():
+    time.sleep(4)
+    transport_forage()
+    time.sleep(1)
+
+
+if __name__ == '__main__':
+    test_transport_forage()
+    # test_capture_target()
+    # test_shot_target()
+    # test_raise_flag()
     # driver = Driver()
     # take_barracks(driver)
     # transport_forage()
     # raise_flag(3)
     # raise_flag(4)
     # raise_flag(5)
-    for _ in range(20):
-        shot_target()
-        time.sleep(1)
+    # for _ in range(20):
+    #     shot_target()
+    #     time.sleep(1)
     # servo = ServoPWM(6)
     # servo.servocontrol(115, 25)
     # time.sleep(0)
