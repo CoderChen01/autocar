@@ -50,11 +50,11 @@ def shot_target(motor_port=2):
     setmotor1.motor_rotate(30)
     time.sleep(1.66)
     setmotor1.motor_rotate(0)
-    time.sleep(0.5)
+    time.sleep(0.66)
     setmotor1.motor_rotate(-50)
     time.sleep(1.66)
     setmotor1.motor_rotate(0)
-    time.sleep(1)
+    time.sleep(0.66)
 
 
 def take_barracks(driver):
