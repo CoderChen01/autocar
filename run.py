@@ -151,7 +151,7 @@ def _stop_stop():
 
 def _spoil_stop():
     DRIVER.stop()
-    DRIVER.driver_run(10, 10, 1.5)
+    DRIVER.driver_run(10, 10, 1)
 
 
 def _hay_right_stop():
