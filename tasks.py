@@ -66,9 +66,9 @@ def take_barracks(driver):
         buzzing(1, 0.66)
         light_work(2, 'off')
         time.sleep(0.66)
-    driver.driver_run(-15, -15, 1)
+    driver.driver_run(-15, -15, 1.66)
     driver.driver_run(20, 0, 1.66)
-    driver.driver_run(15, 15, 0.88)
+    driver.driver_run(15, 15, 1.22)
     driver.driver_run(5, 20, 2)
 
 
