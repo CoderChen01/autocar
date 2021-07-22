@@ -72,7 +72,7 @@ HAY_TASK_LIST = {
 }
 # Parking forward requires a high basket threshold
 # Parking backward requires setting the rim threshold low
-HAY_TASK_THRESHOLD = ((0.2333, 0.2688), (0.82, 0.8709), (19637.873, 102778.0546))
+HAY_TASK_THRESHOLD = ((0.2333, 0.2688), (0.82, 0.8709), (9637.873, 152778.0546))
 TASK_MODELS = [
 	{
 		'model': MODEL_DIR_PREFIX + 'models/task/0',
@@ -82,7 +82,7 @@ TASK_MODELS = [
 	},
 	{
 		'model': MODEL_DIR_PREFIX + 'models/task/1',
-		'threshold': 0.75,
+		'threshold': 0.66,
 		'label_list': HAY_TASK_LIST,
 		'class_num': 2
 	},
