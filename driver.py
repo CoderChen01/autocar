@@ -19,13 +19,6 @@ class Driver:
     def get_speed(self):
         return self.cart.velocity
 
-    def driver_run(self, left, right, interval=1, is_stop=True):
-        self.cart.move([left, right, left, right])
-        if is_stop:
-            time.sleep(interval)
-            self.cart.stop()
-            time.sleep(0.5)
-
     def go(self, frame, weights=None):
         """
         Multimodel fusion
@@ -40,6 +33,69 @@ class Driver:
                 angle += weight * self.cruiser.cruise(frame, index)
         self.cart.steer(angle)
         return angle
+
+    def driver_run(self, left, right, interval=1, is_stop=True):
+        self.cart.move([left, right, left, right])
+        if is_stop:
+            time.sleep(interval)
+            self.cart.stop()
+            time.sleep(0.5)
+
+    def right_run(self, speed, interval=1, is_stop=True):
+        self.cart.move([speed, -speed, -speed, speed])
+        if is_stop:
+            time.sleep(interval)
+            self.cart.stop()
+            time.sleep(0.5)
+
+    def left_run(self, speed, interval=1, is_stop=True):
+        self.cart.move([-speed, speed, speed, -speed])
+        if is_stop:
+            time.sleep(interval)
+            self.cart.stop()
+            time.sleep(0.5)
+
+    def right_forward_run(self, speed, interval=1, is_stop=True):
+        self.cart.move([0, speed, speed, 0])
+        if is_stop:
+            time.sleep(interval)
+            self.cart.stop()
+            time.sleep(0.5)
+
+    def left_forward_run(self, speed, interval=1, is_stop=True):
+        self.cart.move([speed, 0, 0, speed])
+        if is_stop:
+            time.sleep(interval)
+            self.cart.stop()
+            time.sleep(0.5)
+
+    def right_backward_run(self, speed, interval=1, is_stop=True):
+        self.cart.move([-speed, 0, 0, -speed])
+        if is_stop:
+            time.sleep(interval)
+            self.cart.stop()
+            time.sleep(0.5)
+
+    def left_backward_run(self, speed, interval=1, is_stop=True):
+        self.cart.move([0, -speed, -speed, 0])
+        if is_stop:
+            time.sleep(interval)
+            self.cart.stop()
+            time.sleep(0.5)
+
+    def right_circle_run(self, speed, interval=1, is_stop=True):
+        self.cart.move([speed, -speed, speed, -speed])
+        if is_stop:
+            time.sleep(interval)
+            self.cart.stop()
+            time.sleep(0.5)
+
+    def left_circle_run(self, speed, interval=1, is_stop=True):
+        self.cart.move([-speed, speed, -speed, speed])
+        if is_stop:
+            time.sleep(interval)
+            self.cart.stop()
+            time.sleep(0.5)
 
     def stop(self):
         self.cart.stop()
