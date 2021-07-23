@@ -65,8 +65,8 @@ def test_front_video():
 
 if __name__ == "__main__":
     # test_front_video()
-    directory = 'image/test_side_image_20561226163559'
-    detector = TaskDetector()
+    directory = 'image/test_side_image_20561231102729'
+    detector = SignDetector()
     x_result = []
     y_result = []
     area_result = []
@@ -74,7 +74,7 @@ if __name__ == "__main__":
         if entry.name.endswith('.png'):
             continue
         img = cv2.imread(entry.path)
-        result = detector.detect(img, 0)
+        result = detector.detect(img)
         if not result:
             continue
         print(entry.name, result.relative_center_x, result.relative_center_y)

@@ -39,66 +39,66 @@ class Driver:
         if is_stop:
             time.sleep(interval)
             self.cart.stop()
-            time.sleep(0.5)
+            time.sleep(0.1)
 
     def right_run(self, speed, interval=1, is_stop=True):
         self.cart.move([speed, -speed, -speed, speed])
         if is_stop:
             time.sleep(interval)
             self.cart.stop()
-            time.sleep(0.5)
+            time.sleep(0.1)
 
     def left_run(self, speed, interval=1, is_stop=True):
         self.cart.move([-speed, speed, speed, -speed])
         if is_stop:
             time.sleep(interval)
             self.cart.stop()
-            time.sleep(0.5)
+            time.sleep(0.1)
 
-    def right_forward_run(self, speed, interval=1, is_stop=True):
+    def left_forward_run(self, speed, interval=1, is_stop=True):
         self.cart.move([0, speed, speed, 0])
         if is_stop:
             time.sleep(interval)
             self.cart.stop()
-            time.sleep(0.5)
+            time.sleep(0.1)
 
-    def left_forward_run(self, speed, interval=1, is_stop=True):
+    def right_forward_run(self, speed, interval=1, is_stop=True):
         self.cart.move([speed, 0, 0, speed])
         if is_stop:
             time.sleep(interval)
             self.cart.stop()
-            time.sleep(0.5)
+            time.sleep(0.1)
 
-    def right_backward_run(self, speed, interval=1, is_stop=True):
+    def left_backward_run(self, speed, interval=1, is_stop=True):
         self.cart.move([-speed, 0, 0, -speed])
         if is_stop:
             time.sleep(interval)
             self.cart.stop()
-            time.sleep(0.5)
+            time.sleep(0.1)
 
-    def left_backward_run(self, speed, interval=1, is_stop=True):
+    def right_backward_run(self, speed, interval=1, is_stop=True):
         self.cart.move([0, -speed, -speed, 0])
         if is_stop:
             time.sleep(interval)
             self.cart.stop()
-            time.sleep(0.5)
+            time.sleep(0.1)
 
     def right_circle_run(self, speed, interval=1, is_stop=True):
         self.cart.move([speed, -speed, speed, -speed])
         if is_stop:
             time.sleep(interval)
             self.cart.stop()
-            time.sleep(0.5)
+            time.sleep(0.1)
 
     def left_circle_run(self, speed, interval=1, is_stop=True):
         self.cart.move([-speed, speed, -speed, speed])
         if is_stop:
             time.sleep(interval)
             self.cart.stop()
-            time.sleep(0.5)
+            time.sleep(0.1)
 
     def stop(self):
         self.cart.stop()
-        time.sleep(0.5)
+        time.sleep(0.1)
         if self.get_speed() >= 50:
             self.driver_run(-10, -10, 0.66)
