@@ -42,7 +42,6 @@ FINISH_FLAG = False
 START_BUTTON = Button(1, 'UP')
 STOP_BUTTON = Button(1, 'DOWN')
 CRUISE_BUTTON = Button(1, 'LEFT')
-HIGH_SPEED_START_BUTTON = Button(1, 'RIGHT')
 FRON_CAMERA = BackgroundVideoCapture(configs.FRONT_CAM)
 SIDE_CAMERA = BackgroundVideoCapture(configs.SIDE_CAM)
 
@@ -143,7 +142,7 @@ def _shot_target_right_stop():
 def _stop_stop():
     DRIVER.stop()
     finetune_time = finetune()
-    interval = 1.5 - finetune_time
+    interval = 2.5 - finetune_time
     if interval > 0:
         DRIVER.driver_run(15, 15, interval)
 
@@ -232,8 +231,6 @@ def _take_barracks():
     _stop_stop()
     take_barracks(DRIVER)
     HAS_STOPPED = True
-    # if DRIVER.get_speed() >= 50:
-    #     DRIVER.set_speed(configs.LOW_RUN_SPEED)
     return 0
 
 
@@ -246,7 +243,9 @@ def _capture_target():
     _spoil_stop()
     capture_target()
     HAS_CAPTURE = True
-    CRUISE_PREDICTOR_WEIGHTS = (0, 1)
+    CRUISE_PREDICTOR_WEIGHTS = (0.3, 0.7)
+    DRIVER.set_w(0.66, 2.66)
+    DRIVER.set_speed(65)
     return 0
 
 
@@ -288,6 +287,7 @@ def init(cruise_weights):
     """
     global CRUISE_PREDICTOR_WEIGHTS
     CRUISE_PREDICTOR_WEIGHTS = cruise_weights
+    DRIVER.set_w(*configs.DIFFERENTIAL_PARAMS)
     vs1 = Servo(1)
     vs2 = Servo(2)
     servo2 = ServoPWM(2)
@@ -339,21 +339,12 @@ def wait_start_processor():
         START_BUTTON.clicked()
         STOP_BUTTON.clicked()
         CRUISE_BUTTON.clicked()
-        HIGH_SPEED_START_BUTTON.clicked()
     while True:  # wait for starting
         if START_BUTTON.clicked():  # low speed start
             buzzing(3, 0.5)
             print('init...')
-            init(configs.LOW_RUN_CRUISER_WEIGHTS)
-            DRIVER.set_speed(configs.LOW_RUN_SPEED)
-            print('loading finished...')
-            STATE = 0
-            break
-        if HIGH_SPEED_START_BUTTON.clicked():  # high speed start
-            buzzing(3, 0.3)
-            print('init...')
-            init(configs.HIGH_RUN_CRUISE_WEIGHTS)
-            DRIVER.set_speed(configs.HIGH_RUN_SPEED)
+            init(configs.RUN_CRUISER_WEIGHTS)
+            DRIVER.set_speed(configs.RUN_SPEED)
             print('loading finished...')
             STATE = 0
             break
@@ -372,22 +363,24 @@ def wait_start_processor():
         START_BUTTON.clicked()
         STOP_BUTTON.clicked()
         CRUISE_BUTTON.clicked()
-        HIGH_SPEED_START_BUTTON.clicked()
 
 
 def cruise_only_processor():
     global STATE
-    weight = (1, 0)
-    DRIVER.set_speed(70)
+    weight = (0.7, 0.3)
+    DRIVER.set_speed(88)
     start_time = time.time()
     while True:
         grabbed, frame = FRON_CAMERA.read()
         if not grabbed:
             exit(-1)
         DRIVER.go(frame, weight)
+        if time.time() - start_time >= 20:
+            DRIVER.set_speed(66)
+            DRIVER.set_w(0.88, 2.66)
         if STOP_BUTTON.clicked():
             DRIVER.stop()
-            DRIVER.set_speed(configs.LOW_RUN_SPEED)
+            DRIVER.set_speed(configs.RUN_SPEED)
             STATE = 2
             break
 

@@ -9,11 +9,10 @@ SUM_CIRCLE = 30
 
 
 ########################### run config ###########################
-LOW_RUN_SPEED = 75  # 35
-LOW_RUN_CRUISER_WEIGHTS = (0.88, 0.12)
-HIGH_RUN_SPEED = 88  # 55
-HIGH_RUN_CRUISE_WEIGHTS = (0.88, 0.12)
+RUN_SPEED = 77  # 35
+RUN_CRUISER_WEIGHTS = (0.7, 0.3)
 FINETUNE_THRESHOLD = 0.015
+DIFFERENTIAL_PARAMS = (0.88, 1.88)
 
 ########################### models configs ##########################
 # base config
@@ -72,7 +71,7 @@ HAY_TASK_LIST = {
 }
 # Parking forward requires a high basket threshold
 # Parking backward requires setting the rim threshold low
-HAY_TASK_THRESHOLD = ((0.2333, 0.2688), (0.82, 0.8709), (9637.873, 152778.0546))
+HAY_TASK_THRESHOLD = ((0.322, 0.355), (0.82, 0.8709), (9637.873, 152778.0546))
 TASK_MODELS = [
 	{
 		'model': MODEL_DIR_PREFIX + 'models/task/0',

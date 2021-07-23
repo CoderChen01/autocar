@@ -15,19 +15,21 @@ class Cart:
     def __init__(self):
         self.velocity = 25
         self.serial = serial
+        self.w1 = 0.88  # inverse proportion
+        self.w2 = 1.88  # direct proportion
 
     def _coefficient(self, angle):
         abs_angle = abs(angle)
         if abs_angle <= 0.005:
             coefficient = 1
         elif 0.0005 < abs_angle < 0.001:
-            coefficient = (1 - abs_angle) * 0.93
+            coefficient = (1 - abs_angle) * 0.95
         elif 0.001 <= abs_angle < 0.01:
-            coefficient = (1 - abs_angle) * 0.96
-        elif 0.01 <= abs_angle < 0.1:
             coefficient = (1 - abs_angle) * 0.97
+        elif 0.01 <= abs_angle < 0.1:
+            coefficient = (1 - abs_angle) * 0.99
         else:
-            coefficient = 0.66 * math.exp(-1.88 * abs_angle)
+            coefficient = self.w1 * math.exp(-self.w2 * abs_angle)
         print(f'{abs_angle},{coefficient}')
         return coefficient
 

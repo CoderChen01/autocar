@@ -10,8 +10,14 @@ from cart import Cart
 class Driver:
     def __init__(self):
         self.cart = Cart()
-        self.cart.velocity = configs.LOW_RUN_SPEED
+        self.cart.velocity = configs.RUN_SPEED
         self.cruiser = Cruiser()
+        self.cart.w1 = 0.88
+        self.cart.w2 = 1.88
+
+    def set_w(self, w1, w2):
+        self.cart.w1 = w1
+        self.cart.w2 = w2
 
     def set_speed(self, speed):
         self.cart.velocity = speed

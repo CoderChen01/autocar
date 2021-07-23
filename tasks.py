@@ -58,13 +58,13 @@ def shot_target(motor_port=2):
 
 
 def take_barracks(driver):
-    driver.left_run(66, interval=0.88)
+    driver.left_run(66, interval=1.22)
     for _ in range(3):
         light_work(2, 'red')
         buzzing(1, 0.66)
         light_work(2, 'off')
         time.sleep(0.66)
-    driver.right_run(66, interval=0.88)
+    driver.right_run(66, interval=1.22)
 
 
 def capture_target(servo_485_id=1, servo_pwm_id=2):
