@@ -232,8 +232,8 @@ def _take_barracks():
     _stop_stop()
     take_barracks(DRIVER)
     HAS_STOPPED = True
-    if DRIVER.get_speed() >= 50:
-        DRIVER.set_speed(configs.LOW_RUN_SPEED)
+    # if DRIVER.get_speed() >= 50:
+    #     DRIVER.set_speed(configs.LOW_RUN_SPEED)
     return 0
 
 
@@ -246,7 +246,7 @@ def _capture_target():
     _spoil_stop()
     capture_target()
     HAS_CAPTURE = True
-    CRUISE_PREDICTOR_WEIGHTS = (0.3, 0.7)
+    CRUISE_PREDICTOR_WEIGHTS = (0, 1)
     return 0
 
 
@@ -438,14 +438,14 @@ def test_cruise():
 
 
 if __name__=='__main__':
-    # run()
+    run()
     # _take_barracks()
     # finetune()
     # cruise_processor()
     # DRIVER.cart.steer(0.3)
     # time.sleep(10)
     # test_cruise()
-    _transport_forage()
+    # _transport_forage()
     # finetune()
     # _shot_target_right_stop()
     # time.sleep(4)

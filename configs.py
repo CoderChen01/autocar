@@ -9,10 +9,10 @@ SUM_CIRCLE = 30
 
 
 ########################### run config ###########################
-LOW_RUN_SPEED = 65  # 35
-LOW_RUN_CRUISER_WEIGHTS = (0.6, 0.4)
-HIGH_RUN_SPEED = 75  # 55
-HIGH_RUN_CRUISE_WEIGHTS = (0.6, 0.4)
+LOW_RUN_SPEED = 75  # 35
+LOW_RUN_CRUISER_WEIGHTS = (0.88, 0.12)
+HIGH_RUN_SPEED = 88  # 55
+HIGH_RUN_CRUISE_WEIGHTS = (0.88, 0.12)
 FINETUNE_THRESHOLD = 0.015
 
 ########################### models configs ##########################
