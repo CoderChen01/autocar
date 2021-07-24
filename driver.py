@@ -10,7 +10,7 @@ from cart import Cart
 class Driver:
     def __init__(self):
         self.cart = Cart()
-        self.cart.velocity = configs.RUN_SPEED
+        self.cart.velocity = 25
         self.cruiser = Cruiser()
         self.cart.w1 = 0.88
         self.cart.w2 = 1.88
@@ -105,6 +105,6 @@ class Driver:
 
     def stop(self):
         if self.get_speed() >= 50:
-            self.driver_run(-10, -10, 0.66)
+            self.driver_run(-15, -15, 0.48)
         self.cart.stop()
         time.sleep(0.066)

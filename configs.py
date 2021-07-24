@@ -9,9 +9,9 @@ COLLECTION_DIFFERENTIAL_PARAMS = (0.88, 2.88)
 SUM_CIRCLE = 60
 
 ########################### run config ###########################
-RUN_SPEED = 77  # 35
-RUN_CRUISER_WEIGHTS = [(0.7, 0.3), (0.3, 0.7)]
-DIFFERENTIAL_PARAMS = [(0.88, 1.88), (0.88, 2.88)]
+RUN_SPEEDS = [80, 65]
+RUN_CRUISER_WEIGHTS = [(0.7, 0.3), (0.2, 0.8)]
+DIFFERENTIAL_PARAMS = [(0.88, 1.88), (0.66, 2.66)]
 FINETUNE_THRESHOLD = 0.015
 TAKE_BARRACKS_INTERVAL = 1
 

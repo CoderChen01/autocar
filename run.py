@@ -245,7 +245,7 @@ def _capture_target():
     HAS_CAPTURE = True
     CRUISE_PREDICTOR_WEIGHTS = configs.RUN_CRUISER_WEIGHTS[1]
     DRIVER.set_w(*configs.DIFFERENTIAL_PARAMS[1])
-    DRIVER.set_speed(65)
+    DRIVER.set_speed(configs.RUN_SPEEDS[1])
     return 0
 
 
@@ -287,8 +287,7 @@ def init():
     """
     global CRUISE_PREDICTOR_WEIGHTS
     CRUISE_PREDICTOR_WEIGHTS = configs.RUN_CRUISER_WEIGHTS[0]
-    DRIVER.set_w(*configs.DIFFERENTIAL_PARAMS)
-    DRIVER.set_speed(configs.RUN_SPEED)
+    DRIVER.set_speed(configs.RUN_SPEEDS[0])
     DRIVER.set_w(*configs.DIFFERENTIAL_PARAMS[0])
     vs1 = Servo(1)
     vs2 = Servo(2)
@@ -369,19 +368,20 @@ def wait_start_processor():
 def cruise_only_processor():
     global STATE
     weight = (0.7, 0.3)
-    DRIVER.set_speed(88)
+    DRIVER.set_speed(99)
+    DRIVER.set_w(0.88, 1.88)
     start_time = time.time()
     while True:
         grabbed, frame = FRON_CAMERA.read()
         if not grabbed:
             exit(-1)
         DRIVER.go(frame, weight)
-        if time.time() - start_time >= 20:
-            DRIVER.set_speed(66)
+        if time.time() - start_time >= 15:
+            DRIVER.set_speed(88)
             DRIVER.set_w(0.88, 2.88)
         if STOP_BUTTON.clicked():
             DRIVER.stop()
-            DRIVER.set_speed(configs.RUN_SPEED)
+            DRIVER.set_speed(configs.RUN_SPEEDS[0])
             STATE = 2
             break
 
