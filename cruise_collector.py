@@ -65,7 +65,7 @@ class Collector:
                 break
             _logger = Logger(configs.COLLECTION_SPEED)
             _logger.counter = counter
-            _logger.set_w(0.88, 2.88)
+            _logger.set_w(*configs.COLLECTION_DIFFERENTIAL_PARAMS)
             _logger.start()
             while self.is_start.value and self.is_restart.value:
                 print(self.x_axis.value)
