@@ -28,6 +28,10 @@ class Logger:
         self.cart = Cart()
         self.cart.velocity = velocity
 
+    def set_w(self, w1, w2):
+        self.cart.w1 = w1
+        self.cart.w2 = w2
+
     def start(self):
         self.started = True
         self.cart.steer(0)

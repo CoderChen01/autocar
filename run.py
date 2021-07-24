@@ -149,7 +149,7 @@ def _stop_stop():
 
 def _spoil_stop():
     DRIVER.stop()
-    DRIVER.driver_run(10, 10, 1)
+    DRIVER.driver_run(15, 15, 1)
 
 
 def _hay_right_stop():
@@ -229,7 +229,7 @@ def _take_barracks():
         return 0
     print('take barracks...')
     _stop_stop()
-    take_barracks(DRIVER)
+    take_barracks(DRIVER, configs.TAKE_BARRACKS_INTERVAL)
     HAS_STOPPED = True
     return 0
 
@@ -243,8 +243,8 @@ def _capture_target():
     _spoil_stop()
     capture_target()
     HAS_CAPTURE = True
-    CRUISE_PREDICTOR_WEIGHTS = (0.3, 0.7)
-    DRIVER.set_w(0.66, 2.66)
+    CRUISE_PREDICTOR_WEIGHTS = configs.RUN_CRUISER_WEIGHTS[1]
+    DRIVER.set_w(*configs.DIFFERENTIAL_PARAMS[1])
     DRIVER.set_speed(65)
     return 0
 
@@ -281,13 +281,15 @@ def _end():
 
 
 ################## main ##################
-def init(cruise_weights):
+def init():
     """
     Initialize operation, lock the servo
     """
     global CRUISE_PREDICTOR_WEIGHTS
-    CRUISE_PREDICTOR_WEIGHTS = cruise_weights
+    CRUISE_PREDICTOR_WEIGHTS = configs.RUN_CRUISER_WEIGHTS[0]
     DRIVER.set_w(*configs.DIFFERENTIAL_PARAMS)
+    DRIVER.set_speed(configs.RUN_SPEED)
+    DRIVER.set_w(*configs.DIFFERENTIAL_PARAMS[0])
     vs1 = Servo(1)
     vs2 = Servo(2)
     servo2 = ServoPWM(2)
@@ -343,14 +345,13 @@ def wait_start_processor():
         if START_BUTTON.clicked():  # low speed start
             buzzing(3, 0.5)
             print('init...')
-            init(configs.RUN_CRUISER_WEIGHTS)
-            DRIVER.set_speed(configs.RUN_SPEED)
+            init()
             print('loading finished...')
             STATE = 0
             break
         if CRUISE_BUTTON.clicked():  # only cruise
             buzzing(4, 0.3)
-            init((1, 0))
+            init()
             STATE = 3
             break
         if STOP_BUTTON.clicked():  # stop program
@@ -377,7 +378,7 @@ def cruise_only_processor():
         DRIVER.go(frame, weight)
         if time.time() - start_time >= 20:
             DRIVER.set_speed(66)
-            DRIVER.set_w(0.88, 2.66)
+            DRIVER.set_w(0.88, 2.88)
         if STOP_BUTTON.clicked():
             DRIVER.stop()
             DRIVER.set_speed(configs.RUN_SPEED)

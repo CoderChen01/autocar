@@ -57,14 +57,14 @@ def shot_target(motor_port=2):
     time.sleep(0.66)
 
 
-def take_barracks(driver):
-    driver.left_run(66, interval=1)
+def take_barracks(driver, interval):
+    driver.left_run(55, interval=interval)
     for _ in range(3):
         light_work(2, 'red')
         buzzing(1, 0.66)
         light_work(2, 'off')
         time.sleep(0.66)
-    driver.right_run(66, interval=1)
+    driver.right_run(55, interval=interval)
 
 
 def capture_target(servo_485_id=1, servo_pwm_id=2):
@@ -118,42 +118,3 @@ def test_transport_forage():
     time.sleep(4)
     transport_forage()
     time.sleep(1)
-
-
-if __name__ == '__main__':
-    # test_transport_forage()
-    test_capture_target()
-    # test_shot_target()
-    # test_raise_flag()
-    # driver = Driver()
-    # take_barracks(driver)
-    # transport_forage()
-    # raise_flag(3)
-    # raise_flag(4)
-    # raise_flag(5)
-    # for _ in range(20):
-    #     shot_target()
-    #     time.sleep(1)
-    # servo = ServoPWM(6)
-    # servo.servocontrol(115, 25)
-    # time.sleep(0)
-    # s = Servo(2)
-    # s.servocontrol(35, 100)
-    # time.sleep(5)
-    # capture_target()
-    # time.sleep(100)
-    # take_barracks()
-    # s = ServoPWM(6)
-    # s.servocontrol(0, 100)
-    # time.sleep(0)
-    # s.servocontrol(70, 100)
-    # transport_forage()
-    # time.sleep(2)
-    # transport_forage()
-    # time.sleep(2)
-    # transport_forage()
-    # change_camera_direction(2, 'left')
-    # raise_flag(5)
-    # time.sleep(0)
-    # shot_target(2)
-    # time.sleep(0)

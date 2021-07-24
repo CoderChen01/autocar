@@ -4,15 +4,15 @@ SIDE_CAM = 1
 
 
 ####################### collect dataset config ###################
-COLLECTION_SPEED = 25
-SUM_CIRCLE = 30
-
+COLLECTION_SPEED = 20
+SUM_CIRCLE = 60
 
 ########################### run config ###########################
 RUN_SPEED = 77  # 35
-RUN_CRUISER_WEIGHTS = (0.7, 0.3)
+RUN_CRUISER_WEIGHTS = [(0.7, 0.3), (0.3, 0.7)]
+DIFFERENTIAL_PARAMS = [(0.88, 1.88), (0.88, 2.88)]
 FINETUNE_THRESHOLD = 0.015
-DIFFERENTIAL_PARAMS = (0.88, 1.88)
+TAKE_BARRACKS_INTERVAL = 1
 
 ########################### models configs ##########################
 # base config
